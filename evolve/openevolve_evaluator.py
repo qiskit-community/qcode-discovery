@@ -74,6 +74,15 @@ from evaluation.evaluator import (
 )
 from evaluation.results import save_code, update_pareto_front
 
+# Per-model attribution: install here so it is active in each spawn worker
+# (OpenEvolve imports this evaluator before generating). Defensive no-op if
+# unavailable.
+try:
+    from evolve.model_attribution import install_tagging as _install_tagging
+    _install_tagging()
+except Exception:
+    pass
+
 logger = logging.getLogger(__name__)
 
 # Lattice subsets for staged evaluation

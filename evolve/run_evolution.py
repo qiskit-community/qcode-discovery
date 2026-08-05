@@ -408,6 +408,16 @@ def main():
     run_name = Path(output_dir).name
     os.environ["QCODE_RUN_NAME"] = run_name
 
+    # Per-model attribution: tag each evolved program with the model that
+    # produced it (worker side, via the evaluator import) and log every accepted
+    # program to <output_dir>/model_attribution.jsonl (main side, here).
+    try:
+        from evolve.model_attribution import install as _install_attribution
+        os.makedirs(output_dir, exist_ok=True)
+        _install_attribution(str(Path(output_dir) / "model_attribution.jsonl"))
+    except Exception as exc:
+        print(f"Warning: model attribution not installed: {exc}")
+
     # Resolve seed solution
     if args.seed:
         seed_path = args.seed

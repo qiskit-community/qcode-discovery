@@ -44,6 +44,15 @@ if _PROJECT_ROOT not in sys.path:
 from evaluation.pbb_code import build_pbb_code, get_pbb_params_fast
 from evolve._noncss_distance_worker import distance_worker as _distance_worker
 
+# Per-model attribution: install here so it is active in each spawn worker
+# (OpenEvolve imports this evaluator before generating). Defensive no-op if
+# unavailable.
+try:
+    from evolve.model_attribution import install_tagging as _install_tagging
+    _install_tagging()
+except Exception:
+    pass
+
 logger = logging.getLogger(__name__)
 
 # Parallelism for distance estimation.
