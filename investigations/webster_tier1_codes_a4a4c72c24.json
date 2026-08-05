@@ -1,0 +1,426 @@
+{
+ "generated_at": "2026-06-09T16:24:33.068043+00:00",
+ "selection_id": "a4a4c72c24",
+ "max_n": 144,
+ "args": {
+  "css_only": true,
+  "pbb_only": false,
+  "all_n": false,
+  "max_n": 144,
+  "min_d": 0,
+  "exact_only": false,
+  "selection_mode": "code_ids",
+  "code_ids": [
+   "css_n=360_15x12_19",
+   "css_n=360_15x12_20",
+   "css_n=360_15x12_44",
+   "css_n=360_15x12_45",
+   "css_n=360_15x12_46"
+  ]
+ },
+ "css_count": 5,
+ "pbb_count": 0,
+ "css": [
+  {
+   "code_type": "css",
+   "code_id": "css_n=360_15x12_44",
+   "ell": 15,
+   "m": 12,
+   "n": 360,
+   "k": 40,
+   "A_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     10
+    ],
+    [
+     0,
+     11
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     5,
+     0
+    ],
+    [
+     10,
+     0
+    ]
+   ],
+   "ours_d": 2,
+   "ours_d_x": 2,
+   "ours_d_z": 2,
+   "ours_exact": false,
+   "ours_exact_source": "not_certified_in_ilp_catalog",
+   "ours_status": "BP-OSD OVERESTIMATED",
+   "ours_bposd": 24,
+   "source": "ilp_catalog.json",
+   "source_group": "n=360",
+   "source_index": 44,
+   "source_label": "[[360,40,<=24]]",
+   "_dedupe_key": [
+    "css",
+    15,
+    12,
+    [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      10
+     ],
+     [
+      0,
+      11
+     ]
+    ],
+    [
+     [
+      0,
+      0
+     ],
+     [
+      5,
+      0
+     ],
+     [
+      10,
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "code_type": "css",
+   "code_id": "css_n=360_15x12_45",
+   "ell": 15,
+   "m": 12,
+   "n": 360,
+   "k": 40,
+   "A_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     7
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     5,
+     0
+    ],
+    [
+     10,
+     0
+    ]
+   ],
+   "ours_d": 2,
+   "ours_d_x": 2,
+   "ours_d_z": 2,
+   "ours_exact": false,
+   "ours_exact_source": "not_certified_in_ilp_catalog",
+   "ours_status": "BP-OSD OVERESTIMATED",
+   "ours_bposd": 22,
+   "source": "ilp_catalog.json",
+   "source_group": "n=360",
+   "source_index": 45,
+   "source_label": "[[360,40,<=22]]",
+   "_dedupe_key": [
+    "css",
+    15,
+    12,
+    [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      7
+     ]
+    ],
+    [
+     [
+      0,
+      0
+     ],
+     [
+      5,
+      0
+     ],
+     [
+      10,
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "code_type": "css",
+   "code_id": "css_n=360_15x12_46",
+   "ell": 15,
+   "m": 12,
+   "n": 360,
+   "k": 40,
+   "A_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     5,
+     0
+    ],
+    [
+     10,
+     0
+    ]
+   ],
+   "ours_d": 2,
+   "ours_d_x": 2,
+   "ours_d_z": 2,
+   "ours_exact": false,
+   "ours_exact_source": "not_certified_in_ilp_catalog",
+   "ours_status": "BP-OSD OVERESTIMATED",
+   "ours_bposd": 20,
+   "source": "ilp_catalog.json",
+   "source_group": "n=360",
+   "source_index": 46,
+   "source_label": "[[360,40,<=20]]",
+   "_dedupe_key": [
+    "css",
+    15,
+    12,
+    [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      2
+     ]
+    ],
+    [
+     [
+      0,
+      0
+     ],
+     [
+      5,
+      0
+     ],
+     [
+      10,
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "code_type": "css",
+   "code_id": "css_n=360_15x12_19",
+   "ell": 15,
+   "m": 12,
+   "n": 360,
+   "k": 32,
+   "A_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     3,
+     0
+    ],
+    [
+     4,
+     2
+    ]
+   ],
+   "ours_d": 4,
+   "ours_d_x": 4,
+   "ours_d_z": 4,
+   "ours_exact": false,
+   "ours_exact_source": "not_certified_in_ilp_catalog",
+   "ours_status": "BP-OSD OVERESTIMATED",
+   "ours_bposd": 20,
+   "source": "ilp_catalog.json",
+   "source_group": "n=360",
+   "source_index": 19,
+   "source_label": "[[360,32,<=20]]",
+   "_dedupe_key": [
+    "css",
+    15,
+    12,
+    [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    [
+     [
+      0,
+      0
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      4,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "code_type": "css",
+   "code_id": "css_n=360_15x12_20",
+   "ell": 15,
+   "m": 12,
+   "n": 360,
+   "k": 32,
+   "A_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     3,
+     0
+    ],
+    [
+     4,
+     0
+    ]
+   ],
+   "ours_d": 4,
+   "ours_d_x": 4,
+   "ours_d_z": 4,
+   "ours_exact": false,
+   "ours_exact_source": "not_certified_in_ilp_catalog",
+   "ours_status": "BP-OSD OVERESTIMATED",
+   "ours_bposd": 16,
+   "source": "ilp_catalog.json",
+   "source_group": "n=360",
+   "source_index": 20,
+   "source_label": "[[360,32,<=16]]",
+   "_dedupe_key": [
+    "css",
+    15,
+    12,
+    [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    [
+     [
+      0,
+      0
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      4,
+      0
+     ]
+    ]
+   ]
+  }
+ ],
+ "pbb": []
+}

@@ -1,0 +1,895 @@
+{
+ "generated_at": "2026-06-09T16:08:20.239198+00:00",
+ "selection_id": "6e5dd17da3",
+ "max_n": 144,
+ "args": {
+  "css_only": false,
+  "pbb_only": true,
+  "all_n": false,
+  "max_n": 144,
+  "min_d": 0,
+  "exact_only": false,
+  "selection_mode": "code_ids",
+  "code_ids": [
+   "12_6_0202",
+   "12_6_0216",
+   "15_6_0253",
+   "15_6_0259",
+   "9_6_0023",
+   "9_6_0121",
+   "9_6_0126",
+   "9_6_0133",
+   "9_6_0151",
+   "pbb_9x6_60",
+   "pbb_9x6_65",
+   "pbb_9x6_68",
+   "pbb_9x6_98"
+  ]
+ },
+ "css_count": 0,
+ "pbb_count": 13,
+ "css": [],
+ "pbb": [
+  {
+   "code_type": "pbb",
+   "code_id": "9_6_0023",
+   "ell": 9,
+   "m": 6,
+   "n": 108,
+   "k": 8,
+   "A_terms": [
+    [
+     1,
+     2
+    ],
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     5
+    ],
+    [
+     5,
+     4
+    ]
+   ],
+   "C_terms": [
+    [
+     1,
+     1
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "D_terms": [
+    [
+     1,
+     2
+    ],
+    [
+     4,
+     2
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": true,
+   "ours_trust": "EXACT",
+   "bliss_hash": "0c5c28b6c6e60c24",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 66,
+   "_dedupe_key": [
+    "pbb",
+    "0c5c28b6c6e60c24"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "9_6_0121",
+   "ell": 9,
+   "m": 6,
+   "n": 108,
+   "k": 8,
+   "A_terms": [
+    [
+     1,
+     2
+    ],
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     5
+    ],
+    [
+     5,
+     4
+    ]
+   ],
+   "C_terms": [
+    [
+     0,
+     3
+    ],
+    [
+     5,
+     3
+    ]
+   ],
+   "D_terms": [
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     5
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": true,
+   "ours_trust": "EXACT",
+   "bliss_hash": "cf9f262201d3fceb",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 63,
+   "_dedupe_key": [
+    "pbb",
+    "cf9f262201d3fceb"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "9_6_0126",
+   "ell": 9,
+   "m": 6,
+   "n": 108,
+   "k": 8,
+   "A_terms": [
+    [
+     3,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     3
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     4,
+     0
+    ]
+   ],
+   "C_terms": [
+    [
+     6,
+     1
+    ],
+    [
+     6,
+     4
+    ]
+   ],
+   "D_terms": [
+    [
+     3,
+     0
+    ],
+    [
+     3,
+     3
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": false,
+   "ours_trust": "EXACT",
+   "bliss_hash": "05eef95fe46fbde1",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 72,
+   "_dedupe_key": [
+    "pbb",
+    "05eef95fe46fbde1"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "9_6_0133",
+   "ell": 9,
+   "m": 6,
+   "n": 108,
+   "k": 6,
+   "A_terms": [
+    [
+     5,
+     2
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     2,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     5,
+     5
+    ],
+    [
+     7,
+     4
+    ]
+   ],
+   "C_terms": [
+    [
+     0,
+     2
+    ],
+    [
+     7,
+     2
+    ]
+   ],
+   "D_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     4
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": true,
+   "ours_trust": "EXACT",
+   "bliss_hash": "da4c3a7ce84f7aa3",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 100,
+   "_dedupe_key": [
+    "pbb",
+    "da4c3a7ce84f7aa3"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "9_6_0151",
+   "ell": 9,
+   "m": 6,
+   "n": 108,
+   "k": 4,
+   "A_terms": [
+    [
+     3,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     3
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     2,
+     0
+    ]
+   ],
+   "C_terms": [
+    [
+     3,
+     4
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "D_terms": [
+    [
+     6,
+     0
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 10,
+   "ours_exact": true,
+   "ours_milp_exact": true,
+   "ours_trust": "EXACT",
+   "bliss_hash": "0fb2dc93f240b43e",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 243,
+   "_dedupe_key": [
+    "pbb",
+    "0fb2dc93f240b43e"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "pbb_9x6_60",
+   "ell": 9,
+   "m": 6,
+   "n": 108,
+   "k": 8,
+   "A_terms": [
+    [
+     3,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     3
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     4,
+     0
+    ]
+   ],
+   "C_terms": [
+    [
+     6,
+     1
+    ]
+   ],
+   "D_terms": [
+    [
+     3,
+     3
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": false,
+   "ours_trust": "EXACT",
+   "bliss_hash": "fc59a45152750ae2",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 60,
+   "_dedupe_key": [
+    "pbb",
+    "fc59a45152750ae2"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "pbb_9x6_65",
+   "ell": 9,
+   "m": 6,
+   "n": 108,
+   "k": 8,
+   "A_terms": [
+    [
+     1,
+     2
+    ],
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     5
+    ],
+    [
+     5,
+     4
+    ]
+   ],
+   "C_terms": [
+    [
+     1,
+     4
+    ],
+    [
+     4,
+     1
+    ]
+   ],
+   "D_terms": [
+    [
+     1,
+     5
+    ],
+    [
+     4,
+     5
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": false,
+   "ours_trust": "EXACT",
+   "bliss_hash": "ee5830dbe97f878b",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 65,
+   "_dedupe_key": [
+    "pbb",
+    "ee5830dbe97f878b"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "pbb_9x6_68",
+   "ell": 9,
+   "m": 6,
+   "n": 108,
+   "k": 8,
+   "A_terms": [
+    [
+     1,
+     2
+    ],
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     5
+    ],
+    [
+     5,
+     4
+    ]
+   ],
+   "C_terms": [
+    [
+     1,
+     2
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "D_terms": [
+    [
+     1,
+     4
+    ],
+    [
+     4,
+     0
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": false,
+   "ours_trust": "EXACT",
+   "bliss_hash": "f0a07722402b87ef",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 68,
+   "_dedupe_key": [
+    "pbb",
+    "f0a07722402b87ef"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "pbb_9x6_98",
+   "ell": 9,
+   "m": 6,
+   "n": 108,
+   "k": 6,
+   "A_terms": [
+    [
+     3,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     3
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     4,
+     0
+    ]
+   ],
+   "C_terms": [
+    [
+     5,
+     5
+    ],
+    [
+     7,
+     2
+    ]
+   ],
+   "D_terms": [
+    [
+     4,
+     0
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": false,
+   "ours_trust": "EXACT",
+   "bliss_hash": "463e119114eee0d7",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 98,
+   "_dedupe_key": [
+    "pbb",
+    "463e119114eee0d7"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "12_6_0216",
+   "ell": 12,
+   "m": 6,
+   "n": 144,
+   "k": 4,
+   "A_terms": [
+    [
+     2,
+     2
+    ],
+    [
+     11,
+     3
+    ],
+    [
+     11,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     5
+    ],
+    [
+     3,
+     4
+    ]
+   ],
+   "C_terms": [
+    [
+     10,
+     4
+    ]
+   ],
+   "D_terms": [
+    [
+     1,
+     5
+    ],
+    [
+     11,
+     0
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": true,
+   "ours_trust": "EXACT",
+   "bliss_hash": "8ebcf329341b87f2",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 301,
+   "_dedupe_key": [
+    "pbb",
+    "8ebcf329341b87f2"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "12_6_0202",
+   "ell": 12,
+   "m": 6,
+   "n": 144,
+   "k": 4,
+   "A_terms": [
+    [
+     2,
+     1
+    ],
+    [
+     5,
+     2
+    ],
+    [
+     6,
+     1
+    ]
+   ],
+   "B_terms": [
+    [
+     5,
+     1
+    ],
+    [
+     6,
+     0
+    ],
+    [
+     6,
+     1
+    ]
+   ],
+   "C_terms": [
+    [
+     4,
+     1
+    ]
+   ],
+   "D_terms": [
+    [
+     5,
+     0
+    ],
+    [
+     6,
+     1
+    ]
+   ],
+   "ours_d": 12,
+   "ours_d_milp": 12,
+   "ours_d_bposd": 16,
+   "ours_exact": true,
+   "ours_milp_exact": false,
+   "ours_trust": "EXACT",
+   "bliss_hash": "8284ce719018437c",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 144,
+   "_dedupe_key": [
+    "pbb",
+    "8284ce719018437c"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "15_6_0259",
+   "ell": 15,
+   "m": 6,
+   "n": 180,
+   "k": 2,
+   "A_terms": [
+    [
+     1,
+     1
+    ],
+    [
+     11,
+     3
+    ],
+    [
+     4,
+     2
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     2
+    ],
+    [
+     7,
+     1
+    ],
+    [
+     0,
+     0
+    ]
+   ],
+   "C_terms": [
+    [
+     6,
+     4
+    ]
+   ],
+   "D_terms": [
+    [
+     5,
+     5
+    ]
+   ],
+   "ours_d": 10,
+   "ours_d_milp": 10,
+   "ours_d_bposd": 12,
+   "ours_exact": true,
+   "ours_milp_exact": true,
+   "ours_trust": "EXACT",
+   "bliss_hash": "5c41b89de03ecf8e",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 361,
+   "_dedupe_key": [
+    "pbb",
+    "5c41b89de03ecf8e"
+   ]
+  },
+  {
+   "code_type": "pbb",
+   "code_id": "15_6_0253",
+   "ell": 15,
+   "m": 6,
+   "n": 180,
+   "k": 2,
+   "A_terms": [
+    [
+     12,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     3,
+     0
+    ]
+   ],
+   "C_terms": [
+    [
+     7,
+     2
+    ]
+   ],
+   "D_terms": [
+    [
+     8,
+     4
+    ]
+   ],
+   "ours_d": 12,
+   "ours_d_milp": 12,
+   "ours_d_bposd": 18,
+   "ours_exact": true,
+   "ours_milp_exact": false,
+   "ours_trust": "EXACT",
+   "bliss_hash": "a90e28ffbc7437bd",
+   "source": "campaign7_publication_merged.jsonl",
+   "source_index": 246,
+   "_dedupe_key": [
+    "pbb",
+    "a90e28ffbc7437bd"
+   ]
+  }
+ ]
+}
