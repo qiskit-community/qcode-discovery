@@ -1,0 +1,345 @@
+{
+ "generated_at": "2026-06-09T19:20:32.181717+00:00",
+ "selection_id": "8fffd262df",
+ "max_n": 144,
+ "args": {
+  "css_only": true,
+  "pbb_only": false,
+  "all_n": false,
+  "max_n": 144,
+  "min_d": 0,
+  "exact_only": false,
+  "selection_mode": "code_ids",
+  "code_ids": [
+   "css_n=288_12x12_0",
+   "css_n=288_12x12_22",
+   "css_n=288_12x12_5",
+   "css_n=288_24x6_21"
+  ]
+ },
+ "css_count": 4,
+ "pbb_count": 0,
+ "css": [
+  {
+   "code_type": "css",
+   "code_id": "css_n=288_12x12_22",
+   "ell": 12,
+   "m": 12,
+   "n": 288,
+   "k": 32,
+   "A_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     0
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     4,
+     0
+    ]
+   ],
+   "ours_d": 4,
+   "ours_d_x": 4,
+   "ours_d_z": 4,
+   "ours_exact": false,
+   "ours_exact_source": "not_certified_in_ilp_catalog",
+   "ours_status": "BP-OSD OVERESTIMATED",
+   "ours_bposd": 12,
+   "source": "ilp_catalog.json",
+   "source_group": "n=288",
+   "source_index": 22,
+   "source_label": "[[288,32,<=12]]",
+   "_dedupe_key": [
+    "css",
+    12,
+    12,
+    [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      0
+     ],
+     [
+      4,
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "code_type": "css",
+   "code_id": "css_n=288_24x6_21",
+   "ell": 24,
+   "m": 6,
+   "n": 288,
+   "k": 32,
+   "A_terms": [
+    [
+     12,
+     0
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     3
+    ],
+    [
+     10,
+     0
+    ],
+    [
+     20,
+     0
+    ]
+   ],
+   "ours_d": 4,
+   "ours_d_x": 4,
+   "ours_d_z": 4,
+   "ours_exact": false,
+   "ours_exact_source": "not_certified_in_ilp_catalog",
+   "ours_status": "BP-OSD OVERESTIMATED",
+   "ours_bposd": 22,
+   "source": "ilp_catalog.json",
+   "source_group": "n=288",
+   "source_index": 21,
+   "source_label": "[[288,32,<=22]]",
+   "_dedupe_key": [
+    "css",
+    24,
+    6,
+    [
+     [
+      12,
+      0
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    [
+     [
+      0,
+      3
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      20,
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "code_type": "css",
+   "code_id": "css_n=288_12x12_5",
+   "ell": 12,
+   "m": 12,
+   "n": 288,
+   "k": 32,
+   "A_terms": [
+    [
+     3,
+     0
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     10
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     6
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     11,
+     0
+    ]
+   ],
+   "ours_d": 6,
+   "ours_d_x": 6,
+   "ours_d_z": 6,
+   "ours_exact": false,
+   "ours_exact_source": "not_certified_in_ilp_catalog",
+   "ours_status": "BP-OSD OVERESTIMATED",
+   "ours_bposd": 20,
+   "source": "ilp_catalog.json",
+   "source_group": "n=288",
+   "source_index": 5,
+   "source_label": "[[288,32,<=20]]",
+   "_dedupe_key": [
+    "css",
+    12,
+    12,
+    [
+     [
+      3,
+      0
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      10
+     ]
+    ],
+    [
+     [
+      0,
+      6
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      11,
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "code_type": "css",
+   "code_id": "css_n=288_12x12_0",
+   "ell": 12,
+   "m": 12,
+   "n": 288,
+   "k": 24,
+   "A_terms": [
+    [
+     6,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "B_terms": [
+    [
+     0,
+     3
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     4,
+     0
+    ]
+   ],
+   "ours_d": 12,
+   "ours_d_x": 12,
+   "ours_d_z": 12,
+   "ours_exact": false,
+   "ours_exact_source": "not_certified_in_ilp_catalog",
+   "ours_status": "BP-OSD OVERESTIMATED",
+   "ours_bposd": 18,
+   "source": "ilp_catalog.json",
+   "source_group": "n=288",
+   "source_index": 0,
+   "source_label": "[[288,24,<=18]]",
+   "_dedupe_key": [
+    "css",
+    12,
+    12,
+    [
+     [
+      6,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      2
+     ]
+    ],
+    [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      0
+     ],
+     [
+      4,
+      0
+     ]
+    ]
+   ]
+  }
+ ],
+ "pbb": []
+}

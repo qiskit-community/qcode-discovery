@@ -24,9 +24,17 @@ evolve = [
 tracking = [
     "wandb",
 ]
+# Webster et al. (arXiv:2603.22532) distance package, for the cross-check in
+# investigations/webster_comparison_plan.md. Kept separate from `dev` because it
+# pulls a heavy transitive stack (ortools, qiskit, numba, python-sat, gurobipy).
+# Install with: uv sync --group dev --group webster
+webster = [
+    "codedistance>=0.0.8",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
     "slow: marks tests as slow (distance estimation, full evaluation)",
+    "webster: marks tests that require the optional `codedistance` package (uv sync --group webster)",
 ]
