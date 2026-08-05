@@ -1,0 +1,280 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\code}[1]{[\![#1]\!]}
+\newcommand{\dleq}{d\!\le}
+\newcommand{\tablecmd}[1]{\texttt{#1}}
+
+% Let TeX break before long unbreakable \texttt identifiers instead of
+% overflowing the margin (e.g. scipy.optimize.milp, mip_dual_bound).
+\setlength{\emergencystretch}{3em}
+
+\title{Independent cross-check of quantum LDPC code distances against the
+\texttt{codeDistance} package, and a route to distance bounds for larger codes}
+\author{Juan Cruz-Benito}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We cross-checked the code-distance values recorded by our discovery
+pipeline~\cite{qcode} (BP-OSD plus a SciPy/HiGHS MILP) against the independent
+\texttt{codeDistance} package of
+Webster, Jacob, and Higgott (arXiv:2603.22532). Across 198 distinct codes (43 CSS,
+155 non-CSS perturbed-bicycle), independent methods matched or corroborated our
+recorded values with \emph{zero contradictions}, including the codes where BP-OSD
+overestimated the distance by up to $12\times$. We then show, on Webster's own
+evolutionary search \texttt{QDistEvol}, that a cheap heuristic matches the recorded
+MILP value on every one of the worst overestimate cases and even tightens one of
+our incumbents. Finally we analyse what these methods can and cannot do for
+\emph{larger} codes, where the MILP times out, and give a concrete
+bound-bracketing workflow that combines a heuristic upper bound with the certified
+lower bound HiGHS can report but our current pipeline does not persist.
+\end{abstract}
+
+\section{Setup and protocol}
+
+The codes under test are the bivariate-bicycle (BB) and perturbed-bivariate-bicycle
+(PBB) quantum LDPC codes discovered in~\cite{qcode}, whose distances were recorded
+there via BP-OSD and a SciPy/HiGHS MILP (catalogs \texttt{ilp\_catalog.json} for
+CSS and the campaign-7 record for non-CSS).
+
+The \texttt{codeDistance} package exposes \texttt{CSScodeDistance} (CSS) and
+\texttt{codeDistance} (non-CSS, symplectic two-block input). We drive four
+methods: \texttt{BZDistMW} (Brouwer--Zimmermann enumeration, exact on
+completion), \texttt{MIPDist} (OR-Tools/SCIP), \texttt{QDistEvol} (evolutionary
+heuristic), and \texttt{decoderDist} (BP-OSD via the \texttt{ldpc} package).
+
+The protocol rests on one principle: \textbf{trust the returned witness, not the
+reported distance}. For every run we recompute the weight of the returned operator
+(Hamming for CSS, symplectic for non-CSS) and verify that it commutes with all
+checks and anticommutes with at least one logical. A \emph{verified} witness of
+weight $w$ is then a hard certificate that $\dleq w$, independent of the method and
+of solver bookkeeping. Two consequences shape the reading of every result below:
+
+\begin{itemize}
+  \item \texttt{MIPDist} is always recorded as an \emph{incumbent}: the public
+  package result does not expose OR-Tools' optimality status, so we never promote
+  a finished solve to a proof. \texttt{BZDistMW} is \texttt{proven\_exact} only
+  when it runs to completion.
+  \item The highest-impact signal is a verified witness \emph{lighter} than a
+  distance we claim exact (the \texttt{CRITICAL\_LOWER} verdict). None was
+  observed.
+\end{itemize}
+
+\section{Results}
+
+\paragraph{Overall.} 198 distinct codes, 271 method-runs (254 \texttt{MIPDist}
+incumbents, 17 \texttt{BZDistMW} proofs), every returned witness verified.
+Table~\ref{tab:verdicts} gives the per-code verdict.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcl}
+\toprule
+verdict & codes & meaning \\
+\midrule
+\textbf{agree} & \textbf{196} & min verified witness weight $=$ our recorded value \\
+\texttt{webster\_higher} & 2 & heavier valid logical (looser bound), not a contradiction \\
+\textbf{CRITICAL} & \textbf{0} & no verified witness below a claimed-exact distance \\
+\bottomrule
+\end{tabular}
+\caption{Per-code verdicts over the 198-code cross-check. The two
+\texttt{webster\_higher} rows are $n{=}108$, $d{=}10$ codes whose MIP returned
+weight 12 even at a 600\,s budget ($12 \ge 10$, consistent).}
+\label{tab:verdicts}
+\end{table}
+
+\paragraph{CSS (Comparison A).} All 43 CSS codes agree: the two Bravyi baselines
+($\code{72,12,6}$, $\code{144,12,12}$), 32 catalog rows at $n{=}144$, and the 9
+``BP-OSD overestimated'' rows at $n{=}288/360$. We stress that
+\texttt{ilp\_catalog.json} labels are not solver certificates; the non-Bravyi rows
+are \emph{corroborated} by independent witnesses, not upgraded to proven-exact.
+
+The headline cross-check is the overestimate subset (Table~\ref{tab:overest}):
+these are the codes where our pipeline most aggressively corrected BP-OSD. An
+independent MIP (OR-Tools/SCIP, distinct from our SciPy/HiGHS formulation)
+returned a verified logical at our recorded value in both $X$ and $Z$ on all
+nine. Because a verified weight-$w$ witness certifies $\dleq w$, this
+\emph{proves} the upper bounds that refute the BP-OSD estimates---e.g.
+$\code{360,40}$ with a weight-2 witness against a BP-OSD estimate of 24, a
+$12\times$ overestimate. Equality with our recorded value is corroboration, not an
+independent optimality proof (all runs are incumbents, and these catalog rows are
+incumbents too); no lighter witness was ever found.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\toprule
+code & BP-OSD $d$ & MILP / verified witness & BP-OSD\,/\,witness \\
+\midrule
+$\code{360,40}$ & 24 & \textbf{2} & $\mathbf{12.0\times}$ \\
+$\code{360,40}$ & 22 & \textbf{2} & $11.0\times$ \\
+$\code{360,40}$ & 20 & \textbf{2} & $10.0\times$ \\
+$\code{288,32}$ & 22 & \textbf{4} & $5.5\times$ \\
+$\code{360,32}$ & 20 & \textbf{4} & $5.0\times$ \\
+$\code{360,32}$ & 16 & \textbf{4} & $4.0\times$ \\
+$\code{288,32}$ & 20 & \textbf{6} & $3.3\times$ \\
+$\code{288,32}$ & 12 & \textbf{4} & $3.0\times$ \\
+$\code{288,24}$ & 18 & \textbf{12} & $1.5\times$ \\
+\bottomrule
+\end{tabular}
+\caption{The nine ``BP-OSD overestimated'' CSS codes. The verified witness weight
+matches our recorded MILP value on all nine, certifying the corrected (much lower) upper
+bound against BP-OSD overestimates of up to $12\times$.}
+\label{tab:overest}
+\end{table}
+
+\paragraph{Non-CSS (Comparison C).} Of 155 exact non-CSS codes ($n\le180$,
+$d>6$, plus the $n{=}36$ baselines), 153 agree and 2 are looser; none
+contradicts. The non-CSS symplectic linearization our MILP uses therefore held on
+every code tested: every returned witness was a valid logical and none was lighter
+than our recorded distance. A targeted 600\,s rerun of an initial 13 looser
+incumbents closed 11 of them to agreement with our exact record.
+
+\paragraph{Heuristics (Comparison B): does \texttt{QDistEvol} close the BP-OSD
+gap?} On the 17 worst overestimate codes (the 9 CSS rows plus the 8 largest
+non-CSS $d_{\text{BP-OSD}}-d_{\text{MILP}}$ gaps) we ran \texttt{QDistEvol} and
+\texttt{decoderDist} and compared each verified witness weight to our recorded
+MILP value (Table~\ref{tab:tier2}). \texttt{QDistEvol} reached the recorded MILP value on
+\emph{all 17}, and on one non-CSS code ($\code{360,12}$, BLISS
+\texttt{c447dcb2d101746f}) it \emph{improved} our incumbent, finding a weight-20
+logical where the recorded value was 24. It is cheap ($\sim$46--133\,s/code).
+
+Two nuances sharpen the BP-OSD story. On CSS, \texttt{decoderDist} (a well-run
+BP-OSD) also matches the recorded \texttt{ilp\_d} value on all nine---so the
+overestimates recorded in our catalog reflect \emph{our pipeline's} BP-OSD
+configuration, not an intrinsic BP-OSD limitation. On non-CSS, \texttt{decoderDist}
+timed out with no verified logical on all eight; \texttt{QDistEvol} was the only
+Tier-2 heuristic that returned valid witnesses there. This is exactly the regime
+where a heuristic alternative to BP-OSD matters.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+set & \texttt{decoderDist} reaches recorded MILP & \texttt{QDistEvol} reaches recorded MILP \\
+\midrule
+CSS (9) & 9/9 & 9/9 \\
+non-CSS (8) & 0/8 (timed out, no logical) & 8/8 \\
+\textbf{total} & \textbf{9/17} & \textbf{17/17} \\
+\bottomrule
+\end{tabular}
+\caption{Gap-closing on the worst BP-OSD-overestimate codes.}
+\label{tab:tier2}
+\end{table}
+
+\section{Distance bounds for larger codes}
+
+The pressing practical problem is that for most $n\ge108$ codes the MILP times out
+before proving optimality. We separate two things a timeout costs us, because the
+available remedies differ:
+\[
+\text{upper bound: } \dleq U \quad\text{(a low-weight logical)},\qquad
+\text{lower bound: } d\ge L \quad\text{(a proof nothing is lighter).}
+\]
+
+\paragraph{Upper bounds are sound at any size; the limit is tightness.} Since we
+verify every witness, ``method returned a weight-$w$ logical $\Rightarrow \dleq w$''
+holds for arbitrarily large codes---the verification is $\mathrm{GF}(2)$ linear
+algebra. What degrades with size is whether a method \emph{finds} a tight witness.
+Here \texttt{QDistEvol} genuinely helps: it is cheap, independent, and on our
+hardest non-CSS codes it matched the MILP and even beat an incumbent
+(Table~\ref{tab:tier2}). \texttt{MIPDist} does \emph{not} break the wall---it is
+the same NP-hard problem in a different solver and returned only incumbents on the
+hard codes---so its value at scale is a tight \emph{witness}, not a certificate.
+
+\paragraph{The lower bound is not being persisted.} Certifying $d=w$ needs a lower
+bound. \texttt{scipy.optimize.milp} returns \tablecmd{mip\_dual\_bound} and
+\tablecmd{mip\_gap} (confirmed in SciPy~1.17)---a \emph{certified} lower bound on
+each per-logical objective, valid even on timeout---but the current pipeline keeps
+only the incumbent objective and the proven-optimal flag. In a future
+non-early-exit pass, capturing $L_i=\lceil b_i\rceil$ for every relevant logical
+subproblem, where $b_i$ is that subproblem's \tablecmd{mip\_dual\_bound}, gives
+\[
+  \min_i L_i \le d \le U,
+\]
+where $U$ is the best verified witness from MILP, \texttt{QDistEvol}, BP-OSD, or
+another method. If every subproblem has a valid dual bound and $\min_i L_i=U$, the
+distance is certified exact. If some subproblems are skipped or never started, the
+global lower bound is still incomplete, so those cases should be reported as
+partially bracketed rather than exact.
+
+\paragraph{Closing more codes.} To actually prove exactness on borderline codes:
+\begin{enumerate}
+  \item \textbf{Use the heuristic witness as a cutoff target.} The current SciPy
+  \texttt{milp} wrapper does not expose a MIP-start argument, but a verified
+  \texttt{QDistEvol} witness still gives the target $U$: the MILP/SAT task becomes
+  ``prove no logical of weight $<U$'' (or raise the dual bound to $U$). A backend
+  with true MIP starts could additionally inject the witness as the initial
+  incumbent.
+  \item \textbf{Stronger solver:} if licensed, a direct Gurobi-backed run (e.g. a
+  Webster/Gurobi method or our own Gurobi formulation) may be faster than
+  HiGHS/SCIP on these instances.
+  \item \textbf{SAT (\texttt{pySATDist}):} a different paradigm in which ``no
+  logical of weight $<U$'' returning \textsc{unsat} is itself a certified lower
+  bound; SAT sometimes closes instances MIP cannot.
+  \item \textbf{CSS only:} a well-tuned BP-OSD (OSD-CS, more trials, DEM
+  permutations) matched the recorded \texttt{ilp\_d} values in the tested
+  overestimate set, often removing the need for MILP to find the CSS upper bound.
+\end{enumerate}
+
+\paragraph{Recommended workflow for the $n\ge108$ timeout codes.}
+(i)~run a non-early-exit MILP pass that persists \tablecmd{mip\_dual\_bound} for
+each attempted logical subproblem; (ii)~run \texttt{QDistEvol} to obtain a tight
+independent $U$ (cheap; may beat the incumbent); (iii)~use $U$ as the cutoff target
+for a closing MILP/SAT pass, optionally with Gurobi or \texttt{pySATDist};
+(iv)~report $d\in[L,U]$, exact only where every relevant subproblem is bounded and
+$L=U$, and flag the heuristic $U$ as ``probably tight'' otherwise.
+
+\section{Limitations}
+
+The cross-check is sound but bounded: it covers $n\le360$ and $d\le24$, and the
+overestimate subset is low-distance. Heuristic tightness at larger $(n,k,d)$ is an
+extrapolation until calibrated---on a held-out set of \emph{certified-exact} codes
+one should measure the empirical probability that \texttt{QDistEvol} attains the
+true distance as a function of $(n,k,d,\text{budget},\text{seed})$, and quantify
+its run-to-run variance. Minimum distance is NP-hard (and hard to approximate), so
+no method is both exact and scalable in general: beyond the regime where MIP or SAT
+closes, the rigorous statement is the bracket $d\in[L,U]$ with a calibrated
+confidence on $U$, not a point value. The structure of bicycle codes (circulant /
+group-algebra), which black-box solvers discard, is the most promising route to
+\emph{certified} statements at large scale.
+
+\section{Conclusion}
+
+An independent distance package corroborated our pipeline's recorded values on
+198 codes with zero contradictions, including the up-to-$12\times$ BP-OSD
+overestimate cases, and \texttt{QDistEvol} closed the BP-OSD gap against the
+recorded MILP value on every one of the worst codes. For larger codes, the path
+forward is not a magic exact oracle but a disciplined bracket: a cheap,
+independently-verified heuristic upper bound, persisted MILP dual bounds, and
+MILP/SAT closing passes for what remains closable.
+
+\section*{Acknowledgments}
+
+This report was drafted with the assistance of Anthropic's Claude Opus 4.8 and OpenAI GPT-5.5, which 
+also helped implement and run the cross-check experiments described herein. All
+results were verified against the committed data, and the author takes
+responsibility for the content.
+
+\begin{thebibliography}{9}
+\bibitem{qcode} J.~Cruz-Benito, A.~W.~Cross, D.~Kremer, and I.~Faro,
+\emph{Evolutionary discovery of bivariate bicycle codes with LLM-guided search},
+arXiv:2606.02418 (2026).
+\bibitem{webster} M.~Webster, A.~Jacob, and O.~Higgott,
+\emph{Distance algorithms for classical codes, quantum codes and circuits},
+arXiv:2603.22532 (2026).
+\bibitem{lar} A.~J.~Landahl, J.~T.~Anderson, and P.~R.~Rice,
+\emph{Fault-tolerant quantum computing with color codes}, arXiv:1108.5738 (2011).
+\bibitem{bravyi} S.~Bravyi \emph{et al.},
+\emph{High-threshold and low-overhead fault-tolerant quantum memory},
+arXiv:2308.07915 (2023).
+\end{thebibliography}
+
+\end{document}
