@@ -241,3 +241,8 @@ wandb/*
 
 # Claude Code local settings
 .claude/
+results/codetables/*
+results/m3*/
+results/phase2d_*/
+results/evolution/m3_phase*/
+results/campaign_a/*
