@@ -384,6 +384,15 @@ def main():
              "or evolve/seed_solution_milp.py when --milp is set, "
              "or evolve/seed_solution_noncss.py when --noncss is set).",
     )
+    # --- Explicit evaluator override (Phase A1, weight-5 campaigns) ---
+    parser.add_argument(
+        "--evaluator", type=str, default=None,
+        help="Explicit path to the OpenEvolve evaluator module, overriding "
+             "the --noncss/--milp auto-selected default (e.g. a campaign-"
+             "specific evaluator such as openevolve_evaluator_weight5_css.py). "
+             "Default: openevolve_evaluator.py, or openevolve_evaluator_noncss.py "
+             "when --noncss is set.",
+    )
     args = parser.parse_args()
 
     # Resolve model list (None means "use config as-is")
@@ -470,6 +479,14 @@ def main():
     else:
         EVALUATOR_ACTIVE = EVALUATOR
 
+    # Explicit --evaluator takes precedence over the --noncss/--milp
+    # auto-selected default, for both fresh and resumed runs.
+    if args.evaluator:
+        if not Path(args.evaluator).exists():
+            print(f"Error: evaluator not found: {args.evaluator}")
+            sys.exit(1)
+        EVALUATOR_ACTIVE = args.evaluator
+
     # Validate resume path
     if args.resume and not Path(args.resume).exists():
         print(f"Error: checkpoint path does not exist: {args.resume}")
@@ -515,6 +532,7 @@ def main():
         print(f"  Iterations: {args.iterations}")
         print(f"  API base: {api_base}")
         print(f"  Seed: {seed_path}")
+        print(f"  Evaluator: {EVALUATOR_ACTIVE}")
         if args.noncss:
             print(f"  Mode: Non-CSS PBB codes")
             print(f"  Distance: BP-OSD multi-channel (non-CSS)")

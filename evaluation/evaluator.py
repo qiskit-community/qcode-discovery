@@ -58,6 +58,7 @@ from __future__ import annotations
 import logging
 import math
 
+from evaluation import gates
 from evaluation.bb_code import build_bb_code, validate_terms, get_code_params_fast
 from evaluation.distance import estimate_distance, estimate_distance_osd_cs, compute_distance_exact
 from evaluation.distance_milp import compute_distance_milp, symplectic_weight_bound
@@ -83,6 +84,10 @@ SCORE_REJECTED = float("-inf")
 #   wide 1.3-2.0 decay zone provides a smooth gradient for borderline cases.
 #   Tightening to e.g. √2 ≈ 1.41 would penalize plausible discoveries in
 #   the uncharted 1.3-1.5 regime without empirical justification.
+# Kept as literals for external consumers (ablation/verification scripts)
+# that import these constants directly. Live gates inside this module read
+# evaluation.gates fresh per call instead, so QCODE_SAVE_TRUST_RATIO /
+# QCODE_MIN_K_THRESHOLD overrides take effect without re-importing.
 DISTANCE_TRUST_RATIO = 1.3
 DISTANCE_UNTRUST_RATIO = 2.0
 
@@ -152,7 +157,7 @@ def _validate_and_build(
     if k == 0:
         result["stage"] = "k_zero"
         return None
-    if k < MIN_K_THRESHOLD:
+    if k < gates.min_k_threshold():
         result["stage"] = "k_low"
         result["score"] = SCORE_K_LOW_PENALTY + k
         return None
@@ -225,7 +230,7 @@ def evaluate_candidate(
         return result
 
     result["d"] = d_upper
-    result["distance_trusted"] = d_upper <= DISTANCE_TRUST_RATIO * math.sqrt(n)
+    result["distance_trusted"] = d_upper <= gates.save_trust_ratio() * math.sqrt(n)
     fom = compute_fom(n, k, d_upper)
     result["fom"] = fom
     result["score"] = fom
@@ -240,7 +245,7 @@ def evaluate_candidate(
             d_refined = estimate_distance(code, num_trials=refine_trials)
             d_upper = min(d_upper, d_refined)
         result["d"] = d_upper
-        result["distance_trusted"] = d_upper <= DISTANCE_TRUST_RATIO * math.sqrt(n)
+        result["distance_trusted"] = d_upper <= gates.save_trust_ratio() * math.sqrt(n)
         fom = compute_fom(n, k, d_upper)
         result["fom"] = fom
         result["score"] = fom
@@ -255,7 +260,7 @@ def evaluate_candidate(
         if d_cs < d_upper:
             d_upper = d_cs
             result["d"] = d_upper
-            result["distance_trusted"] = d_upper <= DISTANCE_TRUST_RATIO * math.sqrt(n)
+            result["distance_trusted"] = d_upper <= gates.save_trust_ratio() * math.sqrt(n)
             fom = compute_fom(n, k, d_upper)
             result["fom"] = fom
             result["score"] = fom

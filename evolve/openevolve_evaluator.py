@@ -56,6 +56,7 @@ from __future__ import annotations
 import importlib.util
 import logging
 import math
+import os
 import sys
 from pathlib import Path
 
@@ -64,12 +65,12 @@ _PROJECT_ROOT = str(Path(__file__).resolve().parent.parent)
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
+from evaluation import candidate_selection, gates
 from evaluation.evaluator import (
     evaluate_batch,
     evaluate_batch_milp,
     evaluate_batch_milp_parallel,
     evaluate_milp_parallel,
-    DISTANCE_TRUST_RATIO,
     DISTANCE_UNTRUST_RATIO,
 )
 from evaluation.results import save_code, update_pareto_front
@@ -82,6 +83,27 @@ try:
     _install_tagging()
 except Exception:
     pass
+
+# Phase E1/E2 provenance: non-consuming accessors for the model/program-id
+# set during generation (see evolve/model_attribution.py's module docstring
+# for the traced evidence that these are visible here because evaluation
+# runs in the same OS process as generation), and the discovery-event
+# writer. All defensive -- if unavailable, provenance stamping/logging is
+# silently skipped rather than breaking evaluation.
+try:
+    from evolve.model_attribution import peek_model, peek_program_id
+except Exception:
+    def peek_model():
+        return None
+
+    def peek_program_id():
+        return None
+
+try:
+    from evolve.discovery_events import append_discovery_event, file_content_hash
+except Exception:
+    append_discovery_event = None
+    file_content_hash = None
 
 logger = logging.getLogger(__name__)
 
@@ -271,6 +293,73 @@ def _load_generate_candidates(program_path: str):
     return module.generate_candidates
 
 
+def _stamp_provenance(
+    results: list[dict], source_hash: str | None, run_name: str | None = None
+) -> None:
+    """Add run/program/model identity + code_key to each result IN PLACE
+    (Phase E1).
+
+    Additive only -- uses ``setdefault``, so an existing key (including one
+    of these six, if a result somehow already had it) is never overwritten.
+    This cannot change any value that ``evaluation.results.save_code()`` /
+    ``update_pareto_front()`` persist for pre-existing fields (``ell``,
+    ``m``, ``A_terms``, ``B_terms``, ``d``, ``k``, ``fom``, ...); it only
+    adds new descriptive keys alongside them. Harmless to
+    ``evaluation.results._code_key()`` (reads only
+    ell/m/A_terms/B_terms/C_terms/D_terms) and to ``load_codes()`` (plain
+    JSON dicts, no schema validation).
+
+    ``model_alias``/``generating_model`` are both taken from
+    :func:`peek_model` -- the generating ensemble model that produced the
+    program under evaluation. There is no separate "evaluator model": the
+    evaluator is pure Python, so a distinct "evaluator model" concept would
+    be a category error.
+    """
+    import json as _json
+
+    from evaluation.results import _code_key as _results_code_key
+
+    run_id = run_name or os.environ.get("QCODE_RUN_NAME")
+    program_id = peek_program_id()
+    generating_model = peek_model()
+    for r in results:
+        r.setdefault("run_id", run_id)
+        r.setdefault("program_id", program_id)
+        r.setdefault("generating_model", generating_model)
+        r.setdefault("model_alias", generating_model)
+        r.setdefault("source_hash", source_hash)
+        r.setdefault("code_key", _json.dumps(_results_code_key(r)))
+
+
+def _emit_discovery_events(results: list[dict]) -> None:
+    """Append one discovery event per already-:func:`_stamp_provenance`-d
+    result (Phase E2).
+
+    Defensive: never raises -- a provenance-logging failure must not fail
+    evaluation, mirroring the existing ``try/except: pass`` already wrapped
+    around every ``save_code``/``update_pareto_front`` call in this file.
+    Skips a result silently if it lacks a ``run_id`` (e.g. run outside
+    OpenEvolve/``QCODE_RUN_NAME`` unset) or if the discovery_events module
+    was unavailable at import time.
+    """
+    if append_discovery_event is None:
+        return
+    for r in results:
+        run_id = r.get("run_id")
+        if not run_id:
+            continue
+        try:
+            append_discovery_event(
+                run_id, r,
+                program_id=r.get("program_id"),
+                source_hash=r.get("source_hash"),
+                model_alias=r.get("model_alias"),
+                generating_model=r.get("generating_model"),
+            )
+        except Exception:
+            pass
+
+
 def _run_evaluation(
     generate_fn,
     lattices: list[tuple[int, int]],
@@ -283,6 +372,7 @@ def _run_evaluation(
     milp_total_timeout: int = 120,
     milp_early_stop: int = 4,
     run_name: str | None = None,
+    source_hash: str | None = None,
 ) -> dict:
     """Run evaluation across lattices and compute aggregate metrics.
 
@@ -290,6 +380,11 @@ def _run_evaluation(
     1. Quick k-only screen of all candidates
     2. Distance estimation for the top `max_distance_per_lattice` candidates,
        using either BP-OSD (default) or MILP (when use_milp=True).
+
+    ``source_hash`` (Phase E1): SHA-256 of the evaluated program's source
+    text, passed through to :func:`_stamp_provenance` below so every result
+    in ``all_results`` carries it. Callers (``evaluate_stage1``/``2``)
+    compute it once via ``file_content_hash(program_path)``.
     """
     all_results = []
     total_candidates = 0
@@ -304,18 +399,37 @@ def _run_evaluation(
 
             total_candidates += len(candidates)
 
-            # Cap candidates per lattice to avoid runaway generation
-            if len(candidates) > 5000:
-                errors.append(f"({ell},{m}): {len(candidates)} candidates, capped to 5000")
-                candidates = candidates[:5000]
+            # Cap candidates per lattice via deterministic hash-stratified
+            # selection (Phase A5) instead of positional truncation.
+            # generate_fn returns a flat list with no strategy attribution,
+            # so _classify_pattern's structural niche doubles as the
+            # stratification key.
+            max_build = gates.max_build_candidates_css()
+            raw_count = len(candidates)
+            if raw_count > max_build:
+                run_seed = run_name or os.environ.get("QCODE_RUN_NAME", "default")
+                by_strategy: dict[str, list] = {}
+                for cand in candidates:
+                    strategy = str(_classify_pattern(cand[0], cand[1]))
+                    by_strategy.setdefault(strategy, []).append(cand)
+                candidates, _ = candidate_selection.select_prebuild_candidates(
+                    by_strategy,
+                    run_seed=run_seed,
+                    ell=ell, m=m,
+                    max_total=max_build,
+                )
+                errors.append(
+                    f"({ell},{m}): {raw_count} candidates, capped to {max_build} "
+                    f"via hash-stratified selection"
+                )
 
             if quick:
                 results = evaluate_batch(
                     ell, m, candidates,
                     quick=True,
                     quick_trials=quick_trials,
-                    fom_threshold_refine=6.0,
-                    fom_threshold_exact=8.0,
+                    fom_threshold_refine=gates.fom_threshold_refine(),
+                    fom_threshold_exact=gates.fom_threshold_exact(),
                 )
             else:
                 # Two-pass: quick screen, then distance on top candidates.
@@ -329,45 +443,25 @@ def _run_evaluation(
                     quick_results = evaluate_batch(
                         ell, m, candidates, quick=True,
                     )
-                # Select diverse candidates for distance estimation.
-                # Diversify on BOTH k value AND polynomial A -- prevents
-                # wasting MILP budget on near-duplicate codes (e.g. 5 codes
-                # with same A at (15,12) all giving k=16).
-                # When symplectic weight is available (MILP path), rank by
-                # approximate FOM = k * d_symp^2 / n instead of k alone.
+                # Select diverse candidates for distance estimation via
+                # deterministic k-band-stratified hashing (Phase A5),
+                # replacing the unique-k/unique-A/fill passes and the
+                # unverified d_symplectic-based FOM ranking that preceded
+                # them ("do not select by FOM before a verified distance
+                # witness exists"). The k>=8 pre-filter is unchanged, so
+                # every survivor here falls in the k_ge_6 band -- this
+                # collapses to deterministic hash selection within that one
+                # band, preserving existing (non-weight5) campaign behavior.
                 promising = [
                     r for r in quick_results if r.get("k", 0) >= 8
                 ]
-                n_code = 2 * ell * m
-                def _rank_key(r):
-                    d_s = r.get("d_symplectic", 0)
-                    if d_s > 0 and use_milp:
-                        return r["k"] * d_s * d_s / n_code
-                    return r["k"]
-                promising.sort(key=_rank_key, reverse=True)
-
-                # Pass 1: one per distinct k value
-                seen_k: set[int] = set()
-                top: list[dict] = []
-                for r in promising:
-                    if r["k"] not in seen_k and len(top) < max_distance_per_lattice:
-                        seen_k.add(r["k"])
-                        top.append(r)
-                # Pass 2: one per distinct A polynomial (among same-k codes)
-                seen_a: set[tuple] = {tuple(map(tuple, r["A_terms"])) for r in top}
-                for r in promising:
-                    if len(top) >= max_distance_per_lattice:
-                        break
-                    a_key = tuple(map(tuple, r["A_terms"]))
-                    if a_key not in seen_a and r not in top:
-                        seen_a.add(a_key)
-                        top.append(r)
-                # Pass 3: fill remaining slots
-                for r in promising:
-                    if len(top) >= max_distance_per_lattice:
-                        break
-                    if r not in top:
-                        top.append(r)
+                run_seed = run_name or os.environ.get("QCODE_RUN_NAME", "default")
+                top, _ = candidate_selection.select_postbuild_distance_candidates(
+                    promising,
+                    run_seed=run_seed,
+                    ell=ell, m=m,
+                    max_total=max_distance_per_lattice,
+                )
 
                 top_candidates = [
                     (r["A_terms"], r["B_terms"]) for r in top
@@ -398,14 +492,17 @@ def _run_evaluation(
                     )
                 else:
                     # BP-OSD: use refine_trials for tighter upper bounds.
-                    # Skip exact distance (stage 5) -- requires SIGALRM which
-                    # isn't available in OpenEvolve's worker threads.
+                    # Stage 5 (exact distance) requires SIGALRM, unavailable
+                    # in OpenEvolve's worker threads/processes, so it stays
+                    # disabled by default; QCODE_FOM_THRESHOLD_EXACT lets a
+                    # campaign opt in from a worker environment known to
+                    # support it.
                     results = evaluate_batch(
                         ell, m, top_candidates,
                         quick=False,
                         quick_trials=refine_trials,
-                        fom_threshold_refine=6.0,
-                        fom_threshold_exact=float("inf"),
+                        fom_threshold_refine=gates.fom_threshold_refine(),
+                        fom_threshold_exact=gates.fom_threshold_exact_or_disabled(),
                     )
                 # Include quick-only results for aggregate counting
                 quick_only = [
@@ -446,6 +543,9 @@ def _run_evaluation(
         best_result = max(all_results, key=lambda r: r.get("fom", 0.0))
         if best_result.get("fom", 0.0) > 0:
             best_code = best_result
+
+    # Phase E1: stamp provenance onto every per-code result once, here.
+    _stamp_provenance(all_results, source_hash, run_name=run_name)
 
     return {
         "best_fom": best_fom,
@@ -547,9 +647,11 @@ def evaluate_stage2(program_path: str) -> dict:
     except Exception as e:
         return _error_result(str(e))
 
+    source_hash = file_content_hash(program_path) if file_content_hash else None
     metrics = _run_evaluation(
         generate_fn, STAGE2_LATTICES,
         quick=False, refine_trials=1000,
+        source_hash=source_hash,
     )
 
     # --- Combined score ---
@@ -565,9 +667,11 @@ def evaluate_stage2(program_path: str) -> dict:
     # Codes failing the filter get a small encoding-rate bonus (k/n)
     # instead, so they're not completely invisible but can't dominate.
 
-    # Trust boundaries (imported from evaluation.evaluator -- single source of truth).
-    TRUST_FULL = DISTANCE_TRUST_RATIO    # d/sqrt(n) ≤ 1.3: fully trust FOM
-    TRUST_NONE = DISTANCE_UNTRUST_RATIO  # d/sqrt(n) ≥ 2.0: discard FOM, use k/n only
+    # Trust boundaries. TRUST_FULL reads the live gate (QCODE_SAVE_TRUST_RATIO)
+    # so overrides take effect without re-importing; TRUST_NONE has no
+    # override knob in Phase A3 and stays the evaluator module's literal.
+    TRUST_FULL = gates.save_trust_ratio()  # d/sqrt(n) <= ratio: fully trust FOM
+    TRUST_NONE = DISTANCE_UNTRUST_RATIO    # d/sqrt(n) >= 2.0: discard FOM, use k/n only
     # Between TRUST_FULL and TRUST_NONE: linear interpolation (soft decay, no cliff)
     best_fom = metrics["best_fom"]
 
@@ -680,12 +784,17 @@ def evaluate_stage2(program_path: str) -> dict:
     ]
     if credible_to_save:
         best_credible = max(credible_to_save, key=lambda r: r["fom"])
-        if best_credible["fom"] > 6.0:
+        if best_credible["fom"] > gates.save_fom_threshold_css():
             try:
                 save_code(best_credible)
                 update_pareto_front(credible_to_save)
             except Exception:
                 pass  # Don't fail evaluation over persistence
+            # Phase E2: authoritative event log, in addition to (never
+            # instead of) the legacy save_code/update_pareto_front above --
+            # every credible result considered for retention gets an event,
+            # not just best_credible.
+            _emit_discovery_events(credible_to_save)
 
     # Write metrics to shared JSONL file for W&B sync from main process.
     # (wandb.run is None in subprocess workers, so direct wandb.log doesn't work.)
@@ -743,12 +852,17 @@ def evaluate_stage2_milp(program_path: str) -> dict:
     except Exception as e:
         return _error_result(str(e))
 
+    # Phase E1: this function doesn't go through _run_evaluation() (it has
+    # its own Phase 1-6 pipeline), so it computes source_hash and stamps
+    # provenance locally rather than inheriting it.
+    source_hash = file_content_hash(program_path) if file_content_hash else None
+
     # MILP budget parameters
     MILP_TIMEOUT_PER_LOGICAL = 300   # 300s proven sufficient (milp_optimality_audit.json)
     MILP_TOTAL_TIMEOUT = 7200        # 2h per code -- covers k≤24 fully
     MILP_EARLY_STOP = 4              # Exit immediately if d≤4
     MAX_DISTANCE_PER_LATTICE = 5     # Top-5 per lattice → ~30 MILP tasks
-    MIN_RELEVANT_D = 6               # Only d≥6 codes contribute to score
+    MIN_RELEVANT_D = gates.min_relevant_d()  # Only codes >= this contribute to score
 
     # Save path for incremental MILP persistence
     codes_jsonl = str(Path(_PROJECT_ROOT) / "results" / "evolution_codes.jsonl")
@@ -768,13 +882,33 @@ def evaluate_stage2_milp(program_path: str) -> dict:
                 errors.append(f"({ell},{m}): returned {type(candidates)}, not list")
                 continue
             total_candidates += len(candidates)
-            # Cap at 20000 per lattice.
+            # Cap via deterministic hash-stratified selection (Phase A5).
+            # This call site's existing default (20000) differs from
+            # gates.max_build_candidates_css()'s (5000), so it reads
+            # QCODE_MAX_BUILD_CANDIDATES_CSS directly with its own
+            # backward-compatible fallback rather than sharing that getter.
             # Priority candidates (perturbations, simultaneous perturbations)
-            # are generated first in the seed, so they survive the cap.
-            # Strategy 4's exhaustive search fills remaining slots.
-            if len(candidates) > 20000:
-                errors.append(f"({ell},{m}): {len(candidates)} candidates, capped to 20000")
-                candidates = candidates[:20000]
+            # are generated first in the seed; strategy attribution via
+            # _classify_pattern lets them win their own stratum quota
+            # instead of merely surviving positional truncation.
+            raw_count = len(candidates)
+            max_build_milp = int(os.environ.get("QCODE_MAX_BUILD_CANDIDATES_CSS", "20000"))
+            if raw_count > max_build_milp:
+                run_seed = os.environ.get("QCODE_RUN_NAME", "default")
+                by_strategy: dict[str, list] = {}
+                for cand in candidates:
+                    strategy = str(_classify_pattern(cand[0], cand[1]))
+                    by_strategy.setdefault(strategy, []).append(cand)
+                candidates, _ = candidate_selection.select_prebuild_candidates(
+                    by_strategy,
+                    run_seed=run_seed,
+                    ell=ell, m=m,
+                    max_total=max_build_milp,
+                )
+                errors.append(
+                    f"({ell},{m}): {raw_count} candidates, capped to {max_build_milp} "
+                    f"via hash-stratified selection"
+                )
 
             for A_terms, B_terms in candidates:
                 all_quick_tasks.append((ell, m, A_terms, B_terms))
@@ -803,7 +937,6 @@ def evaluate_stage2_milp(program_path: str) -> dict:
         # Filter: only consider codes with d_symplectic high enough to
         # potentially have d ≥ MIN_RELEVANT_D.  This is the key optimization
         # from the symplectic basis pre-filter.
-        n_code = 2 * ell * m
         promising = []
         for r in lattice_results:
             d_s = r.get("d_symplectic", 0)
@@ -812,34 +945,18 @@ def evaluate_stage2_milp(program_path: str) -> dict:
             else:
                 milp_skipped_low_d_symp += 1
 
-        # Rank by approximate FOM using symplectic weight
-        def _rank_key(r):
-            d_s = r.get("d_symplectic", 0)
-            if d_s > 0:
-                return r["k"] * d_s * d_s / n_code
-            return r["k"]
-        promising.sort(key=_rank_key, reverse=True)
-
-        # Diversify: pick top candidates by k, A-polynomial diversity
-        seen_k: set[int] = set()
-        top: list[dict] = []
-        for r in promising:
-            if r["k"] not in seen_k and len(top) < MAX_DISTANCE_PER_LATTICE:
-                seen_k.add(r["k"])
-                top.append(r)
-        seen_a: set[tuple] = {tuple(map(tuple, r["A_terms"])) for r in top}
-        for r in promising:
-            if len(top) >= MAX_DISTANCE_PER_LATTICE:
-                break
-            a_key = tuple(map(tuple, r["A_terms"]))
-            if a_key not in seen_a and r not in top:
-                seen_a.add(a_key)
-                top.append(r)
-        for r in promising:
-            if len(top) >= MAX_DISTANCE_PER_LATTICE:
-                break
-            if r not in top:
-                top.append(r)
+        # Select diverse candidates via deterministic k-band-stratified
+        # hashing (Phase A5), replacing the unique-k/unique-A/fill passes
+        # and the unverified d_symplectic-based FOM ranking that preceded
+        # them ("do not select by FOM before a verified distance witness
+        # exists").
+        run_seed = os.environ.get("QCODE_RUN_NAME", "default")
+        top, _ = candidate_selection.select_postbuild_distance_candidates(
+            promising,
+            run_seed=run_seed,
+            ell=ell, m=m,
+            max_total=MAX_DISTANCE_PER_LATTICE,
+        )
 
         for r in top:
             milp_tasks.append((ell, m, r["A_terms"], r["B_terms"]))
@@ -867,6 +984,10 @@ def evaluate_stage2_milp(program_path: str) -> dict:
         key = (r["ell"], r["m"], tuple(map(tuple, r["A_terms"])), tuple(map(tuple, r["B_terms"])))
         if key not in milp_keys and r.get("k", 0) > 0:
             all_results.append(r)
+
+    # Phase E1: stamp provenance onto every per-code result once, here
+    # (this pipeline doesn't route through _run_evaluation()).
+    _stamp_provenance(all_results, source_hash)
 
     # ── Phase 4: Scoring ───────────────────────────────────────────
     # Only codes with d ≥ MIN_RELEVANT_D contribute FOM to combined_score.
@@ -1061,7 +1182,7 @@ def evaluate_stage2_milp(program_path: str) -> dict:
     # Also save to discovered_codes.json and pareto_front.json for compat.
     to_save = [
         r for r in all_results
-        if r.get("fom", 0) > 6.0 and r.get("d", 0) > 0
+        if r.get("fom", 0) > gates.save_fom_threshold_css() and r.get("d", 0) > 0
     ]
     if to_save:
         best_to_save = max(to_save, key=lambda r: r["fom"])
@@ -1070,6 +1191,9 @@ def evaluate_stage2_milp(program_path: str) -> dict:
             update_pareto_front(to_save)
         except Exception:
             pass
+        # Phase E2: authoritative event log, in addition to (never instead
+        # of) the legacy save_code/update_pareto_front above.
+        _emit_discovery_events(to_save)
 
     _write_metrics_jsonl({
         "best_fom": best_fom,

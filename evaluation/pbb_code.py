@@ -135,21 +135,32 @@ def build_pbb_code(
     if is_css:
         return bb
 
-    validate_pbb_terms(ell, m, C_terms, "C polynomial")
-    validate_pbb_terms(ell, m, D_terms, "D polynomial")
+    dim = ell * m
+
+    # C and D are independently optional: an empty/None component becomes
+    # an (ell*m, ell*m) zero matrix rather than being rejected outright.
+    # Only a nonempty component is validated and converted via qLDPC's eval.
+    # (is_css above already handles the C=D=empty case; this branch always
+    # has at least one nonempty component.)
+    if C_terms:
+        validate_pbb_terms(ell, m, C_terms, "C polynomial")
+        mat_C = _poly_to_matrix(bb, C_terms)
+    else:
+        mat_C = np.zeros((dim, dim), dtype=int)
+
+    if D_terms:
+        validate_pbb_terms(ell, m, D_terms, "D polynomial")
+        mat_D = _poly_to_matrix(bb, D_terms)
+    else:
+        mat_D = np.zeros((dim, dim), dtype=int)
 
     mat_A = _poly_to_matrix(bb, A_terms)
     mat_B = _poly_to_matrix(bb, B_terms)
-    mat_C = _poly_to_matrix(bb, C_terms)
-    mat_D = _poly_to_matrix(bb, D_terms)
 
     if not check_commutativity(mat_A, mat_B, mat_C, mat_D):
         raise ValueError(
             "Commutativity violated: (A @ C^T + B @ D^T) % 2 is not symmetric"
         )
-
-    dim = ell * m
-    2 * dim
 
     zero = np.zeros((dim, dim), dtype=int)
 
