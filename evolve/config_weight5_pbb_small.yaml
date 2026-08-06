@@ -1,0 +1,148 @@
+# OpenEvolve configuration for the weight-5 non-CSS PBB campaign (Phase C) —
+# small lattice profile.
+#
+# This campaign restricts PBB-code search to the canonical weight-5 "2+3" CSS
+# backbone (A: 2 terms, B: 3 terms) with perturbations C ⊆ A, D ⊆ B, so the
+# row weight |supp(A)∪supp(C)| + |supp(B)∪supp(D)| stays exactly 5. Evaluated
+# via openevolve_evaluator_weight5_pbb.py, which enforces weight-5 +
+# containment (symbolically AND against the constructed circulant matrices),
+# defers the non-CSS classification gate until after weight/commutativity/k
+# filters pass, and selects lattices via QCODE_LATTICE_PROFILE (default
+# "small" — matches this config).
+#
+# Usage:
+#   QCODE_LATTICE_PROFILE=small uv run python evolve/run_evolution.py \
+#     --config evolve/config_weight5_pbb_small.yaml \
+#     --seed evolve/seed_solution_weight5_pbb.py \
+#     --evaluator evolve/openevolve_evaluator_weight5_pbb.py \
+#     --noncss \
+#     --iterations 300 \
+#     --run-name weight5_pbb_campaign
+
+max_iterations: 300
+diff_based_evolution: true
+log_level: "INFO"
+max_code_length: 50000
+checkpoint_interval: 25
+
+llm:
+  api_base: "http://localhost:4000/v1"
+  temperature: 1.0
+  models:
+    - name: "aws/claude-opus-5"
+      weight: 0.33
+      temperature: 1.0
+      reasoning_effort: "high"
+    - name: "azure/gpt-5.6-sol"
+      weight: 0.34
+      temperature: 1.0
+      reasoning_effort: "high"
+    - name: "gcp/gemini-3.6-flash"
+      weight: 0.33
+      temperature: 1.0
+      reasoning_effort: "high"
+  max_tokens: 16384
+  timeout: 300
+  retries: 4
+  retry_delay: 10
+
+prompt:
+  system_message: |
+    You are an expert in quantum error-correcting codes. You are improving a Python
+    function `generate_candidates(ell, m)` that returns candidate non-CSS perturbed
+    bivariate bicycle (PBB) 4-tuples (A, B, C, D) for evaluation, restricted to the
+    weight-5 canonical "2+3" backbone.
+
+    ## Hard constraints
+
+    1. A has exactly 2 distinct terms, B has exactly 3 distinct terms (never the
+       mirrored 3+2 assignment):
+         A = [(0,0), (a1,a2)]
+         B = [(0,0), (b1,0), (b2,b3)]
+         a1,b1,b2 in [1, min(ell-1,6)]; a2,b3 in [1, min(m-1,6)]
+    2. supp(C) subseteq supp(A), supp(D) subseteq supp(B) — the evaluator checks this
+       BOTH symbolically and against the constructed circulant matrices, and silently
+       drops violations. No partial credit.
+    3. Row weight |supp(A)∪supp(C)| + |supp(B)∪supp(D)| == 5 — automatic once (2)
+       holds, since C, D are then subsets of the weight-5 backbone's own terms.
+    4. C == [] and D == [] is EXCLUDED (that's plain CSS, a different campaign) —
+       but exactly one of C, D empty is a VALID, genuinely mixed candidate. Don't
+       filter those out.
+
+    ## PBB convention (paper convention — note this is [C|D], NOT [D|C])
+
+    Block 1 (mixed):   x-part = [A | B],   z-part = [C | D]   (C left, D right)
+    Block 2 (pure Z):  x-part = [0 | 0],   z-part = [B^T | A^T]
+    Commutativity: (A @ C^T + B @ D^T) % 2 must be symmetric over GF(2). Highly
+    (ell,m)-specific — a (C,D) pair valid at one lattice can violate it at another.
+    One trick that ALWAYS commutes at any (ell,m): C = full A, D = full B (since
+    A@A^T and B@B^T are each always symmetric) — a useful fallback, not a target
+    to converge on repeatedly (the evaluator gives this exact pattern its own
+    protected budget stratum, so it is not a scarce resource to optimize toward).
+
+    ## Scoring and the non-CSS gate
+
+    FOM = k*d^2/n, no ceiling. Codes with d<=4 score effectively zero (untrusted).
+    A candidate must ALSO pass a non-CSS classification gate (checked internally,
+    after weight/containment/commutativity/k filters) confirming it is not merely
+    CSS-equivalent under Clifford operations — high k and passable d on a secretly
+    CSS-equivalent code gets zero credit. Diversify HOW C, D perturb the backbone,
+    not just how many terms they use.
+
+    ## The Scientific Question
+
+    Is there a weight-5, 2+3-backbone, genuinely non-CSS PBB code that beats the
+    weight-5 CSS calibration baseline (the sibling weight-5 CSS campaign) at the
+    same lattice? This is essentially unexplored — refine both the (A,B) backbone
+    AND the (C,D) perturbation pattern together.
+
+    ## Seed Ansatz (starting template)
+
+    For a fixed backbone, C ranges over subsets of A's 2 terms (4 options incl.
+    empty) and D over subsets of B's 3 terms (8 options incl. empty) — 32
+    combinations minus the excluded (C=[],D=[]) = 31 distinct patterns per
+    backbone. Sweep backbones broadly, not just corners; for a promising backbone,
+    try all 31 patterns before moving on.
+
+    ## AVOID (already well-explored or proven dead)
+
+    - Drifting off the 2+3 backbone split or off containment — silently
+      zero-credited, not corrected.
+    - Returning (C=[], D=[]) — explicitly excluded, not a PBB candidate.
+    - Fixating on the always-commuting C=full A, D=full B trick — it's a safety
+      net, not a target; genuinely novel (C,D) patterns are the point.
+    - Isolated +/-1 exponent nudges with no structural rationale once a bounded
+      box's boundary is already swept.
+
+    ## Your Task
+
+    Improve generate_candidates to push FOM higher within the weight-5, 2+3,
+    non-CSS-gate-passing family. When feedback reports d >= 5, study the
+    structural relationship in the artifacts (top_codes/best_code) and encode it
+    as a parametrized generation strategy, not a single hardcoded pair.
+
+    Tips:
+    - If most candidates have k=0, check the constant term (0,0) is retained in
+      both A and B, and that no perturbed term collapses onto another already
+      present.
+    - If num_valid is very low, many combinations either fail commutativity or
+      fail the non-CSS gate — diversify backbone AND pattern together.
+    - If k is high but d<=4, the backbone itself is likely bad for distance
+      regardless of (C,D) — try a different backbone before optimizing further.
+    - Do not manually cap candidate counts — the evaluator caps per-lattice via
+      hash-stratified selection. Focus on structural diversity and weight-5
+      conformance instead.
+  include_artifacts: true
+  suggest_simplification_after_chars: 10000
+
+evaluator:
+  timeout: 1200
+  cascade_evaluation: true
+  cascade_thresholds: [0.01, 0.3]
+  parallel_evaluations: 6
+
+database:
+  population_size: 300
+  num_islands: 4
+  migration_interval: 15
+  feature_dimensions: ["lattices_with_high_k", "num_high_k"]

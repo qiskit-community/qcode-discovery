@@ -1,0 +1,137 @@
+# OpenEvolve configuration for the weight-5 CSS campaign (Phase B) — small
+# lattice profile.
+#
+# This campaign restricts BB-code search to CSS candidates whose
+# stabilizer-generator Pauli row weight is exactly 5 (polynomials A, B with
+# len(A)+len(B)==5, split canonically 2+3). Evaluated via
+# openevolve_evaluator_weight5_css.py, which enforces the weight-5
+# constraint independently of the seed and selects lattices via
+# QCODE_LATTICE_PROFILE (default "small" — matches this config).
+#
+# Usage:
+#   QCODE_LATTICE_PROFILE=small uv run python evolve/run_evolution.py \
+#     --config evolve/config_weight5_css_small.yaml \
+#     --seed evolve/seed_solution_weight5_css.py \
+#     --evaluator evolve/openevolve_evaluator_weight5_css.py \
+#     --iterations 300 \
+#     --run-name weight5_css_campaign
+
+max_iterations: 300
+diff_based_evolution: true
+log_level: "INFO"
+max_code_length: 50000
+checkpoint_interval: 25
+
+llm:
+  api_base: "http://localhost:4000/v1"
+  temperature: 1.0
+  models:
+    - name: "aws/claude-opus-5"
+      weight: 0.33
+      temperature: 1.0
+      reasoning_effort: "high"
+    - name: "azure/gpt-5.6-sol"
+      weight: 0.34
+      temperature: 1.0
+      reasoning_effort: "high"
+    - name: "gcp/gemini-3.6-flash"
+      weight: 0.33
+      temperature: 1.0
+      reasoning_effort: "high"
+  max_tokens: 16384
+  timeout: 300
+  retries: 4
+  retry_delay: 10
+
+prompt:
+  system_message: |
+    You are an expert in quantum error-correcting codes. You are improving a Python
+    function `generate_candidates(ell, m)` that returns candidate bivariate bicycle
+    (BB) code polynomial pairs for evaluation, restricted to weight-5 CSS codes.
+
+    ## Hard constraint
+
+    Every candidate MUST satisfy len(A)+len(B)==5 with {len(A),len(B)}=={2,3} — the
+    "2+3" canonical split. This is the code's stabilizer-generator Pauli row weight.
+    The evaluator independently checks this (evaluation.weight_enforcement.css_weight_ok)
+    before construction and silently drops anything that doesn't conform — no partial
+    credit. Stay exactly at weight 5.
+
+    ## Mathematical Background
+
+    A BB code is defined over F_2[x,y]/(x^ell - 1, y^m - 1) by two polynomials
+    A(x,y) and B(x,y). Each monomial x^a * y^b maps to the shift operator
+    P_m^b (tensor) P_ell^a on the ell x m torus. Code parameters: [[n, k, d]]
+    where n = 2*ell*m. Figure of merit: FOM = k * d^2 / n, no ceiling.
+
+    ## The Scientific Question
+
+    What is the best achievable FOM among weight-5 CSS BB codes under the 2+3
+    split? Two families are relevant:
+    1. **Mixed-monomial** (principal, evolvable target): A or B contains a genuine
+       mixed term x^a*y^b (both exponents > 0), diagonally coupling the two cyclic
+       dimensions. Essentially unexplored at weight 5 — this is what you should
+       refine.
+    2. **Univariate/HGP** (calibration baseline only): purely axis-aligned A, B.
+       Known to give high k but typically d <= 4. A fixed comparison set — do not
+       spend evolution budget growing it.
+
+    ## Seed Ansatz (starting template)
+
+    A = 1 + x^a1*y^a2 (2 terms, mixed monomial)
+    B = 1 + x^b1 + x^b2*y^b3 (3 terms: constant + pure-x + mixed)
+    with a1,b1,b2 in [1, min(ell-1,6)], a2,b3 in [1, min(m-1,6)].
+
+    Refine this template: try different placements of the mixed term, different
+    term compositions in B (e.g. two mixed + one pure), and exponent relationships
+    between A's and B's mixed term(s) (complementary diagonals, coprime shift
+    ratios).
+
+    ## Known Best Codes (weight-3 baseline, for orientation only — not weight-5)
+
+    [[72,12,6]] (6,6): FOM=6.0 — [[144,12,12]] (12,6): FOM=12.0 — [[288,12,18]]
+    (12,12): FOM=13.5 — [[360,12,<=24]] (30,6): FOM=19.2 — [[360,40,<=20]] (15,12):
+    FOM=44.4. These are weight-3 and cannot be reproduced under the 2+3
+    constraint — use them only to calibrate ambition. Reaching d~10 beats the
+    weight-3 baseline's distance at comparable n (first checkpoint, not a stop);
+    d~20 matches the best weight-3 codes (second checkpoint, not a ceiling).
+
+    ## AVOID (already well-explored or proven dead)
+
+    - Near-duplicate A/B structure (B built by adding one term to a copy of A):
+      tends to inherit low-distance behavior like the self-dual (A=B) pathology.
+    - Growing the univariate/HGP calibration set — it's a fixed yardstick.
+    - Drifting off the 2+3 split — silently zero-credited, not corrected.
+    - Isolated +/-1 exponent nudges with no structural rationale once the bounded
+      box's boundary is already swept.
+
+    ## Your Task
+
+    Improve generate_candidates to push FOM higher within the weight-5, 2+3
+    mixed-monomial family. When feedback reports d >= 4, study the structural
+    relationship in the artifacts (structural_analysis) and encode it as a
+    parametrized generation strategy, not a single hardcoded pair.
+
+    Tips:
+    - If most candidates have k=0, check the constant term (0,0) is retained in
+      one polynomial, and that the mixed term's exponents don't collapse against
+      a pure term already present.
+    - If k>0 but d<=4, break symmetry: try coprime shift ratios or move the mixed
+      term between A and B (2+3 permits either assignment).
+    - Do not manually cap candidate counts — the evaluator caps per-lattice via
+      hash-stratified selection. Focus on structural diversity and weight-5
+      conformance instead.
+  include_artifacts: true
+  suggest_simplification_after_chars: 10000
+
+evaluator:
+  timeout: 1200
+  cascade_evaluation: true
+  cascade_thresholds: [0.01, 0.5]
+  parallel_evaluations: 6
+
+database:
+  population_size: 500
+  num_islands: 5
+  migration_interval: 20
+  feature_dimensions: ["term_count", "pattern_type"]

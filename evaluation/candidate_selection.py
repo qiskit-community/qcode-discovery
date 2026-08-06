@@ -205,6 +205,47 @@ def stratified_select(
     }
 
 
+def dedup_candidates(
+    candidates: list,
+    *,
+    key_of: Callable[[object], str] | None = None,
+) -> tuple[list, int]:
+    """Deduplicate a flat candidate list by canonical key, first-seen wins.
+
+    Unlike :func:`select_prebuild_candidates`'s internal dedup (which only
+    ever runs once the pre-build cap is actually triggered), this is meant
+    to be called unconditionally on every raw ``generate_fn`` output --
+    otherwise a generator that emits the same code twice (e.g. an evolved
+    mutation whose strategies no longer dedup against each other the way
+    the seed's own ``seen``-set strategies do) has its duplicate built and
+    scored more than once whenever the raw count stays under the cap,
+    inflating aggregate fitness metrics for no reason other than emission
+    order.
+
+    Returns ``(deduped, num_duplicates_removed)``.
+    """
+    if key_of is None:
+        key_of = canonical_candidate_key
+
+    seen_keys: set[str] = set()
+    deduped = []
+    for cand in candidates:
+        try:
+            key = key_of(cand)
+        except (TypeError, ValueError):
+            # Malformed shape -- pass through unchanged; downstream
+            # validation (arity/weight checks) rejects it on its own
+            # merits, so silently dropping it here would just hide a
+            # different bug behind this one.
+            deduped.append(cand)
+            continue
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        deduped.append(cand)
+    return deduped, len(candidates) - len(deduped)
+
+
 def select_prebuild_candidates(
     candidates_by_strategy: dict[str, list],
     *,

@@ -17,6 +17,7 @@ from evaluation.candidate_selection import (
     K_BANDS,
     _proportional_quotas,
     canonical_candidate_key,
+    dedup_candidates,
     k_band_for,
     select_postbuild_distance_candidates,
     select_prebuild_candidates,
@@ -66,6 +67,57 @@ class TestCanonicalCandidateKey:
         base = ([(0, 0)], [(0, 1)], [], [])
         with_c = ([(0, 0)], [(0, 1)], [(0, 0)], [])
         assert canonical_candidate_key(base) != canonical_candidate_key(with_c)
+
+
+class TestDedupCandidates:
+    """Regression coverage for the codex Commit-3 finding that
+    ``_run_evaluation`` in both weight-5 evaluators only deduplicated
+    candidates as a side effect of ``select_prebuild_candidates``, which
+    never runs below the pre-build cap -- so a generator that emits the
+    same code twice (e.g. an evolved mutation whose strategies no longer
+    dedup against each other) would have it built/scored twice whenever
+    the raw count stayed under the cap. ``dedup_candidates`` must be called
+    unconditionally, independent of any cap."""
+
+    def test_exact_duplicate_removed(self):
+        cand = ([(0, 0), (1, 0)], [(0, 1)])
+        deduped, num_removed = dedup_candidates([cand, cand, cand])
+        assert len(deduped) == 1
+        assert num_removed == 2
+
+    def test_reordered_term_lists_are_still_duplicates(self):
+        cand_a = ([(0, 0), (1, 0)], [(0, 1)])
+        cand_b = ([(1, 0), (0, 0)], [(0, 1)])
+        deduped, num_removed = dedup_candidates([cand_a, cand_b])
+        assert len(deduped) == 1
+        assert num_removed == 1
+
+    def test_distinct_candidates_all_kept_first_seen_order(self):
+        cand_a = ([(0, 0), (1, 0)], [(0, 1)])
+        cand_b = ([(0, 0), (2, 0)], [(0, 1)])
+        deduped, num_removed = dedup_candidates([cand_a, cand_b])
+        assert deduped == [cand_a, cand_b]
+        assert num_removed == 0
+
+    def test_pbb_4_tuples_deduped_by_all_four_terms(self):
+        base = ([(0, 0)], [(0, 1)], [], [])
+        with_c = ([(0, 0)], [(0, 1)], [(0, 0)], [])
+        deduped, num_removed = dedup_candidates([base, with_c, base])
+        assert len(deduped) == 2
+        assert num_removed == 1
+
+    def test_malformed_candidate_passes_through_without_crashing(self):
+        malformed = 42  # not iterable -- canonical_candidate_key raises TypeError
+        cand = ([(0, 0), (1, 0)], [(0, 1)])
+        deduped, num_removed = dedup_candidates([malformed, cand])
+        assert malformed in deduped
+        assert cand in deduped
+        assert num_removed == 0
+
+    def test_empty_list_is_a_no_op(self):
+        deduped, num_removed = dedup_candidates([])
+        assert deduped == []
+        assert num_removed == 0
 
 
 class TestProportionalQuotas:
