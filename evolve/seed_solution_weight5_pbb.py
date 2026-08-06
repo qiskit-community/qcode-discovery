@@ -133,7 +133,7 @@ def _safety_net_candidates(ell, m):
             continue
         if not all(0 <= x < ell and 0 <= y < m for x, y in B):
             continue
-        if len(set(A)) != 2 or len(set(B)) != 3:
+        if {len(set(A)), len(set(B))} != {2, 3}:
             continue
         out.append((list(A), list(B), list(C), list(D)))
     return out

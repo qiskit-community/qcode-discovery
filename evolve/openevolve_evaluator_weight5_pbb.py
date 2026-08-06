@@ -77,6 +77,9 @@ from evaluation.distance_schema import build_v2_record
 from evaluation.pareto_v2 import update_pareto_front_v2
 from evaluation.pbb_code import build_pbb_code, get_pbb_params_fast
 from evolve._noncss_distance_worker import distance_worker as _distance_worker
+from evolve.seed_solution_weight5_pbb import (
+    _safety_net_candidates as _pbb_safety_net_candidates,
+)
 
 # Per-model attribution: install here so it is active in each spawn worker
 # (OpenEvolve imports this evaluator before generating). Defensive no-op if
@@ -150,36 +153,23 @@ def _classify_pbb_strategy(A_terms, B_terms, C_terms, D_terms) -> str:
     ``"css"``, matching the Phase C2 census methodology's terminology for
     the excluded CSS-equivalent case.
 
-    ``"safety_net_full"`` is its OWN stratum, distinct from ``"both"``: it
-    flags the structural pattern ``C == full A`` and ``D == full B``, the
-    ONLY (C, D) shape proven (module docstring of
-    ``seed_solution_weight5_pbb.py``) to satisfy commutativity
-    unconditionally at any (ell, m), since ``A@A^T`` and ``B@B^T`` are each
-    always symmetric. The seed's ``_safety_net_candidates`` (outside its
-    EVOLVE-BLOCK) always emits exactly this shape. Without a dedicated
-    stratum, these one-or-two-per-lattice candidates get lumped into
-    "both" alongside thousands of other evolved (C, D) combinations and
-    can be starved out entirely by the pre-build hash-stratified cap --
-    silently breaking the "guaranteed k>0 at every Stage-1 lattice"
-    property the safety net exists to provide. Giving this pattern its
-    own stratum (with ``min_quota_per_strategy=2``, covering the safety
-    net's max population of 2 backbones) guarantees it survives the cap
-    regardless of how many other candidates compete for build budget.
-    This is a purely structural detection (not tied to specific backbone
-    exponents), so it also protects any OTHER evolved candidate that
-    happens to use the same always-commuting trick.
+    This used to carry a dedicated ``"safety_net_full"`` stratum that
+    pattern-matched the OLD (C == full A, D == full B) safety net shape.
+    The current safety net (``seed_solution_weight5_pbb.py``'s
+    ``_SAFETY_NET_RAW``) uses a different, partial-subset shape that this
+    detection never matched (round-2 finding #2) -- so the safety net
+    silently fell into "both" and could still be starved out by the
+    pre-build cap, exactly the failure this stratum existed to prevent.
+    Rather than re-encode the seed's exact current shape here a second
+    time (the duplication that caused the drift), safety-net survival is
+    now guaranteed directly in ``_run_evaluation`` by re-inserting any of
+    the seed's own ``_safety_net_candidates(ell, m)`` that the cap
+    dropped, instead of relying on stratification alone.
     """
     c_empty = not C_terms
     d_empty = not D_terms
     if c_empty and d_empty:
         return "css_calibration"
-    if (
-        not c_empty
-        and not d_empty
-        and set(map(tuple, C_terms)) == set(map(tuple, A_terms))
-        and set(map(tuple, D_terms)) == set(map(tuple, B_terms))
-    ):
-        return "safety_net_full"
     if c_empty:
         return "d_only"
     if d_empty:
@@ -456,24 +446,33 @@ def _run_evaluation(
             candidates, _ = candidate_selection.dedup_candidates(candidates)
 
             max_build = gates.max_build_candidates_noncss()
+            safety_net = _pbb_safety_net_candidates(ell, m)
             raw_count = len(candidates)
             if raw_count > max_build:
+                # Round-3 finding: reserve room for the safety net WITHIN
+                # max_build rather than appending it after selection, which
+                # could exceed the configured hard cap by up to
+                # len(safety_net). Deliberately conservative (reserves the
+                # full count even though some entries may survive selection
+                # on their own) but keeps the final count bounded by
+                # max_build unconditionally.
                 run_seed = run_name or os.environ.get("QCODE_RUN_NAME", "default")
                 by_strategy: dict[str, list] = {}
                 for cand in candidates:
-                    if len(cand) != 4:
+                    if not candidate_selection.has_arity(cand, 4):
                         continue
                     strategy = _classify_pbb_strategy(*cand)
                     by_strategy.setdefault(strategy, []).append(cand)
+                build_budget = max(0, max_build - len(safety_net))
                 candidates, _ = candidate_selection.select_prebuild_candidates(
                     by_strategy,
                     run_seed=run_seed,
                     ell=ell, m=m,
-                    max_total=max_build,
-                    # 2, not the default 1: covers the "safety_net_full"
-                    # stratum's max population of 2 backbones exactly, so
-                    # the safety net survives the cap intact rather than
-                    # only 1-of-2 surviving by hash luck.
+                    max_total=build_budget,
+                    # 2, not the default 1: a slightly larger floor for
+                    # every populated stratum before falling back to
+                    # proportional allocation. Safety-net survival itself
+                    # is guaranteed explicitly below, not via this quota.
                     min_quota_per_strategy=2,
                 )
                 errors.append(
@@ -481,11 +480,30 @@ def _run_evaluation(
                     f"via hash-stratified selection"
                 )
 
+            # Round-2 finding #2: the pre-build cap's stratification had
+            # no reliable way to detect the safety net's current (C, D)
+            # shape (see _classify_pbb_strategy docstring), so it could be
+            # hash-sampled out like any other candidate -- breaking the
+            # "Stage 1 always has something to score" guarantee. Re-insert
+            # any of the seed's own safety-net candidates that didn't
+            # survive selection, independent of strategy classification.
+            if safety_net:
+                existing_keys = {
+                    candidate_selection.canonical_candidate_key(c)
+                    for c in candidates
+                    if candidate_selection.has_arity(c, 4)
+                }
+                for cand in safety_net:
+                    key = candidate_selection.canonical_candidate_key(cand)
+                    if key not in existing_keys:
+                        candidates.append(cand)
+                        existing_keys.add(key)
+
             # Build + full weight-5/containment/k filter.
             built = []
             min_k = gates.min_k_threshold_noncss()
             for cand in candidates:
-                if len(cand) != 4:
+                if not candidate_selection.has_arity(cand, 4):
                     continue
                 A_terms, B_terms, C_terms, D_terms = cand
                 info, reason = _build_and_check(ell, m, A_terms, B_terms, C_terms, D_terms)

@@ -18,6 +18,7 @@ from evaluation.candidate_selection import (
     _proportional_quotas,
     canonical_candidate_key,
     dedup_candidates,
+    has_arity,
     k_band_for,
     select_postbuild_distance_candidates,
     select_prebuild_candidates,
@@ -67,6 +68,29 @@ class TestCanonicalCandidateKey:
         base = ([(0, 0)], [(0, 1)], [], [])
         with_c = ([(0, 0)], [(0, 1)], [(0, 0)], [])
         assert canonical_candidate_key(base) != canonical_candidate_key(with_c)
+
+
+class TestHasArity:
+    """Regression coverage for the codex round-2 finding that both weight-5
+    evaluators' own ``len(cand) != N`` arity checks (in
+    ``_filter_weight5``/the PBB build loop) raised ``TypeError`` and
+    aborted the whole lattice whenever a malformed candidate (e.g. a bare
+    int, matching ``TestDedupCandidates``'s ``malformed = 42`` convention)
+    reached them -- instead of just rejecting that one candidate, the way
+    ``dedup_candidates``'s own ``key_of`` guard already did."""
+
+    def test_correct_arity_returns_true(self):
+        assert has_arity(([(0, 0)], [(0, 1)]), 2) is True
+        assert has_arity(([(0, 0)], [(0, 1)], [], []), 4) is True
+
+    def test_wrong_arity_returns_false(self):
+        assert has_arity(([(0, 0)], [(0, 1)]), 4) is False
+        assert has_arity(([(0, 0)],), 2) is False
+
+    def test_non_sized_object_returns_false_without_raising(self):
+        malformed = 42  # not iterable/sized -- len() raises TypeError
+        assert has_arity(malformed, 2) is False
+        assert has_arity(None, 2) is False
 
 
 class TestDedupCandidates:

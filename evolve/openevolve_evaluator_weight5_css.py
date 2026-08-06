@@ -73,6 +73,9 @@ from evolve.openevolve_evaluator import (
     _stamp_provenance,
     file_content_hash,
 )
+from evolve.seed_solution_weight5_css import (
+    _safety_net_candidates as _css_safety_net_candidates,
+)
 
 # Per-model attribution: install here so it is active in each spawn worker
 # (OpenEvolve imports this evaluator before generating). Defensive no-op if
@@ -140,7 +143,7 @@ def _filter_weight5(ell: int, m: int, candidates: list) -> tuple[list, int]:
     valid = []
     rejected = 0
     for cand in candidates:
-        if len(cand) != 2:
+        if not candidate_selection.has_arity(cand, 2):
             rejected += 1
             continue
         A_terms, B_terms = cand
@@ -149,6 +152,16 @@ def _filter_weight5(ell: int, m: int, candidates: list) -> tuple[list, int]:
         else:
             rejected += 1
     return valid, rejected
+
+
+def _is_credible(result: dict) -> bool:
+    """Whether ``result`` is a real, non-rejected candidate: k > 0 AND not
+    stage="k_low" (the cascade's rejected-but-k>0 stage; see
+    evaluation/evaluator.py). Used everywhere a bare ``k > 0`` check would
+    otherwise let cascade-rejected candidates leak into promising-candidate
+    selection or aggregate/Stage1/Stage2 metrics (round-2 finding #4 and
+    round-3's follow-on leaks of the same distinction)."""
+    return result.get("k", 0) > 0 and result.get("stage") != "k_low"
 
 
 def _structural_feedback(result: dict) -> str:
@@ -310,18 +323,28 @@ def _run_evaluation(
             # doubles as the stratification key (same proxy the generic
             # CSS evaluator uses).
             max_build = gates.max_build_candidates_css()
+            safety_net = _css_safety_net_candidates(ell, m)
             sel_metrics = None
             if deduped_count > max_build:
+                # Round-3 finding: reserve room for the safety net WITHIN
+                # max_build rather than appending it after selection, which
+                # could exceed the configured hard cap by up to
+                # len(safety_net) and made sel_metrics's selected_count
+                # inaccurate. Reserving the full len(safety_net) is
+                # deliberately conservative (some entries may already
+                # survive selection on their own) but keeps the final count
+                # bounded by max_build unconditionally.
                 run_seed = run_name or os.environ.get("QCODE_RUN_NAME", "default")
                 by_strategy: dict[str, list] = {}
                 for cand in candidates:
                     strategy = str(_classify_pattern(cand[0], cand[1]))
                     by_strategy.setdefault(strategy, []).append(cand)
+                build_budget = max(0, max_build - len(safety_net))
                 candidates, sel_metrics = candidate_selection.select_prebuild_candidates(
                     by_strategy,
                     run_seed=run_seed,
                     ell=ell, m=m,
-                    max_total=max_build,
+                    max_total=build_budget,
                 )
                 errors.append(
                     f"({ell},{m}): {raw_count} raw, {weight_rejected} rejected by "
@@ -333,6 +356,31 @@ def _run_evaluation(
                     f"({ell},{m}): {raw_count} raw, {weight_rejected} rejected by "
                     f"weight-5 enforcement, {deduped_count} passed through uncapped"
                 )
+
+            # Finding round-2 #3: the pre-build cap's per-strategy
+            # stratification has no dedicated bucket for the safety net
+            # (it falls into whatever ordinary structural stratum
+            # _classify_pattern assigns it), so it can be hash-sampled out
+            # like any other candidate in a crowded stratum -- breaking
+            # the "Stage 1 always has something to score" guarantee.
+            # Re-insert any of the seed's own safety-net candidates that
+            # didn't survive selection, rather than keeping a second,
+            # duplicated notion of "what the safety net looks like" in
+            # sync with the seed (that duplication is exactly what caused
+            # the PBB sibling's analogous bug).
+            if safety_net:
+                existing_keys = {
+                    candidate_selection.canonical_candidate_key(
+                        (cand[0], cand[1])
+                    )
+                    for cand in candidates
+                    if candidate_selection.has_arity(cand, 2)
+                }
+                for A, B in safety_net:
+                    key = candidate_selection.canonical_candidate_key((A, B))
+                    if key not in existing_keys:
+                        candidates.append((A, B))
+                        existing_keys.add(key)
 
             if sel_metrics is not None:
                 selection_metrics.append({"ell": ell, "m": m, **sel_metrics})
@@ -351,9 +399,16 @@ def _run_evaluation(
                 # (Phase A5) rather than sorting by an unverified FOM.
                 quick_results = evaluate_batch(ell, m, candidates, quick=True)
 
-                promising = [
-                    r for r in quick_results if r.get("k", 0) >= 8
-                ]
+                # Pass every credible (k>0, non-rejected) candidate through
+                # -- select_postbuild_distance_candidates itself excludes
+                # k<2 (outside every K_BANDS band) and stratifies
+                # k_2_3/k_4_5/k_ge_6. A k>=8 prefilter here defeated that
+                # stratification by never giving the k_2_3/k_4_5 bands
+                # anything to select from (round-2 finding #1). Excluding
+                # stage="k_low" too (round-3 finding) keeps cascade-rejected
+                # candidates from consuming scarce k_2_3 quota only to fail
+                # refinement immediately.
+                promising = [r for r in quick_results if _is_credible(r)]
                 run_seed = run_name or os.environ.get("QCODE_RUN_NAME", "default")
                 top, _ = candidate_selection.select_postbuild_distance_candidates(
                     promising,
@@ -381,7 +436,7 @@ def _run_evaluation(
                 )
                 # Include quick-only results for aggregate counting
                 quick_only = [
-                    r for r in quick_results if r.get("k", 0) > 0
+                    r for r in quick_results if _is_credible(r)
                     and r not in top
                 ]
                 results.extend(quick_only)
@@ -393,8 +448,13 @@ def _run_evaluation(
         except Exception as e:
             errors.append(f"({ell},{m}): {type(e).__name__}: {e}")
 
-    # Compute aggregate metrics using encoding rate (exact) and FOM (approximate)
-    valid = [r for r in all_results if r.get("k", 0) > 0]
+    # Compute aggregate metrics using encoding rate (exact) and FOM (approximate).
+    # _is_credible excludes stage="k_low": the cascade (evaluation/evaluator.py)
+    # sets this when k is nonzero but below gates.min_k_threshold() -- a
+    # rejected candidate, not a valid one, that a bare `k > 0` check would
+    # otherwise count toward Stage-1 coverage and encoding-rate fallback
+    # metrics (round-2 finding #4).
+    valid = [r for r in all_results if _is_credible(r)]
     foms = [r.get("fom", 0.0) for r in valid if r.get("fom", 0.0) > 0]
     encoding_rates = [r.get("encoding_rate", 0.0) for r in valid]
 
@@ -463,7 +523,7 @@ def evaluate_stage1(program_path: str) -> dict:
             "pattern_type": 0.0,
         }
 
-    valid = [r for r in metrics.get("all_results", []) if r.get("k", 0) > 0]
+    valid = [r for r in metrics.get("all_results", []) if _is_credible(r)]
 
     lattices_with_valid = set((r["ell"], r["m"]) for r in valid)
     lattice_coverage = len(lattices_with_valid) / len(stage1_lattices)
@@ -524,7 +584,7 @@ def evaluate_stage2(program_path: str) -> dict:
         d_raw = r.get("d", 0)
         k = r.get("k", 0)
         n = r.get("n", 0)
-        if k <= 0 or n <= 0:
+        if n <= 0 or not _is_credible(r):
             continue
         key = (r["ell"], r["m"])
         fallback = k / n

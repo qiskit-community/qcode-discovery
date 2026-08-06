@@ -205,6 +205,22 @@ def stratified_select(
     }
 
 
+def has_arity(cand: object, n: int) -> bool:
+    """Return whether ``cand`` is a sized object of length ``n``, without
+    raising on malformed input (e.g. a bare int or ``None`` instead of a
+    tuple/list). Same defensive posture as :func:`dedup_candidates`'s
+    ``key_of`` guard below, for the evaluators' own arity-check call sites
+    (``len(cand) != N`` is not safe on its own -- a candidate lacking
+    ``__len__`` raises ``TypeError`` there, which propagates out of the
+    per-lattice loop and aborts the whole lattice instead of rejecting
+    just that one malformed candidate).
+    """
+    try:
+        return len(cand) == n
+    except TypeError:
+        return False
+
+
 def dedup_candidates(
     candidates: list,
     *,

@@ -12,8 +12,13 @@ evaluator's parallel fix.
 
 from __future__ import annotations
 
-from evaluation import weight_enforcement
-from evolve.openevolve_evaluator_weight5_pbb import _build_and_check
+from evaluation import gates, weight_enforcement
+import evolve.openevolve_evaluator_weight5_pbb as pbb_eval
+from evolve.openevolve_evaluator_weight5_pbb import (
+    _build_and_check,
+    _classify_pbb_strategy,
+)
+from evolve.seed_solution_weight5_pbb import generate_candidates as pbb_generate
 
 
 class TestExponentRangeValidation:
@@ -73,3 +78,100 @@ class TestBuildAndCheckHappyPath:
         info, reason = _build_and_check(6, 6, A_terms, B_terms, [], [])
         assert info is None
         assert reason == "css_calibration"
+
+
+class TestClassifyPbbStrategy:
+    """Regression coverage for round-2 finding #2 (part B): the old
+    ``"safety_net_full"`` branch pattern-matched the OLD (C=full A, D=full
+    B) safety-net shape, which the CURRENT ``_SAFETY_NET_RAW`` (a
+    partial-subset shape, see ``seed_solution_weight5_pbb.py``) never
+    matched -- so real safety-net candidates silently fell into "both" and
+    were never treated specially by this classifier. The branch was
+    removed entirely rather than re-encoding the new shape a second time;
+    survival is now guaranteed elsewhere (``_run_evaluation``'s explicit
+    re-insertion). This just pins the simplified classifier's behavior."""
+
+    def test_both_empty_is_css_calibration(self):
+        assert _classify_pbb_strategy([(0, 0)], [(0, 1)], [], []) == "css_calibration"
+
+    def test_c_only_is_c_only(self):
+        assert _classify_pbb_strategy([(0, 0)], [(0, 1)], [(0, 0)], []) == "c_only"
+
+    def test_d_only_is_d_only(self):
+        assert _classify_pbb_strategy([(0, 0)], [(0, 1)], [], [(0, 1)]) == "d_only"
+
+    def test_both_nonempty_is_both_even_for_the_actual_safety_net(self):
+        from evolve.seed_solution_weight5_pbb import _safety_net_candidates
+
+        for A, B, C, D in _safety_net_candidates(6, 6):
+            assert _classify_pbb_strategy(A, B, C, D) == "both"
+
+
+class TestSafetyNetSurvivesPrebuildCap:
+    """Regression coverage for round-2 finding #2 (part C): the pre-build
+    cap used to rely on ``_classify_pbb_strategy`` giving the safety net a
+    dedicated, protected stratum -- which never worked (see
+    TestClassifyPbbStrategy above) -- so the safety net could be
+    hash-sampled out like any other "both" candidate whenever the cap was
+    small relative to the population. ``_run_evaluation`` now re-inserts
+    any of the seed's own ``_safety_net_candidates`` that the cap dropped,
+    unconditionally. Forcing ``max_build_candidates_noncss`` down to 1
+    makes the cap keep at most one non-safety-net survivor per lattice --
+    if the fix regressed, the odds of both safety-net entries surviving
+    hash-sampling by chance are negligible."""
+
+    def test_both_safety_net_entries_present_in_all_results_despite_tiny_cap(
+        self, monkeypatch
+    ):
+        monkeypatch.setattr(gates, "max_build_candidates_noncss", lambda: 1)
+        ell, m = 6, 6
+        safety_net = pbb_eval._pbb_safety_net_candidates(ell, m)
+        assert len(safety_net) == 2
+
+        metrics = pbb_eval._run_evaluation(pbb_generate, [(ell, m)], quick=True)
+
+        result_keys = {
+            (
+                tuple(map(tuple, r["A_terms"])),
+                tuple(map(tuple, r["B_terms"])),
+                tuple(map(tuple, r["C_terms"])),
+                tuple(map(tuple, r["D_terms"])),
+            )
+            for r in metrics["all_results"]
+        }
+        for A, B, C, D in safety_net:
+            key = (
+                tuple(map(tuple, A)),
+                tuple(map(tuple, B)),
+                tuple(map(tuple, C)),
+                tuple(map(tuple, D)),
+            )
+            assert key in result_keys, (ell, m, A, B, C, D)
+
+
+class TestSafetyNetReservedWithinCap:
+    """Round-3 finding: the safety net used to be appended AFTER the
+    pre-build cap already selected up to ``max_build`` candidates,
+    exceeding the configured hard cap by up to ``len(safety_net)``.
+    ``_run_evaluation`` now reserves room for the safety net WITHIN
+    ``max_build`` before selection runs, so with ``max_build=1`` and 2
+    safety-net entries, the reserved budget (``max(0, 1-2)=0``) selects
+    nothing on its own -- the final build count is exactly
+    ``len(safety_net)``, not ``max_build + len(safety_net)``."""
+
+    def test_build_count_not_inflated_beyond_safety_net_size(self, monkeypatch):
+        monkeypatch.setattr(gates, "max_build_candidates_noncss", lambda: 1)
+        ell, m = 6, 6
+        safety_net = pbb_eval._pbb_safety_net_candidates(ell, m)
+        assert len(safety_net) == 2
+        calls = []
+        real_build_and_check = pbb_eval._build_and_check
+
+        def counting_build_and_check(ell, m, A, B, C, D):
+            calls.append((A, B, C, D))
+            return real_build_and_check(ell, m, A, B, C, D)
+
+        monkeypatch.setattr(pbb_eval, "_build_and_check", counting_build_and_check)
+        pbb_eval._run_evaluation(pbb_generate, [(ell, m)], quick=True)
+
+        assert len(calls) == len(safety_net)

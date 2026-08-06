@@ -180,6 +180,24 @@ class TestPbbSeedGenerator:
                 assert pbb_weight_ok(A, B, C, D)
                 assert C and D
 
+    def test_both_raw_safety_net_entries_survive_at_every_lattice(self):
+        # Regression for round-2 finding #2 (part A): _safety_net_candidates'
+        # guard used to read `if len(set(A)) != 2 or len(set(B)) != 3:
+        # continue`, which always discarded _SAFETY_NET_RAW's second,
+        # A/B-mirrored entry (len(set(A))==3, len(set(B))==2) -- so only
+        # ONE of the two raw entries ever survived, at every lattice. The
+        # existing test above only asserts the net is *nonempty*, which a
+        # single surviving entry also satisfies, so it never caught this.
+        # The fixed guard is `if {len(set(A)), len(set(B))} != {2, 3}:
+        # continue`, which accepts both orderings.
+        from evolve.seed_solution_weight5_pbb import _safety_net_candidates
+
+        for ell, m in ALL_STAGE1_LATTICES:
+            net = _safety_net_candidates(ell, m)
+            assert len(net) == 2, (ell, m, net)
+            shapes = {(len(set(A)), len(set(B))) for A, B, C, D in net}
+            assert shapes == {(2, 3), (3, 2)}, (ell, m, shapes)
+
     def test_safety_net_candidates_actually_pass_the_noncss_gate(self):
         # Regression for Commit-3 Finding 2: the *old* C=A, D=B safety net
         # built successfully and satisfied pbb_weight_ok, but was never
