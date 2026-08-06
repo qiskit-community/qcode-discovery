@@ -13,8 +13,10 @@ have passed them, which the test then asserts against.
 
 from __future__ import annotations
 
+import json
 import os
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -119,3 +121,34 @@ class TestExplicitEvaluatorOverride:
         ])
         with pytest.raises(SystemExit):
             run_evolution.main()
+
+
+class TestRunManifestWiring:
+    """main() writes run_manifest.json into the caller-supplied --output
+    directory (never into the fixed results/evolution/<run_id>/ tree used
+    by discovery_events.py/provenance_reducer.py) -- see run_manifest.py's
+    manifest_path parameter and its docstring for why.
+    """
+
+    def test_manifest_written_into_output_dir_not_repo_results_tree(
+        self, monkeypatch, patched_runners, tmp_path,
+    ):
+        out_dir = tmp_path / "out"
+        _run_main_with_argv(monkeypatch, [
+            "--output", str(out_dir), "--iterations", "1",
+        ])
+
+        manifest_path = out_dir / "run_manifest.json"
+        assert manifest_path.exists()
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        assert manifest["campaign_name"] == Path(run_evolution.EVALUATOR).stem
+        assert manifest["seed_path"] == run_evolution.SEED_SOLUTION
+        assert isinstance(manifest["model_aliases"], list)
+        assert "effective_gates" in manifest
+
+        # Never polluted the real repo's results/evolution/<run_name>/ tree.
+        run_name = out_dir.name
+        real_results_manifest = (
+            Path(run_evolution.PROJECT_ROOT) / "results" / "evolution" / run_name / "run_manifest.json"
+        )
+        assert not real_results_manifest.exists()

@@ -520,6 +520,30 @@ def main():
     try:
         config = _build_config(args, api_base, model_names)
 
+        # Run-launch manifest (Phase E3): captures git commit, config/seed/
+        # evaluator hashes, model ensemble, effective gates, and RNG seed for
+        # after-the-fact provenance. Written to <output_dir>/run_manifest.json
+        # (not the fixed results/evolution/<run_id>/ convention used by
+        # discovery_events.py/provenance_reducer.py) so a caller that passes
+        # --output pointing outside that convention -- including test tmp_paths
+        # -- never has this call write into the real repo tree.
+        try:
+            from evolve.run_manifest import write_run_manifest
+            write_run_manifest(
+                run_name,
+                campaign_name=Path(EVALUATOR_ACTIVE).stem,
+                config_path=args.config,
+                seed_path=seed_path,
+                evaluator_path=EVALUATOR_ACTIVE,
+                model_aliases=[
+                    {"alias": m.name, "weight": m.weight} for m in config.llm.models
+                ],
+                rng_seed=getattr(config, "random_seed", None),
+                manifest_path=str(Path(output_dir) / "run_manifest.json"),
+            )
+        except Exception as exc:
+            print(f"Warning: run manifest not written: {exc}")
+
         # Startup banner
         active_models = [m.name for m in config.llm.models]
         print(f"\nStarting evolution:")
