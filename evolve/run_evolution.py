@@ -419,11 +419,19 @@ def main():
 
     # Per-model attribution: tag each evolved program with the model that
     # produced it (worker side, via the evaluator import) and log every accepted
-    # program to <output_dir>/model_attribution.jsonl (main side, here).
+    # program to the FIXED results/evolution/<run_id>/model_attribution.jsonl
+    # convention (main side, here) -- never <output_dir>. provenance_reducer.py
+    # only ever looks for this file at that fixed convention (unlike
+    # run_manifest.json, which is deliberately also allowed to live in a
+    # custom --output dir; see run_manifest.py's manifest_path docstring), so
+    # a --output pointing outside that tree must not divert this file away
+    # from where the reducer will look, or every event stays unjoined.
     try:
         from evolve.model_attribution import install as _install_attribution
         os.makedirs(output_dir, exist_ok=True)
-        _install_attribution(str(Path(output_dir) / "model_attribution.jsonl"))
+        _attribution_dir = Path(EVOLUTION_BASE) / run_name
+        os.makedirs(_attribution_dir, exist_ok=True)
+        _install_attribution(str(_attribution_dir / "model_attribution.jsonl"))
     except Exception as exc:
         print(f"Warning: model attribution not installed: {exc}")
 
@@ -439,6 +447,23 @@ def main():
     if not Path(seed_path).exists():
         print(f"Error: seed solution not found: {seed_path}")
         sys.exit(1)
+
+    # Export config/seed content hashes as env vars, mirroring the
+    # QCODE_RUN_NAME convention above: evaluator subprocess workers call
+    # discovery_events.append_discovery_event() without a config_hash/
+    # seed_hash kwarg, which falls back to reading exactly these two env var
+    # names (see that function's docstring) -- without this export, every
+    # discovery event recorded null config_hash/seed_hash even though
+    # write_run_manifest() below computes the real hashes. Reuses the same
+    # file_content_hash() write_run_manifest() uses internally, so the
+    # values agree with run_manifest.json.
+    from evolve.discovery_events import file_content_hash
+    _config_hash = file_content_hash(args.config)
+    _seed_hash = file_content_hash(seed_path)
+    if _config_hash:
+        os.environ["QCODE_RUN_CONFIG_HASH"] = _config_hash
+    if _seed_hash:
+        os.environ["QCODE_RUN_SEED_HASH"] = _seed_hash
 
     # When --noncss is set, use the non-CSS evaluator directly (no patching needed).
     if args.noncss:

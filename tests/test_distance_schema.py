@@ -9,7 +9,10 @@ truly exact, and idempotency of ``update_pareto_front_v2``.
 
 import json
 import tempfile
+import threading
+import time
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -164,6 +167,79 @@ class TestMergeConflictsAreQuarantined:
         assert "exploratory_witnesses" in second
 
 
+class TestComponentBoundMergePreservesAllSourceLabels:
+    """_merge_records must not drop earlier component-bound source labels
+    when merging two records whose component_bounds each carry a different
+    proof label for the same component -- keeping only the last incoming
+    label would silently discard the earlier proof that justified the
+    bound."""
+
+    def test_merge_keeps_every_incoming_component_source_label(self):
+        cb1 = empty_component_bounds()
+        cb1 = merge_component_bound(
+            cb1, "X", 3, None,
+            source_kind="solver_proof", source_label="milp_infeasible_early_stop",
+        )
+        rec1_v2 = build_v2_record(_v1_result(d=0, stage="rejected"), component_bounds=cb1)
+
+        cb2 = empty_component_bounds()
+        cb2 = merge_component_bound(
+            cb2, "X", 3, None,
+            source_kind="exhaustive", source_label="exhaustive_hash",
+        )
+        rec2_v2 = build_v2_record(_v1_result(d=0, stage="rejected"), component_bounds=cb2)
+
+        merged = pareto_v2._merge_records(rec1_v2, rec2_v2)
+        x_sources = merged["component_bounds"]["X"]["sources"]
+        assert "milp_infeasible_early_stop" in x_sources
+        assert "exhaustive_hash" in x_sources
+
+
+class TestComponentBoundMergeDoesNotAccumulateDuplicateLabels:
+    """Merging the same (or an overlapping) record more than once -- e.g.
+    two identical rounds of update_pareto_front_v2 -- must not grow a
+    component's source list without bound. merge_component_bound's own
+    contract unconditionally appends its label with no dedup, so
+    _merge_records must dedup at its own call site rather than relying on
+    that helper to do it once per label."""
+
+    def test_repeated_merge_of_identical_record_does_not_duplicate_label(self):
+        cb = empty_component_bounds()
+        cb = merge_component_bound(
+            cb, "X", 3, None,
+            source_kind="solver_proof", source_label="milp_infeasible_early_stop",
+        )
+        rec_v2 = build_v2_record(_v1_result(d=0, stage="rejected"), component_bounds=cb)
+
+        merged = pareto_v2._merge_records(rec_v2, rec_v2)
+        merged_again = pareto_v2._merge_records(merged, rec_v2)
+
+        x_sources = merged_again["component_bounds"]["X"]["sources"]
+        assert x_sources.count("milp_infeasible_early_stop") == 1
+
+    def test_distinct_labels_still_both_survive_after_repeated_merge(self):
+        cb1 = empty_component_bounds()
+        cb1 = merge_component_bound(
+            cb1, "X", 3, None,
+            source_kind="solver_proof", source_label="milp_infeasible_early_stop",
+        )
+        rec1_v2 = build_v2_record(_v1_result(d=0, stage="rejected"), component_bounds=cb1)
+
+        cb2 = empty_component_bounds()
+        cb2 = merge_component_bound(
+            cb2, "X", 3, None,
+            source_kind="exhaustive", source_label="exhaustive_hash",
+        )
+        rec2_v2 = build_v2_record(_v1_result(d=0, stage="rejected"), component_bounds=cb2)
+
+        merged = pareto_v2._merge_records(rec1_v2, rec2_v2)
+        merged_again = pareto_v2._merge_records(merged, rec2_v2)
+
+        x_sources = merged_again["component_bounds"]["X"]["sources"]
+        assert x_sources.count("milp_infeasible_early_stop") == 1
+        assert x_sources.count("exhaustive_hash") == 1
+
+
 class TestCssComponentAggregationHandlesNullUpperBounds:
     """CSS component aggregation handles null upper bounds."""
 
@@ -208,18 +284,53 @@ class TestExactResultsBypassHeuristicGates:
         assert upper == 6
 
     def test_exact_record_merge_stays_exact_and_unchanged(self):
-        exact_result = _v1_result(d=6, d_is_exact=True, stage="exact")
+        exact_result = _v1_result(d=6, d_is_exact=True, stage="exact", fom=6.0, score=6.0)
         exact_v2 = build_v2_record(exact_result)
         assert exact_v2["d_lower"] == exact_v2["d_upper"] == 6
         assert exact_v2["d_is_exact"] is True
 
-        heuristic_result = _v1_result(d=99, distance_trusted=False, stage="quick_estimate")
+        heuristic_result = _v1_result(
+            d=99, distance_trusted=False, stage="quick_estimate",
+            fom=1633.5, score=1633.5,
+        )
         heuristic_v2 = build_v2_record(heuristic_result)
 
         merged = pareto_v2._merge_records(exact_v2, heuristic_v2)
         assert merged["d_lower"] == 6
         assert merged["d_upper"] == 6
         assert merged["d_is_exact"] is True
+        # merged["d"] must track the reconciled bound, not be left at the
+        # heuristic new_rec's stale raw d=99 (dict(new_rec) carries that
+        # over unless _merge_records explicitly overwrites it).
+        assert merged["d"] == 6
+        # merged["fom"] must be recomputed from the reconciled d=6, not
+        # left at new_rec's stale fom=1633.5 (computed against its own raw
+        # d=99, k*99^2/72).
+        assert merged["fom"] == pytest.approx(6.0)
+        # merged["score"] has no way to be reconstructed once d has
+        # changed (evaluator.py's score formula varies by rejection
+        # reason) and nothing downstream reads it from the archive, so
+        # it's dropped rather than left stale at 1633.5.
+        assert "score" not in merged
+
+    def test_lower_bound_only_merge_displays_zero_not_lower_as_d(self):
+        # Two lower-bound-only records (no known upper) -- merged["d"] must
+        # stay 0 ("no verified logical witness exists", the schema's own
+        # meaning of d_upper=None), not the reconciled lower bound: showing
+        # the lower bound as `d` would misrepresent an unwitnessed proof
+        # (we only know d>=lower) as if it were an observed distance.
+        lb_result = _v1_result(d=0, d_lower_bound=4, stage="milp_lower_bound")
+        lb_v2 = build_v2_record(lb_result)
+        assert lb_v2["d_lower"] == 4
+        assert lb_v2["d_upper"] is None
+
+        lb_result_2 = _v1_result(d=0, d_lower_bound=7, stage="milp_lower_bound")
+        lb_v2_2 = build_v2_record(lb_result_2)
+
+        merged = pareto_v2._merge_records(lb_v2, lb_v2_2)
+        assert merged["d_lower"] == 7
+        assert merged["d_upper"] is None
+        assert merged["d"] == 0
 
 
 class TestLegacyBareDRecordsMigrateAsExploratory:
@@ -351,6 +462,151 @@ class TestUpdateParetoFrontV2Idempotency:
         assert first["quarantined"] == second["quarantined"] == []
         assert len(second["exact_front"]) == 1
         assert len(second["exploratory_witnesses"]) == 1
+
+
+class TestFirstInsertNormalizesLegacyFields:
+    """A never-before-seen record's displayed d/fom/score must already
+    match what _merge_records would compute on a later identical update --
+    otherwise submitting the exact same record through
+    update_pareto_front_v2 twice in a row (a logical no-op) changes its
+    stored fields on the second round."""
+
+    def test_self_dual_record_d_normalized_on_first_insert_not_only_on_merge(self, tmp_path):
+        filepath = tmp_path / "pareto_v2.json"
+        # self_dual_d2 sets d_lower=d_upper=2 unconditionally, independent
+        # of the raw v1 `d` field -- build_v2_record itself never touches
+        # `d`, so a record built this way keeps its raw d=0 even though
+        # d_upper=2, giving a genuine (raw d) != (normalized d) case to
+        # exercise the first-insert normalization path.
+        result = _v1_result(d=0, stage="self_dual_d2")
+        record = build_v2_record(result)
+        assert record["d_lower"] == 2
+        assert record["d_upper"] == 2
+        assert record["d"] == 0
+
+        first = update_pareto_front_v2([record], filepath=filepath)
+        second = update_pareto_front_v2([record], filepath=filepath)
+
+        key = pareto_v2._code_key(record)
+        first_rec = next(r for r in first["all_records"] if pareto_v2._code_key(r) == key)
+        second_rec = next(r for r in second["all_records"] if pareto_v2._code_key(r) == key)
+        assert first_rec["d"] == second_rec["d"] == 2
+
+    def test_score_field_normalized_identically_on_first_insert_and_merge(self, tmp_path):
+        filepath = tmp_path / "pareto_v2.json"
+        record = build_v2_record(_v1_result(
+            d=6, d_is_exact=True, stage="exact", score=6.0, fom=6.0,
+        ))
+
+        first = update_pareto_front_v2([record], filepath=filepath)
+        second = update_pareto_front_v2([record], filepath=filepath)
+
+        key = pareto_v2._code_key(record)
+        first_rec = next(r for r in first["all_records"] if pareto_v2._code_key(r) == key)
+        second_rec = next(r for r in second["all_records"] if pareto_v2._code_key(r) == key)
+        assert "score" not in first_rec
+        assert "score" not in second_rec
+        assert first_rec["fom"] == second_rec["fom"] == 6.0
+
+
+class TestPreExistingArchiveRecordsNormalizeOnLoad:
+    """A record already on disk before _normalize_legacy_fields existed (or
+    written by a since-fixed buggy version of this module) must self-heal
+    the next time the archive is loaded and rewritten -- it must not stay
+    stale forever unless that exact code happens to be resubmitted and
+    merged again, which may never happen."""
+
+    def test_stale_on_disk_record_gets_normalized_by_an_unrelated_update(self, tmp_path):
+        filepath = tmp_path / "pareto_v2.json"
+
+        # self_dual_d2 sets d_lower=d_upper=2 unconditionally but never
+        # touches raw `d`, so this is the exact pre-fix shape a record
+        # persisted before _normalize_legacy_fields existed would have.
+        stale_record = build_v2_record(_v1_result(d=0, stage="self_dual_d2"))
+        assert stale_record["d_lower"] == stale_record["d_upper"] == 2
+        assert stale_record["d"] == 0
+
+        # Write the archive directly, bypassing update_pareto_front_v2
+        # (and therefore _normalize_legacy_fields), to simulate a
+        # pre-upgrade on-disk file.
+        with open(filepath, "w") as f:
+            json.dump({
+                "schema_version": distance_schema.SCHEMA_VERSION,
+                "generated_at": None,
+                "exact_front": [stale_record],
+                "lower_bound_front": [],
+                "exploratory_witnesses": [],
+                "all_records": [stale_record],
+                "quarantined": [],
+            }, f)
+
+        unrelated_record = build_v2_record(_v1_result(
+            ell=8, m=8, A_terms=[(5, 0)], B_terms=[(3, 0)],
+            n=60, k=10, d=5, d_is_exact=True, stage="exact",
+        ))
+        result = update_pareto_front_v2([unrelated_record], filepath=filepath)
+
+        key = pareto_v2._code_key(stale_record)
+        healed = next(r for r in result["all_records"] if pareto_v2._code_key(r) == key)
+        assert healed["d"] == 2
+
+
+class TestUpdateParetoFrontV2LocksTheFullTransaction:
+    """The load-merge-write cycle runs under an exclusive flock so a second
+    concurrent caller can't read the pre-update archive and clobber the
+    first caller's write -- without the lock, this is a classic
+    read-modify-write race even though each individual write is atomic via
+    os.replace."""
+
+    def test_concurrent_updates_for_different_codes_do_not_lose_either(self, tmp_path):
+        filepath = tmp_path / "pareto_v2.json"
+
+        record_a = build_v2_record(_v1_result(
+            ell=6, m=6, A_terms=[(1, 0)], B_terms=[(2, 0)],
+            n=72, k=12, d=6, d_is_exact=True, stage="exact", fom=6.0,
+        ))
+        record_b = build_v2_record(_v1_result(
+            ell=8, m=8, A_terms=[(5, 0)], B_terms=[(3, 0)],
+            n=60, k=10, d=5, d_is_exact=True, stage="exact", fom=5.0,
+        ))
+
+        real_load = pareto_v2.load_pareto_v2
+        release_b = threading.Event()
+
+        def slow_load(path):
+            result = real_load(path)
+            # Let thread B start its own update_pareto_front_v2 call while
+            # thread A is still mid-transaction. If the whole cycle weren't
+            # locked, B's load here would race A's later write and one
+            # thread's addition would be silently lost.
+            release_b.set()
+            time.sleep(0.2)
+            return result
+
+        with patch.object(pareto_v2, "load_pareto_v2", side_effect=slow_load):
+            thread_a = threading.Thread(
+                target=update_pareto_front_v2,
+                args=([record_a],), kwargs={"filepath": filepath},
+            )
+            thread_a.start()
+            assert release_b.wait(timeout=2)
+
+            thread_b = threading.Thread(
+                target=update_pareto_front_v2,
+                args=([record_b],), kwargs={"filepath": filepath},
+            )
+            thread_b.start()
+
+            thread_a.join(timeout=5)
+            thread_b.join(timeout=5)
+
+        assert not thread_a.is_alive()
+        assert not thread_b.is_alive()
+
+        final = load_pareto_v2(filepath)
+        keys = {pareto_v2._code_key(r) for r in final["all_records"]}
+        assert pareto_v2._code_key(record_a) in keys
+        assert pareto_v2._code_key(record_b) in keys
 
 
 class TestDominatedRecordsResurfaceAfterDominatorUpgrade:

@@ -44,6 +44,7 @@ the v1 and v2 archives can be cross-referenced by an identical key.
 
 from __future__ import annotations
 
+import fcntl
 import json
 import logging
 import os
@@ -51,6 +52,7 @@ from pathlib import Path
 
 from evaluation import distance_schema
 from evaluation.distance_schema import DistanceBoundConflict
+from evaluation.evaluator import compute_fom
 from evaluation.results import _code_key, load_codes
 
 logger = logging.getLogger(__name__)
@@ -94,6 +96,52 @@ def load_pareto_v2(filepath: Path | str | None = None) -> dict:
         return _default_shape()
 
 
+def _display_d(upper: int | None) -> int:
+    """The legacy flat ``d`` value to display for a given ``d_upper``.
+
+    The legacy field's original meaning is a witnessed/verified distance
+    (an evaluator-measured value or a proven upper bound) -- never a
+    certified-but-unwitnessed lower bound. Per the schema's own D2 rule,
+    ``d_upper=None`` means "no verified logical witness exists", so a
+    lower-bound-only record (``d_upper`` still ``None``) must display
+    ``d=0``, not its lower bound: showing the lower bound as `d` would
+    misrepresent an unwitnessed proof (we know d>=lower, nothing more) as
+    if it were an observed/measured distance.
+    """
+    return upper if upper is not None else 0
+
+
+def _normalize_legacy_fields(rec: dict) -> dict:
+    """Return a copy of ``rec`` with its legacy ``d``/``fom``/``score``
+    fields normalized to agree with its own ``d_lower``/``d_upper``/``n``/
+    ``k``.
+
+    Applied identically to a never-before-seen record on first insert (see
+    :func:`update_pareto_front_v2`'s ``old_rec is None`` branch) and to a
+    freshly merged record (see :func:`_merge_records`), so the same
+    logical record always displays the same normalized fields regardless
+    of which path it went through -- otherwise the two paths would
+    disagree and a no-op re-submission of an already-inserted record would
+    change its stored fields, breaking idempotency.
+
+    ``d`` uses :func:`_display_d`. ``fom`` is cheap and unambiguous to
+    recompute from ``k*d^2/n`` (the same formula ``certified_fom``/
+    ``exploratory_fom`` use, and the field ``_dominance_front`` itself
+    sorts by) so it's always kept in sync with the normalized ``d``.
+    ``score`` has no single formula -- ``evaluator.py`` sets it very
+    differently depending on rejection reason (a k-low penalty, an
+    encoding-rate proxy, a tiny "promising" marker, ...) that can't be
+    reconstructed from a record alone once its `d` has changed, and
+    nothing downstream reads it from the persisted archive, so it's
+    dropped rather than left stale.
+    """
+    out = dict(rec)
+    out["d"] = _display_d(out.get("d_upper"))
+    out["fom"] = compute_fom(out.get("n", 0), out.get("k", 0), out["d"])
+    out.pop("score", None)
+    return out
+
+
 def _merge_records(old_rec: dict, new_rec: dict) -> dict:
     """Merge two v2 records for the same code key.
 
@@ -127,18 +175,40 @@ def _merge_records(old_rec: dict, new_rec: dict) -> dict:
     if new_component_bounds:
         if component_bounds is None:
             component_bounds = distance_schema.empty_component_bounds()
+        else:
+            # Copy (not mutate) before editing in place below -- matches
+            # merge_component_bound's own contract of never mutating its input.
+            component_bounds = {
+                key: {
+                    "lower": val["lower"],
+                    "upper": val["upper"],
+                    "sources": list(val["sources"]),
+                }
+                for key, val in component_bounds.items()
+            }
         for comp in distance_schema.COMPONENT_KEYS:
             comp_new = new_component_bounds.get(comp)
             if not comp_new:
                 continue
             comp_kind = distance_schema.source_kind_for_labels(comp_new.get("sources", []))
-            comp_sources = comp_new.get("sources") or []
-            comp_label = comp_sources[-1] if comp_sources else "merged"
-            component_bounds = distance_schema.merge_component_bound(
-                component_bounds, comp,
+            comp_entry = component_bounds[comp]
+            comp_lower, comp_upper = distance_schema.merge_bounds(
+                comp_entry["lower"], comp_entry["upper"],
                 comp_new.get("lower", 0), comp_new.get("upper"),
-                source_kind=comp_kind, source_label=comp_label,
+                new_source_kind=comp_kind,
             )
+            comp_entry["lower"] = comp_lower
+            comp_entry["upper"] = comp_upper
+            # Merge the bound once per component (not once per label via
+            # merge_component_bound, which unconditionally appends its label
+            # with no dedup -- looping it once per label made a repeated /
+            # idempotent update accumulate duplicate labels in `sources`
+            # indefinitely). Union in only genuinely new labels, mirroring
+            # the top-level bound_sources dedup above, so every distinct
+            # incoming proof label is still preserved exactly once.
+            for comp_label in (comp_new.get("sources") or ["merged"]):
+                if comp_label not in comp_entry["sources"]:
+                    comp_entry["sources"].append(comp_label)
 
     merged = dict(new_rec)
     merged["d_lower"] = lower
@@ -146,6 +216,16 @@ def _merge_records(old_rec: dict, new_rec: dict) -> dict:
     merged["bound_sources"] = sources
     merged["component_bounds"] = component_bounds
     merged["d_is_exact"] = distance_schema.is_exact(lower, upper, sources)
+    # dict(new_rec) above carries over new_rec's raw legacy d/fom/score
+    # fields, which can silently diverge from the just-reconciled
+    # d_lower/d_upper -- e.g. merging an exact d=6 record with a d=99
+    # heuristic estimate must not leave merged["d"] == 99 while
+    # d_lower == d_upper == 6 (and fom/score stale against d=99 to match).
+    # _normalize_legacy_fields is also applied to a never-before-seen
+    # record on first insert (see update_pareto_front_v2's old_rec is None
+    # branch), so the same record displays the same fields whether it
+    # arrives fresh or via a merge.
+    merged = _normalize_legacy_fields(merged)
 
     n = merged.get("n", 0)
     k = merged.get("k", 0)
@@ -216,10 +296,11 @@ def update_pareto_front_v2(
 
     Each incoming record is merged (by code key) with any existing entry
     already in the archive via :func:`_merge_records` (which uses
-    ``distance_schema.merge_bounds``/``merge_component_bound``
-    internally). A merge that would raise ``DistanceBoundConflict`` is
-    caught per-record: the conflicting ``(old, new)`` pair is appended to
-    the ``quarantined`` list instead of crashing the whole update.
+    ``distance_schema.merge_bounds`` directly on both the top-level and
+    per-component bounds internally). A merge that would raise
+    ``DistanceBoundConflict`` is caught per-record: the conflicting
+    ``(old, new)`` pair is appended to the ``quarantined`` list instead of
+    crashing the whole update.
 
     The three fronts are then computed independently from disjoint subsets
     of the FULL merged/deduplicated record set (never comparing across
@@ -237,73 +318,104 @@ def update_pareto_front_v2(
     Writes the result to ``filepath`` (default :data:`PARETO_V2_PATH`)
     atomically (temp file in the same directory + ``os.replace``) and
     returns it.
+
+    The full load-merge-write transaction runs under an exclusive
+    ``fcntl.flock`` on a sibling ``.<name>.lock`` file (mirroring
+    ``evolve.discovery_events``'s locking pattern), so two concurrent
+    callers can't both load the same pre-update archive and then each
+    ``os.replace`` their own merge over the other's -- ``os.replace`` is
+    atomic per-write, but without a lock around the whole read-modify-write
+    cycle a second writer can still silently clobber records the first
+    writer just merged in.
     """
     path = Path(filepath) if filepath is not None else PARETO_V2_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = path.parent / f".{path.name}.lock"
 
-    existing = load_pareto_v2(path)
-    existing_records = list(existing.get("all_records", []))
-    if not existing_records:
-        # Backward-compat with archives written before "all_records" existed
-        # (or a genuinely empty archive, in which case this is a no-op).
-        existing_records = (
-            list(existing.get("exact_front", []))
-            + list(existing.get("lower_bound_front", []))
-            + list(existing.get("exploratory_witnesses", []))
-        )
-    quarantined = list(existing.get("quarantined", []))
-
-    merged_by_key: dict[tuple, dict] = {}
-    for rec in existing_records:
-        merged_by_key[_code_key(rec)] = rec
-
-    for new_rec in v2_records:
-        key = _code_key(new_rec)
-        old_rec = merged_by_key.get(key)
-        if old_rec is None:
-            merged_by_key[key] = new_rec
-            continue
+    with open(lock_path, "a+") as lock_f:
+        fcntl.flock(lock_f.fileno(), fcntl.LOCK_EX)
         try:
-            merged_by_key[key] = _merge_records(old_rec, new_rec)
-        except DistanceBoundConflict as e:
-            quarantined.append({
-                "code_key": list(key) if isinstance(key, tuple) else key,
-                "old": old_rec,
-                "new": new_rec,
-                "error": str(e),
-            })
+            existing = load_pareto_v2(path)
+            existing_records = list(existing.get("all_records", []))
+            if not existing_records:
+                # Backward-compat with archives written before "all_records"
+                # existed (or a genuinely empty archive, in which case this
+                # is a no-op).
+                existing_records = (
+                    list(existing.get("exact_front", []))
+                    + list(existing.get("lower_bound_front", []))
+                    + list(existing.get("exploratory_witnesses", []))
+                )
+            quarantined = list(existing.get("quarantined", []))
 
-    all_records = list(merged_by_key.values())
+            merged_by_key: dict[tuple, dict] = {}
+            for rec in existing_records:
+                # Normalize on load too, not just on write: a record
+                # persisted by an older version of this module (before
+                # _normalize_legacy_fields existed, or under a since-fixed
+                # bug) can carry a stale d/fom/score that would otherwise
+                # only self-heal if that exact code happens to be
+                # resubmitted and merged again -- which may never happen.
+                merged_by_key[_code_key(rec)] = _normalize_legacy_fields(rec)
 
-    exact_front = _dominance_front(
-        [r for r in all_records if r.get("d_is_exact")], "d_lower",
-    )
-    lower_bound_front = _dominance_front(
-        [r for r in all_records if not r.get("d_is_exact") and r.get("d_lower", 0) > 0],
-        "d_lower",
-    )
-    exploratory_witnesses = _dominance_front(
-        [
-            r for r in all_records
-            if r.get("d_lower", 0) == 0 and r.get("d_upper") is not None
-        ],
-        "d_upper",
-    )
+            for new_rec in v2_records:
+                key = _code_key(new_rec)
+                old_rec = merged_by_key.get(key)
+                if old_rec is None:
+                    # Normalize the same legacy fields _merge_records would,
+                    # so a never-before-seen record's displayed d/fom/score
+                    # don't change on a later no-op re-submission of the
+                    # identical record (which WOULD go through
+                    # _merge_records and normalize them there) -- see
+                    # _normalize_legacy_fields's docstring.
+                    merged_by_key[key] = _normalize_legacy_fields(new_rec)
+                    continue
+                try:
+                    merged_by_key[key] = _merge_records(old_rec, new_rec)
+                except DistanceBoundConflict as e:
+                    quarantined.append({
+                        "code_key": list(key) if isinstance(key, tuple) else key,
+                        "old": old_rec,
+                        "new": new_rec,
+                        "error": str(e),
+                    })
 
-    output = {
-        "schema_version": distance_schema.SCHEMA_VERSION,
-        "generated_at": generated_at,
-        "exact_front": exact_front,
-        "lower_bound_front": lower_bound_front,
-        "exploratory_witnesses": exploratory_witnesses,
-        "all_records": all_records,
-        "quarantined": quarantined,
-    }
+            all_records = list(merged_by_key.values())
 
-    tmp_path = path.parent / f".{path.name}.tmp{os.getpid()}"
-    with open(tmp_path, "w") as f:
-        json.dump(output, f, indent=2, default=str)
-    os.replace(tmp_path, path)
+            exact_front = _dominance_front(
+                [r for r in all_records if r.get("d_is_exact")], "d_lower",
+            )
+            lower_bound_front = _dominance_front(
+                [
+                    r for r in all_records
+                    if not r.get("d_is_exact") and r.get("d_lower", 0) > 0
+                ],
+                "d_lower",
+            )
+            exploratory_witnesses = _dominance_front(
+                [
+                    r for r in all_records
+                    if r.get("d_lower", 0) == 0 and r.get("d_upper") is not None
+                ],
+                "d_upper",
+            )
+
+            output = {
+                "schema_version": distance_schema.SCHEMA_VERSION,
+                "generated_at": generated_at,
+                "exact_front": exact_front,
+                "lower_bound_front": lower_bound_front,
+                "exploratory_witnesses": exploratory_witnesses,
+                "all_records": all_records,
+                "quarantined": quarantined,
+            }
+
+            tmp_path = path.parent / f".{path.name}.tmp{os.getpid()}"
+            with open(tmp_path, "w") as f:
+                json.dump(output, f, indent=2, default=str)
+            os.replace(tmp_path, path)
+        finally:
+            fcntl.flock(lock_f.fileno(), fcntl.LOCK_UN)
 
     return output
 

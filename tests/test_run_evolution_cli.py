@@ -23,17 +23,22 @@ import pytest
 import evolve.run_evolution as run_evolution
 
 
+_QCODE_ENV_VARS = ("QCODE_RUN_NAME", "QCODE_RUN_CONFIG_HASH", "QCODE_RUN_SEED_HASH")
+
+
 @pytest.fixture(autouse=True)
 def _restore_qcode_run_name_env():
-    # main() sets os.environ["QCODE_RUN_NAME"] as a side effect (to route
-    # evaluator-subprocess JSONL logging) -- restore it after each test so
-    # this file doesn't leak state into other tests in the same session.
-    original = os.environ.get("QCODE_RUN_NAME")
+    # main() sets these os.environ vars as a side effect (to route
+    # evaluator-subprocess JSONL logging and discovery-event config/seed
+    # hashes) -- restore them after each test so this file doesn't leak
+    # state into other tests in the same session.
+    originals = {var: os.environ.get(var) for var in _QCODE_ENV_VARS}
     yield
-    if original is None:
-        os.environ.pop("QCODE_RUN_NAME", None)
-    else:
-        os.environ["QCODE_RUN_NAME"] = original
+    for var, original in originals.items():
+        if original is None:
+            os.environ.pop(var, None)
+        else:
+            os.environ[var] = original
 
 
 class _Captured(Exception):
@@ -152,3 +157,75 @@ class TestRunManifestWiring:
             Path(run_evolution.PROJECT_ROOT) / "results" / "evolution" / run_name / "run_manifest.json"
         )
         assert not real_results_manifest.exists()
+
+
+class TestConfigSeedHashEnvExport:
+    """main() must export QCODE_RUN_CONFIG_HASH/QCODE_RUN_SEED_HASH so
+    discovery_events.append_discovery_event()'s env-var fallback (see its
+    docstring) picks up real hashes instead of silently recording null on
+    every event -- see evolve/discovery_events.py:169-170.
+    """
+
+    def test_config_and_seed_hash_env_vars_exported(self, monkeypatch, patched_runners, tmp_path):
+        from evolve.discovery_events import file_content_hash
+
+        monkeypatch.delenv("QCODE_RUN_CONFIG_HASH", raising=False)
+        monkeypatch.delenv("QCODE_RUN_SEED_HASH", raising=False)
+
+        _run_main_with_argv(monkeypatch, [
+            "--output", str(tmp_path / "out"), "--iterations", "1",
+        ])
+
+        expected_config_hash = file_content_hash(run_evolution.DEFAULT_CONFIG)
+        expected_seed_hash = file_content_hash(run_evolution.SEED_SOLUTION)
+        assert expected_config_hash is not None
+        assert expected_seed_hash is not None
+        assert os.environ.get("QCODE_RUN_CONFIG_HASH") == expected_config_hash
+        assert os.environ.get("QCODE_RUN_SEED_HASH") == expected_seed_hash
+
+    def test_noncss_config_and_seed_hash_env_vars_exported(self, monkeypatch, patched_runners, tmp_path):
+        from evolve.discovery_events import file_content_hash
+
+        monkeypatch.delenv("QCODE_RUN_CONFIG_HASH", raising=False)
+        monkeypatch.delenv("QCODE_RUN_SEED_HASH", raising=False)
+
+        _run_main_with_argv(monkeypatch, [
+            "--noncss", "--output", str(tmp_path / "out"), "--iterations", "1",
+        ])
+
+        assert os.environ.get("QCODE_RUN_CONFIG_HASH") == file_content_hash(run_evolution.DEFAULT_CONFIG_NONCSS)
+        assert os.environ.get("QCODE_RUN_SEED_HASH") == file_content_hash(run_evolution.SEED_SOLUTION_NONCSS)
+
+
+class TestModelAttributionWiring:
+    """model_attribution.jsonl must be installed at the FIXED
+    results/evolution/<run_id>/ convention regardless of --output, because
+    provenance_reducer.py only ever looks there (unlike run_manifest.json,
+    which is deliberately also allowed to live in a custom --output dir --
+    see run_manifest.py's manifest_path docstring for that one exception).
+    A --output pointing outside that tree must not divert
+    model_attribution.jsonl away from where the reducer will look for it.
+    """
+
+    def test_attribution_installed_at_fixed_results_path_not_custom_output(
+        self, monkeypatch, patched_runners, tmp_path,
+    ):
+        fixed_base = tmp_path / "fixed_results" / "evolution"
+        monkeypatch.setattr(run_evolution, "EVOLUTION_BASE", str(fixed_base))
+
+        captured_paths = []
+
+        import evolve.model_attribution as model_attribution
+        monkeypatch.setattr(model_attribution, "install", lambda path: captured_paths.append(path))
+
+        custom_out = tmp_path / "somewhere" / "else"
+        _run_main_with_argv(monkeypatch, [
+            "--output", str(custom_out), "--iterations", "1",
+        ])
+
+        assert len(captured_paths) == 1
+        run_name = custom_out.name
+        expected = str(fixed_base / run_name / "model_attribution.jsonl")
+        assert captured_paths[0] == expected
+        # Must NOT have been diverted to the custom --output directory.
+        assert not captured_paths[0].startswith(str(custom_out))
