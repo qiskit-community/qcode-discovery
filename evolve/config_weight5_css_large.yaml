@@ -34,17 +34,16 @@ llm:
   temperature: 1.0
   models:
     - name: "aws/claude-opus-5"
-      weight: 0.33
+      weight: 0.49
       temperature: 1.0
       reasoning_effort: "high"
     - name: "azure/gpt-5.6-sol"
-      weight: 0.34
+      weight: 0.51
       temperature: 1.0
       reasoning_effort: "high"
-    - name: "gcp/gemini-3.6-flash"
-      weight: 0.33
-      temperature: 1.0
-      reasoning_effort: "high"
+      max_tokens: 28000  # GPT-5 family: reasoning tokens share this budget with
+                          # no litellm-side thinking cap (unlike Claude/Gemini's
+                          # 4096-token cap at "high") -- headroom against truncation.
   max_tokens: 16384
   timeout: 300
   retries: 4
