@@ -1,0 +1,23 @@
+{
+  "id": "a38e1faa-107f-4efa-962f-5640fb8bf3ae",
+  "generation": 4,
+  "iteration": 78,
+  "timestamp": 1786139814.6279984,
+  "parent_id": "8b872139-b267-4a8e-bc49-886cc67def9e",
+  "metrics": {
+    "combined_score": 75.6,
+    "num_valid": 14935.0,
+    "total_candidates": 53070.0,
+    "lattices_with_high_k": 3.0,
+    "num_high_k": 6577.0,
+    "term_count": 3.0,
+    "pattern_type": 3.0,
+    "best_fom": 58.8,
+    "mean_fom": 4.345267489711934,
+    "best_encoding_rate": 0.3333333333333333,
+    "num_above_6": 3.0,
+    "num_above_12": 1.0
+  },
+  "language": "python",
+  "saved_at": 1786164122.5876184
+}

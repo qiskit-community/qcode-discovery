@@ -182,24 +182,30 @@ def get_pbb_params_fast(code: codes.BBCode | QuditCode) -> tuple[int, int]:
 
 
 def _gf2_rref(mat: np.ndarray) -> tuple[np.ndarray, list[int]]:
-    """Row-reduce a binary matrix over GF(2). Returns (rref, pivots)."""
+    """Row-reduce a binary matrix over GF(2). Returns (rref, pivots).
+
+    Elimination is vectorized over rows (boolean-mask XOR) rather than a
+    Python-level loop -- see ``_gf2_rank`` in clifford_equivalence.py for
+    the same restructuring and why it matters at large matrix sizes.
+    """
     M = mat.copy() % 2
     rows, cols = M.shape
     pivots = []
     r = 0
     for c in range(cols):
-        found = None
-        for i in range(r, rows):
-            if M[i, c]:
-                found = i
-                break
-        if found is None:
+        if r == rows:
+            break
+        nz = np.flatnonzero(M[r:, c])
+        if nz.size == 0:
             continue
-        M[[r, found]] = M[[found, r]]
+        found = r + int(nz[0])
+        if found != r:
+            M[[r, found]] = M[[found, r]]
         pivots.append(c)
-        for i in range(rows):
-            if i != r and M[i, c]:
-                M[i] = (M[i] + M[r]) % 2
+        mask = M[:, c].astype(bool)
+        mask[r] = False
+        if mask.any():
+            M[mask] ^= M[r]
         r += 1
     return M, pivots
 

@@ -245,22 +245,29 @@ def is_equivalently_css(code: QuditCode) -> dict:
 
 
 def _gf2_rank(mat: np.ndarray) -> int:
-    """Compute rank of a binary matrix over GF(2) via row reduction."""
+    """Compute rank of a binary matrix over GF(2) via row reduction.
+
+    Elimination is vectorized over rows (boolean-mask XOR) rather than a
+    Python-level loop -- this is the dominant cost of the non-CSS gate
+    (called ~100x per candidate via ``verify_lc_bruteforce``), so the
+    per-row Python loop dominated wall-clock at large lattice sizes.
+    """
     M = mat.copy() % 2
     rows, cols = M.shape
     r = 0
     for c in range(cols):
-        found = None
-        for i in range(r, rows):
-            if M[i, c]:
-                found = i
-                break
-        if found is None:
+        if r == rows:
+            break
+        nz = np.flatnonzero(M[r:, c])
+        if nz.size == 0:
             continue
-        M[[r, found]] = M[[found, r]]
-        for i in range(rows):
-            if i != r and M[i, c]:
-                M[i] = (M[i] + M[r]) % 2
+        found = r + int(nz[0])
+        if found != r:
+            M[[r, found]] = M[[found, r]]
+        mask = M[:, c].astype(bool)
+        mask[r] = False
+        if mask.any():
+            M[mask] ^= M[r]
         r += 1
     return r
 

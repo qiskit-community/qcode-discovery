@@ -213,6 +213,10 @@ results/runs/
 results/evolution/run_*/
 results/evolution_metrics.jsonl
 
+# fcntl lock files sitting alongside a locked results file (evaluation/pareto_v2.py,
+# evolve/discovery_events.py locking pattern: ".<name>.lock")
+results/.*.lock
+
 # Large evolution artifacts (checkpoints, logs)
 results/evolution/*/checkpoints/
 results/evolution/*/logs/

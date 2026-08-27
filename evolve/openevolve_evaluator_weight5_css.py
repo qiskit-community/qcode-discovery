@@ -39,7 +39,9 @@ from __future__ import annotations
 import importlib.util
 import logging
 import math
+import multiprocessing
 import os
+import queue
 import sys
 from pathlib import Path
 
@@ -76,6 +78,7 @@ from evolve.openevolve_evaluator import (
 from evolve.seed_solution_weight5_css import (
     _safety_net_candidates as _css_safety_net_candidates,
 )
+from evolve._weight5_css_generate_worker import generate_candidates_worker
 
 # Per-model attribution: install here so it is active in each spawn worker
 # (OpenEvolve imports this evaluator before generating). Defensive no-op if
@@ -114,6 +117,14 @@ def _stage1_lattices() -> list[tuple[int, int]]:
 
 def _stage2_lattices() -> list[tuple[int, int]]:
     return _STAGE2_LARGE if _lattice_profile() == "large" else _STAGE2_SMALL
+
+
+def _generate_timeout_seconds() -> int:
+    """Read ``QCODE_GENERATE_TIMEOUT_SECONDS`` fresh on every call (never
+    cached at import time). Hard wall-clock bound, enforced by killing a
+    subprocess (see ``_generate_candidates_bounded``), on a single evolved
+    ``generate_candidates(ell, m)`` call."""
+    return int(os.environ.get("QCODE_GENERATE_TIMEOUT_SECONDS", "60"))
 
 
 # ---------------------------------------------------------------------------
@@ -264,6 +275,62 @@ def _load_generate_candidates(program_path: str):
     return module.generate_candidates
 
 
+def _generate_candidates_bounded(
+    program_path: str, ell: int, m: int, timeout_seconds: int
+) -> tuple[list | None, str | None]:
+    """Call ``generate_candidates(ell, m)`` in an isolated subprocess with a
+    hard wall-clock deadline.
+
+    An evolved ``generate_fn`` can loop indefinitely or blow up
+    combinatorially. OpenEvolve's own per-call timeout
+    (``asyncio.wait_for`` around ``run_in_executor``) only stops *waiting*
+    for such a call -- the underlying thread keeps running forever, leaking
+    into the (reused) worker process and causing cumulative GIL contention
+    across every later call in that process, which is what actually
+    happened in the weight5_css_large_v1 run: throughput degraded steadily
+    and the worker processes became unresponsive even to SIGTERM. A
+    subprocess boundary is required because ``.terminate()``/``.kill()`` on
+    a genuinely separate OS process is unconditional, unlike a thread, which
+    cannot be forcibly stopped. "spawn" (not the ambient default context) is
+    used deliberately: the calling process may already have background
+    threads from ``run_in_executor``, and forking a multi-threaded process
+    is unsafe/deadlock-prone.
+
+    Returns ``(candidates, None)`` on success or ``(None, error_message)``.
+
+    Drains ``result_queue`` (via ``get(timeout=...)``) *before* joining the
+    process, not after: a child that ``put()``s a payload larger than the
+    pipe's OS buffer blocks inside its feeder thread until the parent reads,
+    so joining first would deadlock forever on a large-but-otherwise-healthy
+    candidate list instead of merely timing out on a genuinely stuck one.
+    """
+    ctx = multiprocessing.get_context("spawn")
+    result_queue = ctx.Queue()
+    proc = ctx.Process(
+        target=generate_candidates_worker,
+        args=(program_path, ell, m, result_queue),
+    )
+    proc.start()
+    try:
+        status, payload = result_queue.get(timeout=timeout_seconds)
+    except queue.Empty:
+        status, payload = None, None
+    finally:
+        proc.join(timeout=5)
+        if proc.is_alive():
+            proc.terminate()
+            proc.join(timeout=5)
+            if proc.is_alive():
+                proc.kill()
+                proc.join(timeout=5)
+
+    if status is None:
+        return None, f"generate_candidates timed out after {timeout_seconds}s"
+    if status == "error":
+        return None, payload
+    return payload, None
+
+
 def _run_evaluation(
     generate_fn,
     lattices: list[tuple[int, int]],
@@ -273,6 +340,7 @@ def _run_evaluation(
     max_distance_per_lattice: int = 10,
     run_name: str | None = None,
     source_hash: str | None = None,
+    program_path: str | None = None,
 ) -> dict:
     """Run evaluation across lattices and compute aggregate metrics.
 
@@ -285,6 +353,18 @@ def _run_evaluation(
     ``source_hash`` (Phase E1): passed through to :func:`_stamp_provenance`
     below so every result in ``all_results`` carries it -- see the generic
     CSS evaluator's ``_run_evaluation`` docstring for the full rationale.
+
+    ``program_path`` (optional): when given, each per-lattice
+    ``generate_fn(ell, m)`` call is isolated in a fresh subprocess with a
+    hard wall-clock deadline (see :func:`_generate_candidates_bounded`)
+    instead of being called in-process. ``evaluate_stage1``/
+    ``evaluate_stage2`` always pass this, since their ``generate_fn`` is an
+    untrusted, evolved program that can loop indefinitely or blow up
+    combinatorially -- a thread-based timeout can only stop *waiting* for
+    such a call, not the call itself, which then leaks into and eventually
+    stalls the worker process. Callers that pass a trusted, in-repo
+    ``generate_fn`` directly (e.g. tests) omit it and get the original,
+    unisolated in-process call.
     """
     all_results = []
     total_candidates = 0
@@ -294,7 +374,15 @@ def _run_evaluation(
 
     for ell, m in lattices:
         try:
-            candidates = generate_fn(ell, m)
+            if program_path is not None:
+                candidates, gen_error = _generate_candidates_bounded(
+                    program_path, ell, m, _generate_timeout_seconds()
+                )
+                if gen_error is not None:
+                    errors.append(f"({ell},{m}): {gen_error}")
+                    continue
+            else:
+                candidates = generate_fn(ell, m)
             if not isinstance(candidates, list):
                 errors.append(f"({ell},{m}): generate_candidates returned {type(candidates)}, not list")
                 continue
@@ -510,7 +598,9 @@ def evaluate_stage1(program_path: str) -> dict:
         return _error_result(str(e))
 
     stage1_lattices = _stage1_lattices()
-    metrics = _run_evaluation(generate_fn, stage1_lattices, quick=True)
+    metrics = _run_evaluation(
+        generate_fn, stage1_lattices, quick=True, program_path=program_path
+    )
 
     if metrics["total_candidates"] == 0:
         return {
@@ -572,6 +662,7 @@ def evaluate_stage2(program_path: str) -> dict:
         generate_fn, stage2_lattices,
         quick=False, refine_trials=1000,
         source_hash=source_hash,
+        program_path=program_path,
     )
 
     # --- Combined score --- (identical trust filter to the generic evaluator)

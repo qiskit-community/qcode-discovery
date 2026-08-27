@@ -144,4 +144,10 @@ database:
   population_size: 300
   num_islands: 4
   migration_interval: 15
-  feature_dimensions: ["lattices_with_high_k", "num_high_k"]
+  # "lattices_with_high_k"/"num_high_k" are only present in the evaluator's
+  # normal return path. openevolve's own Stage-1-timeout path (evaluator.py)
+  # returns a hardcoded {stage1_passed, error, timeout} dict lacking both keys,
+  # which crashes MAP-Elites coordinate calc (database.py) and silently drops
+  # the program. Built-ins ("score", "complexity") never crash since they
+  # compute from program.metrics/code directly rather than requiring named keys.
+  feature_dimensions: ["score", "complexity"]

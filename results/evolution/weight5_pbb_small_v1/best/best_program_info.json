@@ -1,0 +1,19 @@
+{
+  "id": "490d32c6-a530-4f3f-9736-b0d21d261bcc",
+  "generation": 1,
+  "iteration": 4,
+  "timestamp": 1786127529.0190375,
+  "parent_id": "564d1eaa-58be-48a8-8266-6b0b08a70811",
+  "metrics": {
+    "combined_score": 1.5085185185185186,
+    "num_valid": 1162.0,
+    "total_candidates": 4992.0,
+    "lattices_with_high_k": 3.0,
+    "num_high_k": 200.0,
+    "best_fom": 1.0,
+    "mean_fom": 0.84,
+    "best_encoding_rate": 0.3333333333333333
+  },
+  "language": "python",
+  "saved_at": 1786157975.2937667
+}

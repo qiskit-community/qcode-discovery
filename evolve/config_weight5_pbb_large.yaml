@@ -9,7 +9,9 @@
 #   - parallel_evaluations: 16 (vs 6 for the small/laptop profile — kept below
 #     the CSS sibling's 24 since PBB candidates carry extra per-candidate cost:
 #     matrix-level containment cross-checks and the non-CSS classification gate)
-#   - evaluator timeout: 900s (vs 1200s)
+#   - evaluator timeout: 1800s (vs small's 1200s -- raised from an initial 900s
+#     after the seed's own Stage-1 evaluation tripped it on first launch; see
+#     the evaluator: block below for the full incident note)
 #   - population_size: 450 (1.5x, same scaling ratio as the CSS sibling)
 #
 # IMPORTANT: Set environment before running:
@@ -149,7 +151,15 @@ evaluator:
   # 64-core server: 16 parallel evaluations with OMP_NUM_THREADS=1. Kept below
   # the CSS sibling's 24 -- PBB candidates pay extra per-candidate cost for
   # matrix-level containment cross-checks and the non-CSS classification gate.
-  timeout: 900
+  # timeout raised 900s -> 1800s: the seed's own Stage-1 evaluation (exhaustive
+  # sweep over the large profile's lattices, n up to 494) tripped the original
+  # 900s ceiling on first launch (2026-08-07) and, per OpenEvolve's
+  # evaluator.py _cascade_evaluate, a Stage-1 timeout returns a metrics dict
+  # with none of this config's feature_dimensions -- which crashed the whole
+  # run on the very first database.add(). 900s was also backwards versus the
+  # small profile's 1200s despite large's bigger n; 1800s gives real margin
+  # above the observed ~900-1200s actual completion time.
+  timeout: 1800
   cascade_evaluation: true
   cascade_thresholds: [0.01, 0.3]
   parallel_evaluations: 16

@@ -241,6 +241,22 @@ def install_attribution_log(path) -> bool:
     _orig_add = ProgramDatabase.add
 
     def _add(self, program, *args, **kwargs):
+        # Safety net, not attribution: OpenEvolve's own cascade-evaluation Stage
+        # 1/2/3 timeout paths (openevolve/evaluator.py) return a hardcoded
+        # metrics dict ({"stage1_passed", "error", "timeout"}) that never
+        # includes any project-specific MAP-Elites feature_dimensions (e.g.
+        # weight-5 PBB's "lattices_with_high_k"/"num_high_k", CSS's
+        # "term_count"/"pattern_type"). database.py's _calculate_feature_coords
+        # has no default for a missing custom dimension -- it raises ValueError
+        # and kills the whole run on the next add(), including the initial seed
+        # program. Bolted onto this wrapper because it is the one place all
+        # four weight-5 campaigns already monkeypatch ProgramDatabase.add.
+        try:
+            for dim in getattr(self.config, "feature_dimensions", None) or ():
+                if dim not in ("complexity", "diversity", "score") and dim not in program.metrics:
+                    program.metrics[dim] = 0.0
+        except Exception:
+            pass
         result = _orig_add(self, program, *args, **kwargs)
         try:
             target = _ATTRIB_LOG_PATH[0]

@@ -1,0 +1,39 @@
+{
+  "approved_budget_deviations": [],
+  "campaign_name": "openevolve_evaluator_weight5_pbb",
+  "config_hash": "d699d8f2760dbcad720638a871f1f6e424e793890f6b3b6e724eb599576df868",
+  "config_path": "evolve/config_weight5_pbb_small.yaml",
+  "effective_gates": {
+    "fom_threshold_exact": 5.0,
+    "fom_threshold_exact_or_disabled": 5.0,
+    "fom_threshold_refine": 3.0,
+    "max_build_candidates_css": 5000,
+    "max_build_candidates_noncss": 3000,
+    "min_k_threshold": 4,
+    "min_k_threshold_noncss": 2,
+    "min_relevant_d": 6,
+    "min_relevant_d_noncss": 5,
+    "save_fom_threshold_css": 6.0,
+    "save_fom_threshold_noncss": 2.0,
+    "save_trust_ratio": 1.3,
+    "save_trust_ratio_noncss": 2.5
+  },
+  "evaluator_hash": "b41d27e3784bd4d6aac0155b404761d6595f4610792933810b1900171edd9223",
+  "evaluator_path": "evolve/openevolve_evaluator_weight5_pbb.py",
+  "git_commit": "aa0f18b600e38c4f5459a1fbfaee0836d9cf99ab",
+  "git_dirty": true,
+  "model_aliases": [
+    {
+      "alias": "aws/claude-opus-5",
+      "weight": 0.49
+    },
+    {
+      "alias": "azure/gpt-5.6-sol",
+      "weight": 0.51
+    }
+  ],
+  "rng_seed": 42,
+  "run_id": "weight5_pbb_small_v1",
+  "seed_hash": "c27b3704acd046ab5e40ec5e077260b64645659ddc08e2a0af45815173c5a45b",
+  "seed_path": "evolve/seed_solution_weight5_pbb.py"
+}
