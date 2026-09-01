@@ -52823,43 +52823,43 @@
       "d_method": "milp+bposd",
       "d_milp": 12,
       "d_bposd": 10,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786208416.9588158,
       "hash_d": 10,
       "milp_d": 8,
       "agrees_with_hash": false,
-      "logicals_optimal": 13,
+      "logicals_optimal": 24,
       "total_logicals": 24,
       "per_logical": [
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 6395.6
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1415.4
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 678.1
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 941.9
         },
         {
-          "w": 14,
-          "opt": false,
-          "t": 1800.6
+          "w": 12,
+          "opt": true,
+          "t": 3073.1
         },
         {
-          "w": 14,
-          "opt": false,
-          "t": 1800.3
+          "w": 12,
+          "opt": true,
+          "t": 4674.5
         },
         {
           "w": 12,
@@ -52868,28 +52868,28 @@
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 2179.1
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 14,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1639.0
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 884.7
         },
         {
-          "w": 14,
-          "opt": false,
-          "t": 1800.2
+          "w": 12,
+          "opt": true,
+          "t": 1126.6
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 1187.0
         },
         {
           "w": 8,
@@ -52955,15 +52955,17 @@
       "deep_milp_time_s": 1801.5,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T15:34:22.221070+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 8,
       "d_upper": 8,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 1.7777777777777777,
       "exploratory_fom": 1.7777777777777777
     },
     {
@@ -53011,18 +53013,18 @@
       "d_method": "milp+bposd",
       "d_milp": 10,
       "d_bposd": 12,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786189373.6456923,
       "hash_d": 10,
       "milp_d": 10,
-      "agrees_with_hash": false,
-      "logicals_optimal": 3,
+      "agrees_with_hash": true,
+      "logicals_optimal": 16,
       "total_logicals": 16,
       "per_logical": [
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.3
+          "opt": true,
+          "t": 965.8
         },
         {
           "w": 10,
@@ -53031,13 +53033,13 @@
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 1110.3
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 888.5
         },
         {
           "w": 10,
@@ -53046,13 +53048,13 @@
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 745.5
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.6
+          "opt": true,
+          "t": 1251.3
         },
         {
           "w": 10,
@@ -53061,57 +53063,59 @@
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 3498.0
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1801.5
+          "opt": true,
+          "t": 3364.6
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1801.1
+          "opt": true,
+          "t": 2411.9
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 2902.4
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.7
+          "opt": true,
+          "t": 12657.4
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.4
+          "opt": true,
+          "t": 7727.1
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.8
+          "opt": true,
+          "t": 4056.7
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.4
+          "opt": true,
+          "t": 3585.5
         }
       ],
       "deep_milp_time_s": 1803.4,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T15:34:24.946235+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 10,
       "d_upper": 10,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 1.8518518518518519,
       "exploratory_fom": 1.8518518518518519
     },
     {
@@ -53168,88 +53172,88 @@
       "d_method": "milp+bposd",
       "d_milp": 10,
       "d_bposd": 11,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786208416.9591844,
       "hash_d": 10,
       "milp_d": 10,
-      "agrees_with_hash": false,
-      "logicals_optimal": 1,
+      "agrees_with_hash": true,
+      "logicals_optimal": 16,
       "total_logicals": 16,
       "per_logical": [
         {
           "w": 13,
-          "opt": false,
-          "t": 1800.7
+          "opt": true,
+          "t": 2043.7
         },
         {
           "w": 13,
-          "opt": false,
-          "t": 1801.7
-        },
-        {
-          "w": 15,
-          "opt": false,
-          "t": 1800.6
+          "opt": true,
+          "t": 2321.7
         },
         {
           "w": 13,
-          "opt": false,
-          "t": 1800.7
+          "opt": true,
+          "t": 2985.9
+        },
+        {
+          "w": 13,
+          "opt": true,
+          "t": 2982.7
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 1512.2
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.9
+          "opt": true,
+          "t": 2847.5
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 1549.1
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.4
+          "opt": true,
+          "t": 1777.1
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.6
+          "opt": true,
+          "t": 2117.8
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 3283.5
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 1497.1
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.8
+          "opt": true,
+          "t": 2170.5
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.7
+          "opt": true,
+          "t": 1681.9
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.4
+          "opt": true,
+          "t": 2467.1
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.5
+          "opt": true,
+          "t": 741.0
         },
         {
           "w": 10,
@@ -53260,15 +53264,17 @@
       "deep_milp_time_s": 1805.1,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T15:34:26.583777+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 10,
       "d_upper": 10,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 1.8518518518518519,
       "exploratory_fom": 1.8518518518518519
     },
     {
@@ -53321,48 +53327,48 @@
       "hash_d": 12,
       "milp_d": 12,
       "agrees_with_hash": false,
-      "logicals_optimal": 0,
+      "logicals_optimal": 4,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.4
+          "opt": true,
+          "t": 9434.7
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.4
+          "opt": true,
+          "t": 12662.4
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 1096.2
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.4
-        },
-        {
-          "w": 16,
-          "opt": false,
-          "t": 1800.6
+          "opt": true,
+          "t": 6205.7
         },
         {
           "w": 15,
           "opt": false,
-          "t": 1800.3
+          "t": 14400.6
+        },
+        {
+          "w": 15,
+          "opt": false,
+          "t": 14400.5
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         }
       ],
       "deep_milp_time_s": 2439.0,
@@ -53425,48 +53431,48 @@
       "hash_d": 12,
       "milp_d": 12,
       "agrees_with_hash": false,
-      "logicals_optimal": 0,
+      "logicals_optimal": 4,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.7
+          "opt": true,
+          "t": 11168.2
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 2500.1
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 2825.2
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 2033.1
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.0
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.3
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.2
+          "t": 14400.1
         }
       ],
       "deep_milp_time_s": 2832.2,
@@ -53548,42 +53554,42 @@
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.3
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.4
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.3
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.5
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.6
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.3
+          "t": 14400.5
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.8
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.7
         }
       ],
       "deep_milp_time_s": 3600.5,
@@ -53659,48 +53665,48 @@
       "hash_d": 12,
       "milp_d": 12,
       "agrees_with_hash": false,
-      "logicals_optimal": 0,
+      "logicals_optimal": 2,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.3
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 9969.4
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.2
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 14321.8
+        },
+        {
+          "w": 15,
+          "opt": false,
+          "t": 14401.1
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.5
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 20,
-          "opt": false,
-          "t": 1800.1
+          "t": 14400.6
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.2
+          "t": 14400.7
         }
       ],
       "deep_milp_time_s": 3600.9,
@@ -53767,48 +53773,48 @@
       "hash_d": 12,
       "milp_d": 12,
       "agrees_with_hash": false,
-      "logicals_optimal": 0,
+      "logicals_optimal": 4,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 12,
+          "opt": true,
+          "t": 13421.8
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 13087.4
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 6897.3
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 6621.0
+        },
+        {
+          "w": 15,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.4
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.2
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.2
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 16,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.4
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.6
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "t": 14400.2
         }
       ],
       "deep_milp_time_s": 3603.4,
@@ -53890,42 +53896,42 @@
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.2
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.3
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.4
+          "t": 14400.5
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.6
         },
         {
-          "w": 16,
+          "w": 15,
           "opt": false,
-          "t": 1800.1
+          "t": 14401.2
         },
         {
-          "w": 65,
+          "w": 30,
           "opt": false,
-          "t": 1800.1
+          "t": 14401.9
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.5
         },
         {
-          "w": 17,
+          "w": 15,
           "opt": false,
-          "t": 1800.1
+          "t": 14401.1
         }
       ],
       "deep_milp_time_s": 3604.0,
@@ -53996,12 +54002,12 @@
       "d_method": "milp+bposd",
       "d_milp": 11,
       "d_bposd": 11,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786189373.6309793,
       "hash_d": 11,
       "milp_d": 11,
-      "agrees_with_hash": false,
-      "logicals_optimal": 3,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -54021,42 +54027,44 @@
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1076.7
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 2712.1
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3432.0
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.3
+          "opt": true,
+          "t": 2154.7
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3146.2
         }
       ],
       "deep_milp_time_s": 3604.9,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T16:04:26.462924+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 11,
       "d_upper": 11,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 1.3444444444444446,
       "exploratory_fom": 1.3444444444444446
     },
     {
@@ -54120,42 +54128,42 @@
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.7
+        },
+        {
+          "w": 12,
+          "opt": false,
+          "t": 14400.7
+        },
+        {
+          "w": 12,
+          "opt": false,
+          "t": 14400.5
         },
         {
           "w": 18,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.9
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 18,
-          "opt": false,
-          "t": 1800.1
+          "t": 14400.2
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.4
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.4
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "t": 14400.4
         }
       ],
       "deep_milp_time_s": 3605.4,
@@ -54233,42 +54241,42 @@
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.5
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.6
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1801.1
+          "t": 14400.6
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.5
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.4
+          "t": 14400.5
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.8
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1801.0
+          "t": 14400.2
         },
         {
-          "w": 18,
+          "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.5
         }
       ],
       "deep_milp_time_s": 4255.8,
@@ -54335,48 +54343,48 @@
       "hash_d": 12,
       "milp_d": 12,
       "agrees_with_hash": false,
-      "logicals_optimal": 0,
+      "logicals_optimal": 1,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 16,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1803.4
+          "t": 14400.1
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.3
+          "t": 14400.1
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.2
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 6108.6
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         }
       ],
       "deep_milp_time_s": 5203.9,
@@ -54458,42 +54466,42 @@
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.6
         },
         {
-          "w": 65,
+          "w": 22,
           "opt": false,
-          "t": 1800.3
+          "t": 14401.3
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.9
         },
         {
-          "w": 14,
+          "w": 12,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.8
         },
         {
-          "w": 16,
+          "w": 12,
           "opt": false,
-          "t": 1800.4
-        },
-        {
-          "w": 16,
-          "opt": false,
-          "t": 1800.1
+          "t": 14400.6
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1800.2
+          "t": 14401.1
+        },
+        {
+          "w": 12,
+          "opt": false,
+          "t": 14401.0
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1800.4
+          "t": 14400.8
         }
       ],
       "deep_milp_time_s": 5401.0,
@@ -54573,44 +54581,44 @@
       "total_logicals": 8,
       "per_logical": [
         {
-          "w": 83,
+          "w": 15,
           "opt": false,
-          "t": 1800.4
+          "t": 14400.7
         },
         {
-          "w": 57,
+          "w": 15,
           "opt": false,
-          "t": 1800.2
-        },
-        {
-          "w": 14,
-          "opt": false,
-          "t": 1800.2
-        },
-        {
-          "w": 14,
-          "opt": false,
-          "t": 1800.2
+          "t": 14400.8
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 14,
-          "opt": false,
-          "t": 1800.2
-        },
-        {
-          "w": 16,
-          "opt": false,
-          "t": 1800.5
+          "t": 14400.6
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.7
+        },
+        {
+          "w": 12,
+          "opt": false,
+          "t": 14400.8
+        },
+        {
+          "w": 12,
+          "opt": false,
+          "t": 14400.6
+        },
+        {
+          "w": 12,
+          "opt": false,
+          "t": 14400.8
+        },
+        {
+          "w": 12,
+          "opt": false,
+          "t": 14400.8
         }
       ],
       "deep_milp_time_s": 5401.7,
@@ -54673,48 +54681,48 @@
       "hash_d": 12,
       "milp_d": 12,
       "agrees_with_hash": false,
-      "logicals_optimal": 0,
+      "logicals_optimal": 1,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 16,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.0
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.1
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.2
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.1
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.4
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 13603.6
         }
       ],
       "deep_milp_time_s": 5403.4,
@@ -54792,42 +54800,42 @@
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 14,
-          "opt": false,
-          "t": 1800.1
+          "t": 14400.7
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.9
         },
         {
-          "w": 14,
+          "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.6
+        },
+        {
+          "w": 12,
+          "opt": false,
+          "t": 14400.6
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.7
         },
         {
           "w": 16,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.5
         },
         {
-          "w": 14,
+          "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.6
         },
         {
-          "w": 14,
+          "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.8
         }
       ],
       "deep_milp_time_s": 5404.7,
@@ -54898,33 +54906,33 @@
       "d_method": "milp+bposd",
       "d_milp": 8,
       "d_bposd": 8,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786189373.6449456,
       "hash_d": 8,
       "milp_d": 8,
-      "agrees_with_hash": false,
-      "logicals_optimal": 10,
+      "agrees_with_hash": true,
+      "logicals_optimal": 16,
       "total_logicals": 16,
       "per_logical": [
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3210.9
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3755.5
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.3
+          "opt": true,
+          "t": 3961.5
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3352.2
         },
         {
           "w": 8,
@@ -54943,13 +54951,13 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 863.5
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.4
+          "opt": true,
+          "t": 990.0
         },
         {
           "w": 8,
@@ -54990,15 +54998,17 @@
       "deep_milp_time_s": 5405.6,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T16:34:27.136819+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 8,
       "d_upper": 8,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 1.1851851851851851,
       "exploratory_fom": 1.1851851851851851
     },
     {
@@ -55051,7 +55061,7 @@
       "hash_d": 8,
       "milp_d": 8,
       "agrees_with_hash": false,
-      "logicals_optimal": 10,
+      "logicals_optimal": 15,
       "total_logicals": 16,
       "per_logical": [
         {
@@ -55096,33 +55106,33 @@
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 4995.3
         },
         {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "w": 11,
+          "opt": true,
+          "t": 5793.8
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.3
+          "opt": true,
+          "t": 694.8
+        },
+        {
+          "w": 8,
+          "opt": true,
+          "t": 842.7
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.8
+          "t": 14400.1
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.8
+          "opt": true,
+          "t": 8847.7
         },
         {
           "w": 8,
@@ -55651,12 +55661,12 @@
       "d_method": "milp+bposd",
       "d_milp": 8,
       "d_bposd": 8,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786213027.6370318,
       "hash_d": 8,
       "milp_d": 8,
-      "agrees_with_hash": false,
-      "logicals_optimal": 10,
+      "agrees_with_hash": true,
+      "logicals_optimal": 16,
       "total_logicals": 16,
       "per_logical": [
         {
@@ -55681,8 +55691,8 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 775.5
         },
         {
           "w": 8,
@@ -55700,9 +55710,9 @@
           "t": 1381.9
         },
         {
-          "w": 20,
-          "opt": false,
-          "t": 1800.1
+          "w": 12,
+          "opt": true,
+          "t": 11099.4
         },
         {
           "w": 8,
@@ -55711,18 +55721,18 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 783.5
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.4
+          "opt": true,
+          "t": 3482.2
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 4612.4
         },
         {
           "w": 8,
@@ -55736,22 +55746,24 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1048.2
         }
       ],
       "deep_milp_time_s": 7100.3,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T17:02:41.811334+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 8,
       "d_upper": 8,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 1.1851851851851851,
       "exploratory_fom": 1.1851851851851851
     },
     {
@@ -55804,33 +55816,33 @@
       "d_method": "milp+bposd",
       "d_milp": 8,
       "d_bposd": 8,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786214004.8199897,
       "hash_d": 8,
       "milp_d": 8,
-      "agrees_with_hash": false,
-      "logicals_optimal": 9,
+      "agrees_with_hash": true,
+      "logicals_optimal": 16,
       "total_logicals": 16,
       "per_logical": [
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 5592.1
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 4107.2
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 4941.9
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 5963.7
         },
         {
           "w": 8,
@@ -55844,13 +55856,13 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.3
+          "opt": true,
+          "t": 1245.7
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 884.5
         },
         {
           "w": 8,
@@ -55874,8 +55886,8 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 800.5
         },
         {
           "w": 8,
@@ -55896,15 +55908,17 @@
       "deep_milp_time_s": 7201.7,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T17:04:23.205194+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 8,
       "d_upper": 8,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 1.1851851851851851,
       "exploratory_fom": 1.1851851851851851
     },
     {
@@ -55962,48 +55976,48 @@
       "hash_d": 10,
       "milp_d": 10,
       "agrees_with_hash": false,
-      "logicals_optimal": 0,
+      "logicals_optimal": 6,
       "total_logicals": 8,
       "per_logical": [
         {
-          "w": 22,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 31,
-          "opt": false,
-          "t": 1800.2
+          "w": 10,
+          "opt": true,
+          "t": 3879.7
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 3630.1
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1036.6
+        },
+        {
+          "w": 10,
+          "opt": true,
+          "t": 3822.9
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.4
         },
         {
           "w": 18,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.7
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3996.2
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3364.0
         }
       ],
       "deep_milp_time_s": 7203.9,
@@ -56070,67 +56084,69 @@
       "d_method": "milp+bposd",
       "d_milp": 10,
       "d_bposd": 10,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786147036.8468692,
       "hash_d": 10,
       "milp_d": 10,
-      "agrees_with_hash": false,
-      "logicals_optimal": 0,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 4204.7
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 6460.3
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 23,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 3933.8
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 2775.9
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3537.7
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 4262.8
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3924.3
+        },
+        {
+          "w": 10,
+          "opt": true,
+          "t": 4473.4
         }
       ],
       "deep_milp_time_s": 7205.2,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T17:04:26.729029+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 10,
       "d_upper": 10,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 1.1111111111111112,
       "exploratory_fom": 1.1111111111111112
     },
     {
@@ -56337,12 +56353,12 @@
       "d_method": "milp+bposd",
       "d_milp": 12,
       "d_bposd": 10,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786147036.846755,
       "hash_d": 10,
       "milp_d": 10,
-      "agrees_with_hash": false,
-      "logicals_optimal": 1,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -56352,52 +56368,54 @@
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 1132.9
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 2795.2
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 5409.7
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 7695.9
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 6652.4
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 5509.3
         },
         {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "w": 10,
+          "opt": true,
+          "t": 6090.1
         }
       ],
       "deep_milp_time_s": 7970.5,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T17:17:12.071673+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 10,
       "d_upper": 10,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 0.9523809523809523,
       "exploratory_fom": 0.9523809523809523
     },
     {
@@ -56704,67 +56722,69 @@
       "d_method": "milp+bposd",
       "d_milp": 10,
       "d_bposd": 10,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786147036.8469791,
       "hash_d": 10,
       "milp_d": 10,
-      "agrees_with_hash": false,
-      "logicals_optimal": 0,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 3281.4
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 5883.1
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
-        },
-        {
-          "w": 13,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 7332.4
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 8523.8
         },
         {
           "w": 10,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 5692.3
+        },
+        {
+          "w": 10,
+          "opt": true,
+          "t": 6041.4
+        },
+        {
+          "w": 10,
+          "opt": true,
+          "t": 5835.2
+        },
+        {
+          "w": 10,
+          "opt": true,
+          "t": 5298.3
         }
       ],
       "deep_milp_time_s": 8074.3,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T17:18:55.852326+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 10,
       "d_upper": 10,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 0.9523809523809523,
       "exploratory_fom": 0.9523809523809523
     },
     {
@@ -56826,7 +56846,7 @@
       "hash_d": 9,
       "milp_d": 9,
       "agrees_with_hash": false,
-      "logicals_optimal": 4,
+      "logicals_optimal": 7,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -56851,23 +56871,23 @@
         },
         {
           "w": 9,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 876.2
         },
         {
           "w": 9,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 931.9
         },
         {
           "w": 13,
           "opt": false,
-          "t": 1800.5
+          "t": 14400.4
         },
         {
           "w": 13,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 13621.2
         }
       ],
       "deep_milp_time_s": 8852.7,
@@ -56934,33 +56954,33 @@
       "d_method": "milp+bposd",
       "d_milp": 8,
       "d_bposd": 8,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786147036.8459241,
       "hash_d": 8,
       "milp_d": 8,
-      "agrees_with_hash": false,
-      "logicals_optimal": 3,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 10821.4
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 13393.8
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 9251.5
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 9282.3
         },
         {
           "w": 8,
@@ -56979,22 +56999,24 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1262.1
         }
       ],
       "deep_milp_time_s": 8935.0,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T17:33:16.564658+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 8,
       "d_upper": 8,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 0.8888888888888888,
       "exploratory_fom": 0.8888888888888888
     },
     {
@@ -57052,28 +57074,28 @@
       "hash_d": 8,
       "milp_d": 8,
       "agrees_with_hash": false,
-      "logicals_optimal": 4,
+      "logicals_optimal": 6,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 12303.7
         },
         {
           "w": 18,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.9
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 14371.4
         },
         {
           "w": 18,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.7
         },
         {
           "w": 8,
@@ -57169,28 +57191,28 @@
       "hash_d": 8,
       "milp_d": 8,
       "agrees_with_hash": false,
-      "logicals_optimal": 4,
+      "logicals_optimal": 6,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 12195.1
         },
         {
           "w": 18,
           "opt": false,
-          "t": 1800.1
+          "t": 14401.0
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 12888.0
         },
         {
           "w": 18,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.7
         },
         {
           "w": 8,
@@ -57282,33 +57304,33 @@
       "hash_d": 8,
       "milp_d": 8,
       "agrees_with_hash": false,
-      "logicals_optimal": 2,
+      "logicals_optimal": 6,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 18,
           "opt": false,
-          "t": 1800.1
+          "t": 14401.0
         },
         {
           "w": 18,
           "opt": false,
-          "t": 1800.2
+          "t": 14402.2
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 8315.2
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 12169.6
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 810.8
         },
         {
           "w": 8,
@@ -57322,8 +57344,8 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 767.7
         }
       ],
       "deep_milp_time_s": 9465.9,
@@ -57395,28 +57417,28 @@
       "hash_d": 8,
       "milp_d": 8,
       "agrees_with_hash": false,
-      "logicals_optimal": 4,
+      "logicals_optimal": 6,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 12128.3
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.3
         },
         {
           "w": 12,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.2
         },
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 11108.9
         },
         {
           "w": 8,
@@ -57592,12 +57614,12 @@
       "d_method": "milp+bposd",
       "d_milp": 8,
       "d_bposd": 8,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786202907.7118006,
       "hash_d": 8,
       "milp_d": 8,
-      "agrees_with_hash": false,
-      "logicals_optimal": 7,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -57622,8 +57644,8 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.3
+          "opt": true,
+          "t": 830.7
         },
         {
           "w": 8,
@@ -57644,15 +57666,17 @@
       "deep_milp_time_s": 9768.4,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T17:47:09.892029+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 8,
       "d_upper": 8,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 0.8888888888888888,
       "exploratory_fom": 0.8888888888888888
     },
     {
@@ -57832,28 +57856,28 @@
       "hash_d": 8,
       "milp_d": 8,
       "agrees_with_hash": false,
-      "logicals_optimal": 4,
+      "logicals_optimal": 6,
       "total_logicals": 8,
       "per_logical": [
         {
           "w": 12,
-          "opt": false,
-          "t": 1800.1
-        },
-        {
-          "w": 26,
-          "opt": false,
-          "t": 1800.0
-        },
-        {
-          "w": 12,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 12451.7
         },
         {
           "w": 18,
           "opt": false,
-          "t": 1800.1
+          "t": 14401.0
+        },
+        {
+          "w": 12,
+          "opt": true,
+          "t": 11408.1
+        },
+        {
+          "w": 18,
+          "opt": false,
+          "t": 14400.9
         },
         {
           "w": 8,
@@ -58050,7 +58074,7 @@
       "hash_d": 8,
       "milp_d": 8,
       "agrees_with_hash": false,
-      "logicals_optimal": 5,
+      "logicals_optimal": 6,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -58074,14 +58098,14 @@
           "t": 1445.8
         },
         {
-          "w": 26,
+          "w": 20,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.0
         },
         {
           "w": 20,
           "opt": false,
-          "t": 1800.4
+          "t": 14400.1
         },
         {
           "w": 8,
@@ -58090,8 +58114,8 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1010.3
         }
       ],
       "deep_milp_time_s": 10070.9,
@@ -58162,12 +58186,12 @@
       "d_method": "milp+bposd",
       "d_milp": 8,
       "d_bposd": 8,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786194766.1183934,
       "hash_d": 8,
       "milp_d": 8,
-      "agrees_with_hash": false,
-      "logicals_optimal": 5,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -58177,8 +58201,8 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1062.0
         },
         {
           "w": 8,
@@ -58197,8 +58221,8 @@
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 8205.0
         },
         {
           "w": 8,
@@ -58207,22 +58231,24 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 2262.1
         }
       ],
       "deep_milp_time_s": 10516.1,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T17:59:37.676961+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 8,
       "d_upper": 8,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 0.7111111111111111,
       "exploratory_fom": 0.7111111111111111
     },
     {
@@ -58270,12 +58296,12 @@
       "d_method": "milp+bposd",
       "d_milp": 8,
       "d_bposd": 8,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786208416.9553533,
       "hash_d": 8,
       "milp_d": 8,
-      "agrees_with_hash": false,
-      "logicals_optimal": 4,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -58300,37 +58326,39 @@
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1777.8
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1773.8
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.2
+          "opt": true,
+          "t": 3117.3
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 9464.8
         }
       ],
       "deep_milp_time_s": 10657.2,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T18:01:58.761794+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 8,
       "d_upper": 8,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 0.7111111111111111,
       "exploratory_fom": 0.7111111111111111
     },
     {
@@ -58383,7 +58411,7 @@
       "hash_d": 8,
       "milp_d": 8,
       "agrees_with_hash": false,
-      "logicals_optimal": 4,
+      "logicals_optimal": 6,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -58409,22 +58437,22 @@
         {
           "w": 20,
           "opt": false,
-          "t": 1800.2
+          "t": 14400.6
         },
         {
           "w": 20,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.5
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1348.5
         },
         {
           "w": 8,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1088.3
         }
       ],
       "deep_milp_time_s": 10737.2,
@@ -58589,12 +58617,12 @@
       "d_method": "milp+bposd",
       "d_milp": 8,
       "d_bposd": 8,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786208416.9564102,
       "hash_d": 8,
       "milp_d": 8,
-      "agrees_with_hash": false,
-      "logicals_optimal": 7,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -58619,8 +58647,8 @@
         },
         {
           "w": 11,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 7794.2
         },
         {
           "w": 8,
@@ -58641,15 +58669,17 @@
       "deep_milp_time_s": 10796.0,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T18:04:17.538014+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 8,
       "d_upper": 8,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 0.7111111111111111,
       "exploratory_fom": 0.7111111111111111
     },
     {
@@ -58698,7 +58728,7 @@
       "hash_d": 7,
       "milp_d": 7,
       "agrees_with_hash": false,
-      "logicals_optimal": 4,
+      "logicals_optimal": 6,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -58722,24 +58752,24 @@
           "t": 252.4
         },
         {
-          "w": 21,
-          "opt": false,
-          "t": 1800.2
+          "w": 20,
+          "opt": true,
+          "t": 8580.4
+        },
+        {
+          "w": 20,
+          "opt": true,
+          "t": 10793.6
         },
         {
           "w": 21,
           "opt": false,
-          "t": 1800.1
+          "t": 14400.2
         },
         {
           "w": 21,
           "opt": false,
-          "t": 1800.2
-        },
-        {
-          "w": 21,
-          "opt": false,
-          "t": 1800.1
+          "t": 14400.2
         }
       ],
       "deep_milp_time_s": 11226.2,
@@ -58839,24 +58869,24 @@
           "t": 272.2
         },
         {
-          "w": 25,
+          "w": 23,
           "opt": false,
-          "t": 1800.3
+          "t": 14401.7
         },
         {
-          "w": 24,
+          "w": 23,
           "opt": false,
-          "t": 1800.1
+          "t": 14402.1
         },
         {
           "w": 21,
           "opt": false,
-          "t": 1800.1
+          "t": 14401.5
         },
         {
           "w": 22,
           "opt": false,
-          "t": 1800.1
+          "t": 14401.5
         }
       ],
       "deep_milp_time_s": 11479.7,
@@ -58914,12 +58944,12 @@
       "d_method": "milp+bposd",
       "d_milp": 5,
       "d_bposd": 5,
-      "milp_exact": false,
+      "milp_exact": true,
       "timestamp": 1786189063.6302547,
       "hash_d": 5,
       "milp_d": 5,
-      "agrees_with_hash": false,
-      "logicals_optimal": 6,
+      "agrees_with_hash": true,
+      "logicals_optimal": 8,
       "total_logicals": 8,
       "per_logical": [
         {
@@ -58954,27 +58984,29 @@
         },
         {
           "w": 20,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 1605.5
         },
         {
           "w": 20,
-          "opt": false,
-          "t": 1800.1
+          "opt": true,
+          "t": 2140.7
         }
       ],
       "deep_milp_time_s": 11512.3,
       "timeout_per_logical": 1800,
       "verified_at": "2026-08-26T18:16:13.816373+00:00",
-      "d_is_exact": false,
-      "d_is_upper_bound": true,
+      "d_is_exact": true,
+      "d_is_upper_bound": false,
       "distance_schema_version": 2,
-      "d_lower": 0,
+      "d_lower": 5,
       "d_upper": 5,
       "bound_sources": [
-        "bp_osd_heuristic"
+        "bp_osd_heuristic",
+        "exact_milp"
       ],
       "component_bounds": null,
+      "certified_fom": 0.2777777777777778,
       "exploratory_fom": 0.2777777777777778
     }
   ],
