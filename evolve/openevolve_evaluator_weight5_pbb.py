@@ -85,10 +85,15 @@ from evolve.seed_solution_weight5_pbb import (
 # (OpenEvolve imports this evaluator before generating). Defensive no-op if
 # unavailable.
 try:
-    from evolve.model_attribution import install_tagging as _install_tagging
+    from evolve.model_attribution import (
+        install_tagging as _install_tagging,
+        peek_model as _peek_model,
+        peek_program_id as _peek_program_id,
+    )
     _install_tagging()
 except Exception:
-    pass
+    _peek_model = lambda: None
+    _peek_program_id = lambda: None
 
 # Reuse the generic non-CSS evaluator's Phase E1/E2 provenance helpers
 # exactly, rather than reimplementing them a third time -- this logic is
@@ -355,6 +360,12 @@ def _log_code_jsonl(result: dict, run_name: str | None = None) -> None:
         "d_milp": result.get("d_milp"),
         "d_bposd": result.get("d_bposd"),
         "milp_exact": result.get("milp_exact"),
+        "run_id": result.get("run_id"),
+        "program_id": result.get("program_id"),
+        "generating_model": result.get("generating_model"),
+        "model_alias": result.get("model_alias"),
+        "source_hash": result.get("source_hash"),
+        "code_key": result.get("code_key"),
         "timestamp": time.time(),
     }
 
@@ -370,6 +381,38 @@ def _log_code_jsonl(result: dict, run_name: str | None = None) -> None:
             f.write(json.dumps(record, default=str) + "\n")
     except OSError:
         pass
+
+
+def _persist_observed_results(
+    results: list[dict],
+    *,
+    source_hash: str | None,
+    run_name: str | None,
+    program_id: str | None,
+    generating_model: str | None,
+) -> None:
+    """Stamp and persist every positive-distance observation.
+
+    ``program_id`` and ``generating_model`` are captured when evaluation
+    starts.  OpenEvolve can time out while the evaluator thread continues,
+    clearing its process-global attribution context before distance workers
+    finish; seeding those captured values here preserves the correct identity
+    in that case.  Discovery logging is intentionally independent of Pareto
+    archive admission.
+    """
+    resolved_run_id = run_name or os.environ.get("QCODE_RUN_NAME")
+    for result in results:
+        result.setdefault("run_id", resolved_run_id)
+        result.setdefault("program_id", program_id)
+        result.setdefault("generating_model", generating_model)
+        result.setdefault("model_alias", generating_model)
+
+    _stamp_provenance(results, source_hash, run_name=resolved_run_id)
+
+    observed = [result for result in results if result.get("d", 0) > 0]
+    for result in observed:
+        _log_code_jsonl(result, run_name=resolved_run_id)
+    _emit_discovery_events(observed)
 
 
 def _write_metrics_jsonl(metrics: dict) -> None:
@@ -408,6 +451,8 @@ def _run_evaluation(
     max_distance_per_lattice: int = MAX_DISTANCE_PER_LATTICE,
     run_name: str | None = None,
     source_hash: str | None = None,
+    program_id: str | None = None,
+    generating_model: str | None = None,
 ) -> dict:
     """Run evaluation across lattices and compute aggregate metrics.
 
@@ -420,6 +465,14 @@ def _run_evaluation(
     ``source_hash`` (Phase E1): passed through to :func:`_stamp_provenance`
     below so every result in ``all_results`` carries it.
     """
+    # Capture identity before any long-running work.  The OpenEvolve timeout
+    # path can clear the process-global attribution context while this worker
+    # thread continues to finish its distance calculations.
+    if program_id is None:
+        program_id = _peek_program_id()
+    if generating_model is None:
+        generating_model = _peek_model()
+
     all_results = []
     total_candidates = 0
     errors = []
@@ -626,7 +679,6 @@ def _run_evaluation(
 
         for result in distance_results:
             all_results.append(result)
-            _log_code_jsonl(result, run_name=run_name)
 
         for (ell, m), rest in per_lattice_rest:
             all_results.extend(rest)
@@ -648,8 +700,15 @@ def _run_evaluation(
         if _scored_fom(best_result) > 0:
             best_code = best_result
 
-    # Phase E1: stamp provenance onto every per-code result once, here.
-    _stamp_provenance(all_results, source_hash, run_name=run_name)
+    # Phase E1/E2: provenance and discovery records are observation-level,
+    # not conditional on crossing the archive FOM threshold.
+    _persist_observed_results(
+        all_results,
+        source_hash=source_hash,
+        run_name=run_name,
+        program_id=program_id,
+        generating_model=generating_model,
+    )
 
     return {
         "best_fom": best_fom,
@@ -673,13 +732,21 @@ def evaluate_stage1(program_path: str) -> dict:
     ALL Stage-1 lattices for the current QCODE_LATTICE_PROFILE to advance
     past the cascade threshold.
     """
+    program_id = _peek_program_id()
+    generating_model = _peek_model()
     try:
         generate_fn = _load_generate_candidates(program_path)
     except Exception as e:
         return _error_result(str(e))
 
     stage1_lattices = _stage1_lattices()
-    metrics = _run_evaluation(generate_fn, stage1_lattices, quick=True)
+    metrics = _run_evaluation(
+        generate_fn,
+        stage1_lattices,
+        quick=True,
+        program_id=program_id,
+        generating_model=generating_model,
+    )
 
     if metrics["total_candidates"] == 0:
         return {
@@ -718,6 +785,8 @@ def evaluate_stage2(program_path: str) -> dict:
     QCODE_LATTICE_PROFILE, with the same adaptive distance pipeline as the
     non-CSS campaign (hash-based exact, MILP symplectic, BP-OSD fallback).
     """
+    program_id = _peek_program_id()
+    generating_model = _peek_model()
     try:
         generate_fn = _load_generate_candidates(program_path)
     except Exception as e:
@@ -729,6 +798,8 @@ def evaluate_stage2(program_path: str) -> dict:
         generate_fn, stage2_lattices,
         quick=False, num_trials=1000,
         source_hash=source_hash,
+        program_id=program_id,
+        generating_model=generating_model,
     )
 
     min_relevant_d = gates.min_relevant_d_noncss()
@@ -840,8 +911,6 @@ def evaluate_stage2(program_path: str) -> dict:
                 update_pareto_front_v2(v2_records)
             except Exception:
                 pass  # Don't fail evaluation over persistence
-            # Phase E2: one discovery event per already-stamped result.
-            _emit_discovery_events(credible_to_save)
 
     _write_metrics_jsonl(metrics)
 

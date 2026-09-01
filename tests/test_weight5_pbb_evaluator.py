@@ -12,6 +12,10 @@ evaluator's parallel fix.
 
 from __future__ import annotations
 
+import json
+
+import pytest
+
 from evaluation import gates, weight_enforcement
 import evolve.openevolve_evaluator_weight5_pbb as pbb_eval
 from evolve.openevolve_evaluator_weight5_pbb import (
@@ -19,6 +23,157 @@ from evolve.openevolve_evaluator_weight5_pbb import (
     _classify_pbb_strategy,
 )
 from evolve.seed_solution_weight5_pbb import generate_candidates as pbb_generate
+
+
+class TestPbbObservationProvenance:
+    def test_stage1_captures_identity_before_program_import(
+        self, monkeypatch
+    ):
+        """Import-time context clearing must not erase run provenance.
+
+        OpenEvolve may clear its process-global attribution context while an
+        evaluator thread is still active.  Capturing the identity before
+        loading arbitrary evolved code keeps that race outside the import
+        path as well as outside the distance-evaluation path.
+        """
+        context = {"program_id": "program-before-import", "model": "model-a"}
+        monkeypatch.setattr(
+            pbb_eval, "_peek_program_id", lambda: context["program_id"]
+        )
+        monkeypatch.setattr(pbb_eval, "_peek_model", lambda: context["model"])
+
+        generate_fn = lambda ell, m: []
+
+        def load_and_clear(_program_path):
+            context["program_id"] = None
+            context["model"] = None
+            return generate_fn
+
+        captured = {}
+
+        def fake_run(_generate_fn, _lattices, **kwargs):
+            captured.update(kwargs)
+            return {"total_candidates": 0}
+
+        monkeypatch.setattr(pbb_eval, "_load_generate_candidates", load_and_clear)
+        monkeypatch.setattr(pbb_eval, "_run_evaluation", fake_run)
+
+        pbb_eval.evaluate_stage1("unused.py")
+
+        assert captured["program_id"] == "program-before-import"
+        assert captured["generating_model"] == "model-a"
+
+    def test_stage2_captures_identity_before_program_import(
+        self, monkeypatch
+    ):
+        context = {"program_id": "program-before-import", "model": "model-a"}
+        monkeypatch.setattr(
+            pbb_eval, "_peek_program_id", lambda: context["program_id"]
+        )
+        monkeypatch.setattr(pbb_eval, "_peek_model", lambda: context["model"])
+
+        def load_and_clear(_program_path):
+            context["program_id"] = None
+            context["model"] = None
+            return lambda ell, m: []
+
+        captured = {}
+
+        class StopAfterCapture(Exception):
+            pass
+
+        def fake_run(_generate_fn, _lattices, **kwargs):
+            captured.update(kwargs)
+            raise StopAfterCapture
+
+        monkeypatch.setattr(pbb_eval, "_load_generate_candidates", load_and_clear)
+        monkeypatch.setattr(pbb_eval, "_run_evaluation", fake_run)
+        monkeypatch.setattr(pbb_eval, "file_content_hash", lambda _path: "hash")
+
+        with pytest.raises(StopAfterCapture):
+            pbb_eval.evaluate_stage2("unused.py")
+
+        assert captured["program_id"] == "program-before-import"
+        assert captured["generating_model"] == "model-a"
+
+    def test_raw_log_retains_program_and_model_identity(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(pbb_eval, "_PROJECT_ROOT", str(tmp_path))
+        result = {
+            "ell": 6,
+            "m": 6,
+            "A_terms": [(0, 0), (1, 1)],
+            "B_terms": [(0, 0), (2, 0), (1, 3)],
+            "C_terms": [(0, 0)],
+            "D_terms": [],
+            "n": 72,
+            "k": 4,
+            "d": 3,
+            "fom": 0.5,
+            "run_id": "pbb-test",
+            "program_id": "program-1",
+            "generating_model": "model-a",
+            "model_alias": "model-a",
+            "source_hash": "source-hash",
+            "code_key": "canonical-key",
+        }
+
+        pbb_eval._log_code_jsonl(result, run_name="pbb-test")
+
+        path = tmp_path / "results/evolution/pbb-test/all_codes_weight5_pbb.jsonl"
+        record = json.loads(path.read_text(encoding="utf-8"))
+        for field in (
+            "run_id",
+            "program_id",
+            "generating_model",
+            "model_alias",
+            "source_hash",
+            "code_key",
+        ):
+            assert record[field] == result[field]
+
+    def test_subthreshold_positive_observation_still_emits_event(self, monkeypatch):
+        logged = []
+        emitted = []
+        monkeypatch.setattr(
+            pbb_eval,
+            "_log_code_jsonl",
+            lambda result, run_name=None: logged.append((dict(result), run_name)),
+        )
+        monkeypatch.setattr(
+            pbb_eval,
+            "_emit_discovery_events",
+            lambda results: emitted.extend(dict(result) for result in results),
+        )
+
+        positive = {
+            "ell": 6,
+            "m": 6,
+            "A_terms": [(0, 0), (1, 1)],
+            "B_terms": [(0, 0), (2, 0), (1, 3)],
+            "C_terms": [(0, 0)],
+            "D_terms": [],
+            "n": 72,
+            "k": 4,
+            "d": 3,
+            "fom": 0.5,
+        }
+        zero_distance = {**positive, "d": 0}
+
+        pbb_eval._persist_observed_results(
+            [positive, zero_distance],
+            source_hash="source-hash",
+            run_name="pbb-test",
+            program_id="program-1",
+            generating_model="model-a",
+        )
+
+        assert len(logged) == 1
+        assert len(emitted) == 1
+        assert emitted[0]["d"] == 3
+        assert emitted[0]["program_id"] == "program-1"
+        assert emitted[0]["model_alias"] == "model-a"
+        assert emitted[0]["source_hash"] == "source-hash"
+        assert emitted[0]["code_key"]
 
 
 class TestExponentRangeValidation:
