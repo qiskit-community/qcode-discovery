@@ -1,5 +1,4 @@
-"""Permutation-equivalence decision for CSS stabilizer codes via BLISS
-canonical labeling of a colored Tanner graph.
+"""Stored-generator permutation equivalence via BLISS canonical labeling.
 
 Given two CSS stabilizer codes specified by parity-check matrices
 ``(H_X, H_Z)`` and ``(H_X', H_Z')`` over ``n`` qubits, this module
@@ -53,9 +52,8 @@ Scope and caveats
 * The decision is on the **stabilizer matrix as given**, not the
   stabilizer **group**.  Two CSS codes whose ``H_X``, ``H_Z`` arise
   from different generating sets of the same stabilizer subgroup may
-  have different canonical hashes.  For BB codes constructed from a
-  polynomial pair ``(A, B)`` the generators are canonical, so this
-  distinction does not arise in practice.
+  have different canonical hashes.  This conservative distinction is
+  deliberate in a stored-presentation audit.
 
 * The decision does **not** cover broader equivalence relations:
 
@@ -68,10 +66,11 @@ Scope and caveats
   - General code equivalence (any unitary intertwining the two
     stabilizer groups) is coarser still and not addressed here.
 
-* This module is for **CSS** codes (codes presented as a pair
-  ``H_X``, ``H_Z``).  Non-CSS stabilizer codes -- whose symplectic
-  matrix has rows that mix X- and Z-parts -- would require a different
-  graph construction; the three-coloring above does not apply.
+* The default API is for **CSS** codes presented as ``H_X, H_Z``.  The
+  ``*_noncss`` API implements the analogous stored-generator relation
+  for a symplectic matrix whose rows mix X and Z: each row's two support
+  vertices are tied by an edge so their row permutation cannot decouple.
+  Neither API quotients arbitrary stabilizer-basis changes.
 
 Public API
 ----------
@@ -80,6 +79,11 @@ Public API
 ``canonical_hash(code)``
     Hashable canonical representative; equal hashes iff
     permutation-equivalent.
+``canonical_digest(code)``
+    Stable SHA-256 serialization of ``canonical_hash`` for persisted class
+    identifiers and audit sidecars.
+``canonical_signature_digest(signature)``
+    Stable SHA-256 serialization of an already computed canonical signature.
 ``are_permutation_equivalent(code_a, code_b)``
     Convenience boolean wrapper around ``canonical_hash``.
 ``extract_qubit_permutation(code_a, code_b)``
@@ -100,6 +104,8 @@ Public API
 ``canonical_hash_noncss(code)``
     Hashable canonical form of a non-CSS stabilizer code under
     stabilizer permutation equivalence.
+``canonical_digest_noncss(code)``
+    Stable SHA-256 serialization of ``canonical_hash_noncss``.
 ``are_permutation_equivalent_noncss(code_a, code_b)``
     Boolean wrapper around ``canonical_hash_noncss``.
 
@@ -113,6 +119,9 @@ import time.
 """
 
 from __future__ import annotations
+
+import hashlib
+import struct
 
 import numpy as np
 
@@ -139,6 +148,12 @@ def _extract_check_matrices(code):
         code.matrix_z.toarray() if hasattr(code.matrix_z, "toarray") else code.matrix_z,
         dtype=int,
     ) % 2
+    if H_X.ndim != 2 or H_Z.ndim != 2:
+        raise ValueError("CSS check matrices must both be two-dimensional")
+    if H_X.shape[1] != H_Z.shape[1]:
+        raise ValueError(
+            "CSS check matrices must have the same number of qubit columns"
+        )
     return H_X, H_Z
 
 
@@ -183,6 +198,42 @@ def build_colored_tanner_graph(code):
     return g, colors
 
 
+def _canonical_colored_form(graph, colors):
+    """Return a color-aware canonical signature and vertex permutation.
+
+    A color-aware canonical permutation is not enough if the returned
+    signature drops the colors: differently colored versions of the same
+    uncolored graph can otherwise collide.
+    """
+    graph.vs["_canonical_color"] = list(colors)
+    permutation = graph.canonical_permutation(color=colors)
+    canonical = graph.permute_vertices(permutation)
+    signature = (
+        tuple(canonical.vs["_canonical_color"]),
+        tuple(sorted(canonical.get_edgelist())),
+    )
+    return signature, permutation
+
+
+def _canonical_colored_signature(graph, colors):
+    """Return a canonical signature that retains vertex colors."""
+    signature, _ = _canonical_colored_form(graph, colors)
+    return signature
+
+
+def canonical_signature_digest(signature) -> str:
+    """Return a stable SHA-256 digest of a colored canonical signature."""
+    colors, edges = signature
+    digest = hashlib.sha256()
+    digest.update(struct.pack(">Q", len(colors)))
+    for color in colors:
+        digest.update(struct.pack(">q", int(color)))
+    digest.update(struct.pack(">Q", len(edges)))
+    for left, right in edges:
+        digest.update(struct.pack(">qq", int(left), int(right)))
+    return digest.hexdigest()
+
+
 def canonical_hash(code):
     """Hashable canonical representative of a CSS code under permutation
     equivalence.
@@ -191,13 +242,16 @@ def canonical_hash(code):
     permutation-equivalent (qubit relabel preserving X-stabilizer and
     Z-stabilizer roles); see the module docstring for the proof.
 
-    The hash is the sorted edge list of the BLISS-canonicalised colored
-    Tanner graph; suitable as a dict key.
+    The hash contains the canonicalized color sequence and edge list and is
+    suitable as a dict key.
     """
     g, c = build_colored_tanner_graph(code)
-    perm = g.canonical_permutation(color=c)
-    g_canon = g.permute_vertices(perm)
-    return tuple(sorted(g_canon.get_edgelist()))
+    return _canonical_colored_signature(g, c)
+
+
+def canonical_digest(code) -> str:
+    """Stable digest of :func:`canonical_hash`, suitable for sidecars."""
+    return canonical_signature_digest(canonical_hash(code))
 
 
 def are_permutation_equivalent(code_a, code_b) -> bool:
@@ -223,12 +277,9 @@ def extract_full_vertex_isomorphism(code_a, code_b):
     g_a, c_a = build_colored_tanner_graph(code_a)
     g_b, c_b = build_colored_tanner_graph(code_b)
 
-    perm_a = g_a.canonical_permutation(color=c_a)
-    perm_b = g_b.canonical_permutation(color=c_b)
-
-    edges_a_canon = sorted(g_a.permute_vertices(perm_a).get_edgelist())
-    edges_b_canon = sorted(g_b.permute_vertices(perm_b).get_edgelist())
-    if edges_a_canon != edges_b_canon:
+    signature_a, perm_a = _canonical_colored_form(g_a, c_a)
+    signature_b, perm_b = _canonical_colored_form(g_b, c_b)
+    if signature_a != signature_b:
         return None
 
     inv_perm_a = [0] * len(perm_a)
@@ -298,6 +349,12 @@ def _extract_symplectic_matrix(code):
         code.matrix.toarray() if hasattr(code.matrix, "toarray") else code.matrix,
         dtype=int,
     ) % 2
+    if H.ndim != 2:
+        raise ValueError("the symplectic check matrix must be two-dimensional")
+    if H.shape[1] % 2:
+        raise ValueError(
+            "the symplectic check matrix must have an even number of columns"
+        )
     return H
 
 
@@ -343,19 +400,20 @@ def canonical_hash_noncss(code):
     Two non-CSS codes return equal canonical hashes iff they are related
     by a qubit permutation paired with a tied row permutation of the
     symplectic stabilizer matrix; see the "Non-CSS extension" comment
-    block.  The hash is the sorted edge list of the BLISS-canonicalised
-    colored Tanner graph (with X-support/Z-support tying edges); suitable
-    as a dict key.
+    block.  The hash contains the canonicalized color sequence and edge list
+    of the BLISS-canonicalised colored Tanner graph (with X-support/Z-support
+    tying edges) and is suitable as a dict key.
     """
     g, c = build_colored_tanner_graph_noncss(code)
-    perm = g.canonical_permutation(color=c)
-    g_canon = g.permute_vertices(perm)
-    return tuple(sorted(g_canon.get_edgelist()))
+    return _canonical_colored_signature(g, c)
+
+
+def canonical_digest_noncss(code) -> str:
+    """Stable digest of :func:`canonical_hash_noncss`."""
+    return canonical_signature_digest(canonical_hash_noncss(code))
 
 
 def are_permutation_equivalent_noncss(code_a, code_b) -> bool:
     """Return True iff ``code_a`` and ``code_b`` are stabilizer
     permutation-equivalent under the non-CSS coloring."""
     return canonical_hash_noncss(code_a) == canonical_hash_noncss(code_b)
-
-
