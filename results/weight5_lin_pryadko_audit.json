@@ -1,0 +1,1597 @@
+{
+  "archive": {
+    "abelian_zip_sha256": "5500708bf369baae14fb008e7a6d01147b77efb2ff9d798dac3247a57a6f63dd",
+    "commit": "403d194c3f98f0cadc236aecbc4a8b6139ccf23c",
+    "distance_method": {
+      "archive_call": "DistRandCSS(TransposedMat(gxz[2]),gxz[1],100000,1: field:=F,maxav:=10)",
+      "interpretation": "probabilistic search; an archived d is a reported upper bound unless an independent exact computation certifies it",
+      "routine": "QDistRnd DistRandCSS"
+    },
+    "gap_source_sha256": "5a2912f0db3a9a3ad27523b643975f1470951fd31ecf234e6d30f1e69b88296b",
+    "nonabelian_zip_sha256": "5962039bbfa3729a80f5001ff44dbefd57dac689d605fbaae7f247ff34fb5258",
+    "readme_sha256": "8a0b260216f7e5c28af162aaabb5b3be6344f7becc4669a5660a32e72d4e637e",
+    "repository": "https://github.com/QEC-pages/2BGA-codes"
+  },
+  "campaign_96_equivalence": {
+    "archive_cyclic_supports": {
+      "a": [
+        0,
+        3
+      ],
+      "b": [
+        0,
+        16,
+        2
+      ]
+    },
+    "branch_component": {
+      "a_terms": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "b_terms": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          0
+        ]
+      ],
+      "ell": 16,
+      "group": "C16 x C3",
+      "m": 3,
+      "match_id": "W5BB-96-4-10",
+      "parameters": {
+        "d": 10,
+        "k": 4,
+        "n": 96
+      },
+      "parent_parameters": {
+        "components": 4,
+        "d": 10,
+        "k": 16,
+        "n": 384
+      },
+      "parent_presentation_id": "CL-885dfa58"
+    },
+    "conclusion": "The campaign [[96,4,10]] component and the archived SmallGroup(48,2) row define the same CSS code up to qubit/check permutation and exchange of the two bicycle blocks.",
+    "map": {
+      "bijection_verified": true,
+      "crt_embedding": {
+        "x_prime": "z^3",
+        "y": "z^16"
+      },
+      "formula": "(i,j) -> 3*(11*i mod 16)+16*j mod 48",
+      "inverse_of_3_mod_16": 11,
+      "mapped_branch_a": [
+        0,
+        16,
+        2
+      ],
+      "mapped_branch_b": [
+        0,
+        3
+      ],
+      "x_prime_definition": "x_prime = x^3 in C16"
+    },
+    "matrix_conjugation_verified": true,
+    "required_code_relabeling": [
+      "CRT permutation of the 48 group coordinates in each qubit block",
+      "exchange the two 48-qubit blocks"
+    ],
+    "result": "exact_presentation_equivalence"
+  },
+  "gap_index_decoder": {
+    "audit_environment": {
+      "gap_commit": "de5dc7576e0c83747e37f4278d57c4e2e4bca248",
+      "gap_version": "4.17dev",
+      "smallgrp_commit": "0b54328cdef811622c0e7f5498d4868300719c07",
+      "smallgrp_version": "1.7.0"
+    },
+    "method": "For each cyclic SmallGroup, choose the first full-order element z in GAP Elements(G), then solve Elements(G)[i] = z^e.  The order-48 row is subsequently acted on by the unit e -> 19e mod 48 so it uses the same generator as the campaign CRT presentation.",
+    "nonabelian_cross_version_check": {
+      "result": "all selected GAP element indices decode identically",
+      "rows": [
+        "LP-132-4-12",
+        "LP-168-4-14",
+        "LP-180-4-15",
+        "LP-192-4-16"
+      ],
+      "smallgrp_versions": [
+        "1.5.1",
+        "1.7.0"
+      ]
+    },
+    "portability_caveat": "The archive does not pin GAP/SmallGrp and stores positions rather than group words.  The decoded powers below are therefore frozen audit data; re-decoding should record the GAP and SmallGrp versions."
+  },
+  "milp_method": {
+    "early_stop": null,
+    "exactness_rule": "all k X-type and all k Z-type logical objectives return a solver-proven optimum; d=min(d_X,d_Z)",
+    "formulation": "Landahl-Anderson-Rice binary MILP",
+    "implementation": "evaluation.distance_milp.ilp_min_weight",
+    "solver": "scipy.optimize.milp (HiGHS)",
+    "timeout_per_logical_seconds": 300
+  },
+  "nonabelian_frontier_rows": [
+    {
+      "archive": {
+        "a_element_indices": [
+          5
+        ],
+        "b_element_indices": [
+          14,
+          39
+        ],
+        "group_order": 66,
+        "member": "diswtnonabelian_wt5wtL2_order66_k4.txt",
+        "member_sha256": "b822bc574436da45d69feda8217ac1208a3fe69f62cfbc536d6287d62910d8ac",
+        "reported_d_upper_bound": 12,
+        "reported_k": 4,
+        "row": "66 1 4 12 [5] [14,39]",
+        "small_group_id": 1
+      },
+      "exact_milp": {
+        "all_objectives_optimal": true,
+        "d": 12,
+        "d_x": 12,
+        "d_z": 12,
+        "exact": true,
+        "logical_objectives_optimal": 8,
+        "logical_objectives_total": 8,
+        "parallel_wall_seconds_observed": 91.74,
+        "x_objectives": [
+          {
+            "optimal": true,
+            "seconds_observed": 37.74,
+            "weight": 12
+          },
+          {
+            "optimal": true,
+            "seconds_observed": 90.53,
+            "weight": 12
+          },
+          {
+            "optimal": true,
+            "seconds_observed": 51.34,
+            "weight": 12
+          },
+          {
+            "optimal": true,
+            "seconds_observed": 55.36,
+            "weight": 12
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": true,
+            "seconds_observed": 91.73,
+            "weight": 12
+          },
+          {
+            "optimal": true,
+            "seconds_observed": 47.42,
+            "weight": 12
+          },
+          {
+            "optimal": true,
+            "seconds_observed": 59.41,
+            "weight": 12
+          },
+          {
+            "optimal": true,
+            "seconds_observed": 56.93,
+            "weight": 12
+          }
+        ]
+      },
+      "family_classification": {
+        "ambient_group_nonabelian": true,
+        "conclusion": "This representative is nonabelian only at the ambient-group level: its abelian normal support intersection N=C11 puts it in the established quasi-abelian lifted-product class.  The classification does not by itself prove equivalence to an abelian 2BGA presentation.",
+        "equivalence_to_abelian_2BGA_established": false,
+        "equivalent_hypergraph_product_base_ring": "F2[C11]",
+        "essentially_nonabelian_in_rank_defect_sense": false,
+        "lin_pryadko_quasi_abelian_lifted_product": true,
+        "semi_abelian_zero_rank_defects": true
+      },
+      "group_decode": {
+        "a_support_coordinates": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "b_support_coordinates": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            0
+          ]
+        ],
+        "coordinate_convention": "(a,b,d) denotes c^a r^b s^d",
+        "coordinate_enumeration": "lexicographic a=0..10, b=0..2, d=0..1; matrix hashes use this order, not GAP Elements(G) order",
+        "element_orders": {
+          "14": 33,
+          "39": 33,
+          "5": 22
+        },
+        "index_to_coordinate": {
+          "14": [
+            2,
+            1,
+            0
+          ],
+          "39": [
+            5,
+            2,
+            0
+          ],
+          "5": [
+            1,
+            0,
+            1
+          ]
+        },
+        "index_to_word": {
+          "14": "c^2*r",
+          "39": "c^5*r^2",
+          "5": "c*s"
+        },
+        "presentation": "<c,r,s | c^11=r^3=s^2=1, [c,r]=[c,s]=1, s*r*s=r^-1>",
+        "regular_representation": {
+          "A": "I + L(g5)",
+          "B": "I + R(g14) + R(g39)",
+          "H_X": "[A | B]",
+          "H_Z": "[B^T | A^T]"
+        },
+        "relation": "g39 = g14^8",
+        "structure": "C11 x S3",
+        "support_generator_overlap_relation": "g5^2 = g14^12 = c^2"
+      },
+      "label": "LP-132-4-12",
+      "reconstructed_code": {
+        "block_erasure_subsystem_k": 2,
+        "connected": true,
+        "fom_kd2_over_n": 4.363636363636363,
+        "k": 4,
+        "matrix_a_sha256": "4545eefef1690583a4e665b6681d75bd803612c83aa2aabf964fa73f17e409d5",
+        "matrix_ab_sha256": "0093b2546c2aee842e10075f1f86a8487e2688a28058129ad3564f567dce8744",
+        "matrix_b_sha256": "337f86e0f0f16b5f242c755178674466dba94a9cd79b87bb0c8059c71825c1e2",
+        "matrix_x_sha256": "968f193f5d061d8b91421a55abf1081f809ae51d99429e1e323acfb35aed5727",
+        "matrix_z_sha256": "9e876f8677a236fce69bf81ec3c3a6c8015568ed57249e5a8e9269fad7e0e03d",
+        "n": 132,
+        "rank_defects": {
+          "delta_X": 0,
+          "delta_Z": 0
+        },
+        "ranks": {
+          "A": 63,
+          "AB": 61,
+          "B": 62,
+          "H_X": 64,
+          "H_Z": 64
+        },
+        "stabilizer_weight": 5,
+        "tanner_components": 1
+      },
+      "support_subgroups": {
+        "G_a": {
+          "generator": "g5",
+          "order": 22,
+          "structure": "C22"
+        },
+        "G_b": {
+          "generator": "g14",
+          "order": 33,
+          "structure": "C33"
+        },
+        "double_coset_covers_ambient_group": true,
+        "double_coset_order": 66,
+        "extension_splitting": {
+          "G_a_over_N_splits": true,
+          "G_b_over_N_splits": true
+        },
+        "intersection": {
+          "abelian": true,
+          "central_in_ambient_group": true,
+          "generator": "c",
+          "normal_in_G_a": true,
+          "normal_in_G_b": true,
+          "order": 11,
+          "structure": "C11",
+          "symbol": "N"
+        },
+        "quotient_by_intersection": {
+          "G_a_over_N": "C2=<s>",
+          "G_b_over_N": "C3=<r>",
+          "a_support": "1+s",
+          "ambient_group": "S3",
+          "b_support": "1+r+r^2"
+        }
+      }
+    },
+    {
+      "archive": {
+        "a_element_indices": [
+          6
+        ],
+        "b_element_indices": [
+          11,
+          60
+        ],
+        "group_order": 84,
+        "member": "diswtnonabelian_wt5wtL2_order84_k4.txt",
+        "member_sha256": "f5ccdd35c779d190b134067fe8fe4a7e11c9d96a1f4e1b1a1fcdb583252572b9",
+        "reported_d_upper_bound": 14,
+        "reported_k": 4,
+        "row": "84 3 4 14 [6] [11,60]",
+        "small_group_id": 3
+      },
+      "family_classification": {
+        "ambient_group_nonabelian": true,
+        "essentially_nonabelian_in_rank_defect_sense": true,
+        "lin_pryadko_statement_as_written_counterexample": true,
+        "nonzero_rank_defects_verified": true,
+        "source_caveat": "Statements 8--9 of arXiv:2306.16400 assert that an abelian intersection N normal in both support groups yields the quasi-abelian/zero-defect reduction.  Their proof assumes without justification that the extensions by N split.  Here G_a=C28 is a nonsplit extension of N=C14 by C2, and the direct matrix ranks give delta_X=delta_Z=2.  Thus the row is a counterexample to the zero-defect statement as written; a split-extension hypothesis repairs the application."
+      },
+      "group_decode": {
+        "a_support_coordinates": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "b_support_coordinates": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            2
+          ]
+        ],
+        "coordinate_convention": "(a,b,d) denotes c^a r^b s^d",
+        "coordinate_enumeration": "lexicographic a=0..6, b=0..2, d=0..3; matrix hashes use this order, not GAP Elements(G) order",
+        "element_orders": {
+          "11": 21,
+          "6": 28,
+          "60": 42
+        },
+        "index_to_coordinate": {
+          "11": [
+            1,
+            1,
+            0
+          ],
+          "6": [
+            1,
+            0,
+            1
+          ],
+          "60": [
+            3,
+            2,
+            2
+          ]
+        },
+        "index_to_word": {
+          "11": "c*r",
+          "6": "c*s",
+          "60": "c^3*r^2*s^2"
+        },
+        "presentation": "<c,r,s | c^7=r^3=s^4=1, [c,r]=[c,s]=1, s*r*s^-1=r^-1>",
+        "regular_representation": {
+          "A": "I + L(g6)",
+          "B": "I + R(g11) + R(g60)",
+          "H_X": "[A | B]",
+          "H_Z": "[B^T | A^T]"
+        },
+        "relation": "g11 = g60^26",
+        "structure": "C7 x (C3 : C4)",
+        "support_generator_overlap_relation": "g6^2 = g60^3 = c^2*s^2"
+      },
+      "label": "LP-168-4-14",
+      "milp_attempt": {
+        "all_objectives_optimal": false,
+        "conclusion": "Every logical-sector MILP found a weight-14 representative, but seven hit the time limit.  This independently verifies only d<=14, not d=14.",
+        "d": null,
+        "d_upper_bound": 14,
+        "d_x_upper_bound": 14,
+        "d_z_upper_bound": 14,
+        "exact": false,
+        "logical_objectives_optimal": 1,
+        "logical_objectives_total": 8,
+        "timed_out_with_incumbent": 7,
+        "timeout_per_logical_seconds": 300,
+        "x_objectives": [
+          {
+            "optimal": false,
+            "seconds_observed": 300.03,
+            "status": "time_limit_with_incumbent",
+            "weight": 14
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.04,
+            "status": "time_limit_with_incumbent",
+            "weight": 14
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.08,
+            "status": "time_limit_with_incumbent",
+            "weight": 14
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.05,
+            "status": "time_limit_with_incumbent",
+            "weight": 14
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": true,
+            "seconds_observed": 59.03,
+            "status": "optimal",
+            "weight": 14
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.04,
+            "status": "time_limit_with_incumbent",
+            "weight": 14
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.04,
+            "status": "time_limit_with_incumbent",
+            "weight": 14
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.06,
+            "status": "time_limit_with_incumbent",
+            "weight": 14
+          }
+        ]
+      },
+      "reconstructed_code": {
+        "block_erasure_subsystem_k": 0,
+        "connected": true,
+        "k": 4,
+        "matrix_a_sha256": "741455abc3012a2a5d9fc3f255677f726040a811f8819394b82a070954feef77",
+        "matrix_ab_sha256": "6e64f58f07303077687b6c09185bec261cf7fb498bd5d050e37f4528731a3ca0",
+        "matrix_b_sha256": "049b15894ea41076e9ce79f7a49382b5f4f42ff4aca39eed82651df06502d658",
+        "matrix_x_sha256": "1d616448d5a84e95079a857eb6e29183b1cbbf8608538c457f8b6a350756f134",
+        "matrix_z_sha256": "ba22f8e126bf41d8472005cd3604c4255f3218d49c3b74243c99eaf8d2050c20",
+        "n": 168,
+        "rank_defects": {
+          "delta_X": 2,
+          "delta_Z": 2
+        },
+        "ranks": {
+          "A": 81,
+          "AB": 71,
+          "B": 74,
+          "H_X": 82,
+          "H_Z": 82
+        },
+        "reported_fom_upper_bound": 4.666666666666667,
+        "stabilizer_weight": 5,
+        "tanner_components": 1
+      },
+      "support_subgroups": {
+        "G_a": {
+          "generator": "g6",
+          "order": 28,
+          "structure": "C28"
+        },
+        "G_b": {
+          "generator": "g60",
+          "order": 42,
+          "structure": "C42"
+        },
+        "double_coset_covers_ambient_group": true,
+        "double_coset_order": 84,
+        "extension_splitting": {
+          "G_a_over_N_splits": false,
+          "obstruction": "C28 has no C2 complement to N=C14: its unique order-two subgroup lies inside N"
+        },
+        "intersection": {
+          "abelian": true,
+          "central_in_ambient_group": true,
+          "generator": "g6^2 = g60^3",
+          "normal_in_G_a": true,
+          "normal_in_G_b": true,
+          "order": 14,
+          "structure": "C14",
+          "symbol": "N"
+        },
+        "quotient_by_intersection": {
+          "G_a_over_N": "C2",
+          "G_b_over_N": "C3",
+          "a_support": "1+s",
+          "ambient_group": "S3",
+          "b_support": "1+r+r^2"
+        }
+      }
+    },
+    {
+      "archive": {
+        "a_element_indices": [
+          10
+        ],
+        "b_element_indices": [
+          6,
+          38
+        ],
+        "group_order": 90,
+        "member": "diswtnonabelian_wt5wtL2_order90_k4.txt",
+        "member_sha256": "7fe4d79401013b7bbb2229e3a33ae8e17f10c384a91641fa5bc2e075ac5fb9d1",
+        "reported_d_upper_bound": 15,
+        "reported_k": 4,
+        "row": "90 6 4 15 [10] [6,38]",
+        "small_group_id": 6
+      },
+      "family_classification": {
+        "ambient_group_nonabelian": true,
+        "equivalence_to_abelian_2BGA_established": false,
+        "equivalent_hypergraph_product_base_ring": "F2[C15]",
+        "essentially_nonabelian_in_rank_defect_sense": false,
+        "lin_pryadko_quasi_abelian_lifted_product": true,
+        "semi_abelian_zero_rank_defects": true
+      },
+      "group_decode": {
+        "a_support_coordinates": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0
+          ]
+        ],
+        "b_support_coordinates": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            10,
+            0,
+            1
+          ],
+          [
+            11,
+            1,
+            0
+          ]
+        ],
+        "coordinate_convention": "(a,b,d) denotes c^a r^b s^d",
+        "coordinate_enumeration": "lexicographic a=0..14, b=0..2, d=0..1; matrix hashes use this order, not GAP Elements(G) order",
+        "element_orders": {
+          "10": 15,
+          "38": 15,
+          "6": 6
+        },
+        "index_to_coordinate": {
+          "10": [
+            1,
+            0,
+            0
+          ],
+          "38": [
+            11,
+            1,
+            0
+          ],
+          "6": [
+            10,
+            0,
+            1
+          ]
+        },
+        "index_to_word": {
+          "10": "c",
+          "38": "c^11*r",
+          "6": "c^10*s"
+        },
+        "presentation": "<c,r,s | c^15=r^3=s^2=1, [c,r]=[c,s]=1, s*r*s=r^-1>",
+        "regular_representation": {
+          "A": "I + L(g10)",
+          "B": "I + R(g6) + R(g38)",
+          "H_X": "[A | B]",
+          "H_Z": "[B^T | A^T]"
+        },
+        "structure": "C15 x S3"
+      },
+      "label": "LP-180-4-15",
+      "milp_attempt": {
+        "all_objectives_optimal": false,
+        "conclusion": "Every logical-sector MILP found a weight-15 representative, but all eight hit the time limit.  This independently verifies only d<=15, not d=15.",
+        "d": null,
+        "d_upper_bound": 15,
+        "d_x_upper_bound": 15,
+        "d_z_upper_bound": 15,
+        "exact": false,
+        "logical_objectives_optimal": 0,
+        "logical_objectives_total": 8,
+        "timed_out_with_incumbent": 8,
+        "timeout_per_logical_seconds": 300,
+        "x_objectives": [
+          {
+            "optimal": false,
+            "seconds_observed": 300.038,
+            "status": "time_limit_with_incumbent",
+            "weight": 15
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.078,
+            "status": "time_limit_with_incumbent",
+            "weight": 15
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.033,
+            "status": "time_limit_with_incumbent",
+            "weight": 15
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.076,
+            "status": "time_limit_with_incumbent",
+            "weight": 15
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": false,
+            "seconds_observed": 300.028,
+            "status": "time_limit_with_incumbent",
+            "weight": 15
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.024,
+            "status": "time_limit_with_incumbent",
+            "weight": 15
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.05,
+            "status": "time_limit_with_incumbent",
+            "weight": 15
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.081,
+            "status": "time_limit_with_incumbent",
+            "weight": 15
+          }
+        ]
+      },
+      "reconstructed_code": {
+        "block_erasure_subsystem_k": 2,
+        "connected": true,
+        "k": 4,
+        "matrix_a_sha256": "0ddaa319a12004544d3b281f54e6031d054d5a5ec4352b95f908a024bd111ee7",
+        "matrix_ab_sha256": "d1c6a7c009868a83e62aafb026eb2f2feb713fe921bc1998a20ae1851b29687c",
+        "matrix_b_sha256": "2f685c6041a6520a68602fb9aad40f467f4d08e0e717dda71231b1b9eefa09d9",
+        "matrix_x_sha256": "a9bf905b580cec11e93329d6027d92923468ae607fb5efa9349076712e468f7a",
+        "matrix_z_sha256": "a534c3fc6233bf79f8d76cbdec42cc32cee006fa096adef62e1cac634cc2b9c0",
+        "n": 180,
+        "rank_defects": {
+          "delta_X": 0,
+          "delta_Z": 0
+        },
+        "ranks": {
+          "A": 84,
+          "AB": 74,
+          "B": 78,
+          "H_X": 88,
+          "H_Z": 88
+        },
+        "reported_fom_upper_bound": 5.0,
+        "stabilizer_weight": 5,
+        "tanner_components": 1
+      },
+      "support_subgroups": {
+        "G_a": {
+          "generator": "g10",
+          "order": 15,
+          "structure": "C15"
+        },
+        "G_b": {
+          "generators": [
+            "g6",
+            "g38"
+          ],
+          "order": 90,
+          "structure": "C15 x S3"
+        },
+        "double_coset_covers_ambient_group": true,
+        "double_coset_order": 90,
+        "extension_splitting": {
+          "G_a_over_N_splits": true,
+          "G_b_over_N_splits": true
+        },
+        "intersection": {
+          "abelian": true,
+          "central_in_ambient_group": true,
+          "generator": "c=g10",
+          "normal_in_G_a": true,
+          "normal_in_G_b": true,
+          "order": 15,
+          "structure": "C15",
+          "symbol": "N=G_a"
+        },
+        "quotient_by_intersection": {
+          "G_a_over_N": "trivial",
+          "G_b_over_N": "S3",
+          "a_support": "1+c lies in F2[N]",
+          "ambient_group": "S3",
+          "b_support": "1+s+r"
+        }
+      }
+    },
+    {
+      "archive": {
+        "a_element_indices": [
+          3
+        ],
+        "b_element_indices": [
+          8,
+          46
+        ],
+        "group_order": 96,
+        "member": "diswtnonabelian_wt5wtL2_order96_k4.txt",
+        "member_sha256": "b85064ccd7beec88d4388fe3b59acbda29eccc22058e3ad4741576bded886658",
+        "reported_d_upper_bound": 16,
+        "reported_k": 4,
+        "row": "96 4 4 16 [3] [8,46]",
+        "small_group_id": 4
+      },
+      "family_classification": {
+        "ambient_group_nonabelian": true,
+        "essentially_nonabelian_in_rank_defect_sense": true,
+        "lin_pryadko_statement_as_written_counterexample": true,
+        "nonzero_rank_defects_verified": true,
+        "source_caveat": "Statements 8--9 of arXiv:2306.16400 assert that an abelian intersection N normal in both support groups yields the quasi-abelian/zero-defect reduction.  Their proof assumes without justification that the extensions by N split.  Here G_a=C16 is a nonsplit extension of N=C8 by C2, and the direct matrix ranks give delta_X=delta_Z=2.  Thus the row is a counterexample to the zero-defect statement as written; a split-extension hypothesis repairs the application."
+      },
+      "group_decode": {
+        "a_support_coordinates": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0
+          ]
+        ],
+        "b_support_coordinates": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            12,
+            1,
+            0
+          ]
+        ],
+        "coordinate_convention": "(a,b,d) denotes c^a r^b s^d",
+        "coordinate_enumeration": "lexicographic a=0..15, b=0..2, d=0..1; matrix hashes use this order, not GAP Elements(G) order",
+        "element_orders": {
+          "3": 16,
+          "46": 12,
+          "8": 16
+        },
+        "index_to_coordinate": {
+          "3": [
+            1,
+            0,
+            0
+          ],
+          "46": [
+            12,
+            1,
+            0
+          ],
+          "8": [
+            1,
+            0,
+            1
+          ]
+        },
+        "index_to_word": {
+          "3": "c",
+          "46": "c^12*r",
+          "8": "c*s"
+        },
+        "presentation": "<c,r,s | c^16=r^3=s^2=1, [c,r]=[c,s]=1, s*r*s=r^-1>",
+        "regular_representation": {
+          "A": "I + L(g3)",
+          "B": "I + R(g8) + R(g46)",
+          "H_X": "[A | B]",
+          "H_Z": "[B^T | A^T]"
+        },
+        "structure": "C16 x S3",
+        "support_generator_overlap_relation": "g3^2 = g8^2 = c^2"
+      },
+      "label": "LP-192-4-16",
+      "milp_attempt": {
+        "all_objectives_optimal": false,
+        "conclusion": "Every logical-sector MILP found a weight-16 representative, but seven hit the time limit.  This independently verifies only d<=16, not d=16.",
+        "d": null,
+        "d_upper_bound": 16,
+        "d_x_upper_bound": 16,
+        "d_z_upper_bound": 16,
+        "exact": false,
+        "logical_objectives_optimal": 1,
+        "logical_objectives_total": 8,
+        "timed_out_with_incumbent": 7,
+        "timeout_per_logical_seconds": 300,
+        "x_objectives": [
+          {
+            "optimal": false,
+            "seconds_observed": 300.033,
+            "status": "time_limit_with_incumbent",
+            "weight": 16
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.049,
+            "status": "time_limit_with_incumbent",
+            "weight": 16
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.072,
+            "status": "time_limit_with_incumbent",
+            "weight": 16
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.055,
+            "status": "time_limit_with_incumbent",
+            "weight": 16
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": true,
+            "seconds_observed": 133.118,
+            "status": "optimal",
+            "weight": 16
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.052,
+            "status": "time_limit_with_incumbent",
+            "weight": 16
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.036,
+            "status": "time_limit_with_incumbent",
+            "weight": 16
+          },
+          {
+            "optimal": false,
+            "seconds_observed": 300.055,
+            "status": "time_limit_with_incumbent",
+            "weight": 16
+          }
+        ]
+      },
+      "reconstructed_code": {
+        "block_erasure_subsystem_k": 0,
+        "connected": true,
+        "k": 4,
+        "matrix_a_sha256": "1641f9f0ef211f0d33f85bb5ade7ed9ad7e28de4d5a8d82c7046ebeec4b0f0d2",
+        "matrix_ab_sha256": "0937c849cec9f5b031223ef342311c7bcf16d41fb6a8b325d2c2938920c2e8c3",
+        "matrix_b_sha256": "f55818e3116abc9b6aceded60eb2e678f83fa33e63de142585abfe4942592f2b",
+        "matrix_x_sha256": "4c4f5e6b4a5611cb776e0ae21314f67ed1dbc2ed084b23254dee0a3d3dfb2d9d",
+        "matrix_z_sha256": "f8c29b6845efec1cfd491a852533d5cc0bfa3ef69db70932bafe40a00d866035",
+        "n": 192,
+        "rank_defects": {
+          "delta_X": 2,
+          "delta_Z": 2
+        },
+        "ranks": {
+          "A": 90,
+          "AB": 86,
+          "B": 92,
+          "H_X": 94,
+          "H_Z": 94
+        },
+        "reported_fom_upper_bound": 5.333333333333333,
+        "stabilizer_weight": 5,
+        "tanner_components": 1
+      },
+      "support_subgroups": {
+        "G_a": {
+          "generator": "g3",
+          "order": 16,
+          "structure": "C16"
+        },
+        "G_b": {
+          "generators": [
+            "g8",
+            "g46"
+          ],
+          "order": 48,
+          "structure": "C3 : C16"
+        },
+        "double_coset_covers_ambient_group": true,
+        "double_coset_order": 96,
+        "extension_splitting": {
+          "G_a_over_N_splits": false,
+          "obstruction": "C16 has no C2 complement to N=C8: its unique order-two subgroup lies inside N"
+        },
+        "intersection": {
+          "abelian": true,
+          "central_in_ambient_group": true,
+          "generator": "c^2=g3^2=g8^2",
+          "normal_in_G_a": true,
+          "normal_in_G_b": true,
+          "order": 8,
+          "structure": "C8",
+          "symbol": "N"
+        },
+        "quotient_by_intersection": {
+          "G_a_over_N": "C2",
+          "G_b_over_N": "S3",
+          "a_support": "1+c_bar",
+          "ambient_group": "C2 x S3",
+          "b_support": "1+c_bar*s+r"
+        }
+      }
+    }
+  ],
+  "record_type": "lin_pryadko_weight5_prior_art_audit",
+  "rows": [
+    {
+      "archive": {
+        "a_element_indices": [
+          2
+        ],
+        "b_element_indices": [
+          3,
+          20
+        ],
+        "group_order": 24,
+        "member": "diswtabelian_wt5wtL2_order24_k4.txt",
+        "member_sha256": "d29ea1c7370d58ebad03f4872769f95f389504e26c8011794823cb3221ef9184",
+        "reported_d_upper_bound": 7,
+        "reported_k": 4,
+        "row": "24 2 4 7 [2] [3,20]",
+        "small_group_id": 2
+      },
+      "cyclic_decode": {
+        "a_support_exponents": [
+          0,
+          9
+        ],
+        "b_support_exponents": [
+          0,
+          16,
+          11
+        ],
+        "generator_automorphism_multiplier": 1,
+        "index_to_exponent_before_automorphism": {
+          "2": 9,
+          "20": 11,
+          "3": 16
+        },
+        "structure": "C24"
+      },
+      "exact_milp": {
+        "all_objectives_optimal": true,
+        "d": 7,
+        "d_x": 7,
+        "d_z": 7,
+        "exact": true,
+        "logical_objectives_optimal": 8,
+        "logical_objectives_total": 8,
+        "x_objectives": [
+          {
+            "optimal": true,
+            "weight": 7
+          },
+          {
+            "optimal": true,
+            "weight": 7
+          },
+          {
+            "optimal": true,
+            "weight": 7
+          },
+          {
+            "optimal": true,
+            "weight": 7
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": true,
+            "weight": 7
+          },
+          {
+            "optimal": true,
+            "weight": 7
+          },
+          {
+            "optimal": true,
+            "weight": 7
+          },
+          {
+            "optimal": true,
+            "weight": 7
+          }
+        ]
+      },
+      "label": "LP-48-4-7",
+      "reconstructed_code": {
+        "connected": true,
+        "fom_kd2_over_n": 4.083333333333333,
+        "k": 4,
+        "matrix_x_sha256": "7c1397fa0d481ca100301e2c034ffa170acddb1f62ccd8caebc4bc121f0565f3",
+        "matrix_z_sha256": "a0fb2302cc965a894263cb653526bfbbc4e2474facd2f1738f658288a6fc7f35",
+        "n": 48,
+        "stabilizer_weight": 5,
+        "tanner_components": 1,
+        "translation_gcd": 1
+      }
+    },
+    {
+      "archive": {
+        "a_element_indices": [
+          6
+        ],
+        "b_element_indices": [
+          3,
+          13
+        ],
+        "group_order": 30,
+        "member": "diswtabelian_wt5wtL2_order30_k4.txt",
+        "member_sha256": "cd1137867a1b3f4c170e665f5de0ccbaa06084f4f4c9b02fc6747224ff6a6259",
+        "reported_d_upper_bound": 8,
+        "reported_k": 4,
+        "row": "30 4 4 8 [6] [3,13]",
+        "small_group_id": 4
+      },
+      "cyclic_decode": {
+        "a_support_exponents": [
+          0,
+          21
+        ],
+        "b_support_exponents": [
+          0,
+          10,
+          26
+        ],
+        "generator_automorphism_multiplier": 1,
+        "index_to_exponent_before_automorphism": {
+          "13": 26,
+          "3": 10,
+          "6": 21
+        },
+        "structure": "C30"
+      },
+      "exact_milp": {
+        "all_objectives_optimal": true,
+        "d": 8,
+        "d_x": 8,
+        "d_z": 8,
+        "exact": true,
+        "logical_objectives_optimal": 8,
+        "logical_objectives_total": 8,
+        "x_objectives": [
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          }
+        ]
+      },
+      "label": "LP-60-4-8",
+      "reconstructed_code": {
+        "connected": true,
+        "fom_kd2_over_n": 4.266666666666667,
+        "k": 4,
+        "matrix_x_sha256": "00a18501a5cdc6b7376a1b8462ce48e10dcb0d00545a025b9a032931f91c3d4b",
+        "matrix_z_sha256": "1758b0e0ea47385337d0fa6bbb9a6d9ce4e9c3faee368d11467a8ffb39fc3847",
+        "n": 60,
+        "stabilizer_weight": 5,
+        "tanner_components": 1,
+        "translation_gcd": 1
+      }
+    },
+    {
+      "archive": {
+        "a_element_indices": [
+          3
+        ],
+        "b_element_indices": [
+          2,
+          16
+        ],
+        "group_order": 33,
+        "member": "diswtabelian_wt5wtL2_order33_k4.txt",
+        "member_sha256": "6400dd67f99045403986120e63fdb9de7fcb3f930f136be6164f734e0c7d2aa7",
+        "reported_d_upper_bound": 8,
+        "reported_k": 4,
+        "row": "33 1 4 8 [3] [2,16]",
+        "small_group_id": 1
+      },
+      "cyclic_decode": {
+        "a_support_exponents": [
+          0,
+          12
+        ],
+        "b_support_exponents": [
+          0,
+          22,
+          26
+        ],
+        "generator_automorphism_multiplier": 1,
+        "index_to_exponent_before_automorphism": {
+          "16": 26,
+          "2": 22,
+          "3": 12
+        },
+        "structure": "C33"
+      },
+      "exact_milp": {
+        "all_objectives_optimal": true,
+        "d": 8,
+        "d_x": 8,
+        "d_z": 8,
+        "exact": true,
+        "logical_objectives_optimal": 8,
+        "logical_objectives_total": 8,
+        "x_objectives": [
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          },
+          {
+            "optimal": true,
+            "weight": 8
+          }
+        ]
+      },
+      "label": "LP-66-4-8",
+      "reconstructed_code": {
+        "connected": true,
+        "fom_kd2_over_n": 3.878787878787879,
+        "k": 4,
+        "matrix_x_sha256": "cfed9b3dfa76d19283d352eae60c332bdd31fc7627a4d60079a393379764fdd4",
+        "matrix_z_sha256": "f75eb2deacf07a5ab002099bf0e2cd3bb48830666d44ab033bba404db9fa91cc",
+        "n": 66,
+        "stabilizer_weight": 5,
+        "tanner_components": 1,
+        "translation_gcd": 1
+      }
+    },
+    {
+      "archive": {
+        "a_element_indices": [
+          3
+        ],
+        "b_element_indices": [
+          2,
+          19
+        ],
+        "group_order": 39,
+        "member": "diswtabelian_wt5wtL2_order39_k4.txt",
+        "member_sha256": "6aa2d537c2dd42b7750a196448a2b1c76846323322c0e4cc3663b98c9aed67da",
+        "reported_d_upper_bound": 9,
+        "reported_k": 4,
+        "row": "39 2 4 9 [3] [2,19]",
+        "small_group_id": 2
+      },
+      "cyclic_decode": {
+        "a_support_exponents": [
+          0,
+          27
+        ],
+        "b_support_exponents": [
+          0,
+          13,
+          5
+        ],
+        "generator_automorphism_multiplier": 1,
+        "index_to_exponent_before_automorphism": {
+          "19": 5,
+          "2": 13,
+          "3": 27
+        },
+        "structure": "C39"
+      },
+      "exact_milp": {
+        "all_objectives_optimal": true,
+        "d": 9,
+        "d_x": 9,
+        "d_z": 9,
+        "exact": true,
+        "logical_objectives_optimal": 8,
+        "logical_objectives_total": 8,
+        "x_objectives": [
+          {
+            "optimal": true,
+            "weight": 9
+          },
+          {
+            "optimal": true,
+            "weight": 9
+          },
+          {
+            "optimal": true,
+            "weight": 9
+          },
+          {
+            "optimal": true,
+            "weight": 9
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": true,
+            "weight": 9
+          },
+          {
+            "optimal": true,
+            "weight": 9
+          },
+          {
+            "optimal": true,
+            "weight": 9
+          },
+          {
+            "optimal": true,
+            "weight": 9
+          }
+        ]
+      },
+      "label": "LP-78-4-9",
+      "reconstructed_code": {
+        "connected": true,
+        "fom_kd2_over_n": 4.153846153846154,
+        "k": 4,
+        "matrix_x_sha256": "293012412937b4b7900247c9137d1fb9506da16e85d966dd268445211f6f87a7",
+        "matrix_z_sha256": "8459ae5639a5081115db19ba8425c4ae739fe8deea5e750e49caa117c5d9e251",
+        "n": 78,
+        "stabilizer_weight": 5,
+        "tanner_components": 1,
+        "translation_gcd": 1
+      }
+    },
+    {
+      "archive": {
+        "a_element_indices": [
+          6
+        ],
+        "b_element_indices": [
+          11,
+          25
+        ],
+        "group_order": 42,
+        "member": "diswtabelian_wt5wtL2_order42_k4.txt",
+        "member_sha256": "f2b175d91cfb677261baf9c58d36d4094918b793a9bc6680424144ba42d118cc",
+        "reported_d_upper_bound": 9,
+        "reported_k": 4,
+        "row": "42 6 4 9 [6] [11,25]",
+        "small_group_id": 6
+      },
+      "cyclic_decode": {
+        "a_support_exponents": [
+          0,
+          15
+        ],
+        "b_support_exponents": [
+          0,
+          1,
+          38
+        ],
+        "generator_automorphism_multiplier": 1,
+        "index_to_exponent_before_automorphism": {
+          "11": 1,
+          "25": 38,
+          "6": 15
+        },
+        "structure": "C42"
+      },
+      "exact_milp": {
+        "all_objectives_optimal": true,
+        "d": 9,
+        "d_x": 9,
+        "d_z": 9,
+        "exact": true,
+        "logical_objectives_optimal": 8,
+        "logical_objectives_total": 8,
+        "x_objectives": [
+          {
+            "optimal": true,
+            "weight": 9
+          },
+          {
+            "optimal": true,
+            "weight": 9
+          },
+          {
+            "optimal": true,
+            "weight": 10
+          },
+          {
+            "optimal": true,
+            "weight": 10
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": true,
+            "weight": 10
+          },
+          {
+            "optimal": true,
+            "weight": 10
+          },
+          {
+            "optimal": true,
+            "weight": 9
+          },
+          {
+            "optimal": true,
+            "weight": 9
+          }
+        ]
+      },
+      "label": "LP-84-4-9",
+      "reconstructed_code": {
+        "connected": true,
+        "fom_kd2_over_n": 3.857142857142857,
+        "k": 4,
+        "matrix_x_sha256": "6d6d78aa09d6aca9f7b02ed2326d7e880d958d113ea3ef7ede6a0341c332321c",
+        "matrix_z_sha256": "f36cb884b47720323c94509a63cbfc6791ac22507e9076da434fbcb1153580c4",
+        "n": 84,
+        "stabilizer_weight": 5,
+        "tanner_components": 1,
+        "translation_gcd": 1
+      }
+    },
+    {
+      "archive": {
+        "a_element_indices": [
+          2
+        ],
+        "b_element_indices": [
+          3,
+          39
+        ],
+        "group_order": 48,
+        "member": "diswtabelian_wt5wtL2_order48_k4.txt",
+        "member_sha256": "9a4220fdb2fcc207f89713e365b61a7dfeccf803261f8b9eec2ffc9c9f41f1b4",
+        "reported_d_upper_bound": 10,
+        "reported_k": 4,
+        "row": "48 2 4 10 [2] [3,39]",
+        "small_group_id": 2
+      },
+      "cyclic_decode": {
+        "a_support_exponents": [
+          0,
+          3
+        ],
+        "b_support_exponents": [
+          0,
+          16,
+          2
+        ],
+        "generator_automorphism_multiplier": 19,
+        "index_to_exponent_before_automorphism": {
+          "2": 33,
+          "3": 16,
+          "39": 38
+        },
+        "structure": "C48"
+      },
+      "exact_milp": {
+        "all_objectives_optimal": true,
+        "d": 10,
+        "d_x": 10,
+        "d_z": 10,
+        "exact": true,
+        "logical_objectives_optimal": 8,
+        "logical_objectives_total": 8,
+        "x_objectives": [
+          {
+            "optimal": true,
+            "weight": 10
+          },
+          {
+            "optimal": true,
+            "weight": 10
+          },
+          {
+            "optimal": true,
+            "weight": 10
+          },
+          {
+            "optimal": true,
+            "weight": 10
+          }
+        ],
+        "z_objectives": [
+          {
+            "optimal": true,
+            "weight": 10
+          },
+          {
+            "optimal": true,
+            "weight": 10
+          },
+          {
+            "optimal": true,
+            "weight": 10
+          },
+          {
+            "optimal": true,
+            "weight": 10
+          }
+        ]
+      },
+      "label": "LP-96-4-10",
+      "reconstructed_code": {
+        "connected": true,
+        "fom_kd2_over_n": 4.166666666666667,
+        "k": 4,
+        "matrix_x_sha256": "88a03b12945f42541775534f7a81ffe5043344683bfcc6650c44f45736738bbe",
+        "matrix_z_sha256": "03ba7fba65810028ae120bccfa3a55f237784fc98d9f9b95e3c49ab0164a1d33",
+        "n": 96,
+        "stabilizer_weight": 5,
+        "tanner_components": 1,
+        "translation_gcd": 1
+      }
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "all_six_connected": true,
+    "archive_96_is_rediscovery": true,
+    "nonabelian_rows_exactly_certified": [
+      "LP-132-4-12"
+    ],
+    "nonabelian_rows_quasi_abelian": [
+      "LP-132-4-12",
+      "LP-180-4-15"
+    ],
+    "nonabelian_rows_with_incomplete_milp_attempts": [
+      "LP-168-4-14",
+      "LP-180-4-15",
+      "LP-192-4-16"
+    ],
+    "nonabelian_rows_with_nonzero_rank_defects": [
+      "LP-168-4-14",
+      "LP-192-4-16"
+    ],
+    "prior_rows_exactly_certified": [
+      "LP-48-4-7",
+      "LP-60-4-8",
+      "LP-66-4-8",
+      "LP-78-4-9",
+      "LP-84-4-9"
+    ]
+  }
+}
