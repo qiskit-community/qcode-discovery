@@ -1,0 +1,592 @@
+{
+  "reason": "qLDPC BBCode symbol inference rejected valid supports that use only one lattice variable; exact ranks were recomputed from the full CSS check matrices and the seeded stopping rule replayed",
+  "record_type": "uniform_control_one_variable_rank_repair_summary",
+  "schema_version": 1,
+  "streams": [
+    {
+      "after_sha256": {
+        "certification": "68491060172c611d877813797e2caec8e8f0c7a2c0572cba8776c7eaf49288fd",
+        "distance": "593b93037e2e4c0fa23c1cec62e8956071d38b6c6289b263002b3d3bc425906d",
+        "draws": "8221af98044ae0ac11cbddbafb9227797a49993ed59deb4b8f4f1dbda09f0471",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "68491060172c611d877813797e2caec8e8f0c7a2c0572cba8776c7eaf49288fd",
+        "distance": "593b93037e2e4c0fa23c1cec62e8956071d38b6c6289b263002b3d3bc425906d",
+        "draws": "60d06111403516c4cc2016e39e890fae75d6dd5931abf994c6a9bff6a6abceba",
+        "milp": null
+      },
+      "lattice": [
+        6,
+        10
+      ],
+      "original_draws": 29570,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 29570,
+      "repaired_rank_rows": 106,
+      "run_seed": 42,
+      "schema_version": 1,
+      "selected_added": [],
+      "selected_removed": [],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 0,
+        "distance": 0,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "6ba7c7720a789546d4bfe2e41aab190de5bc30c4003c5ddd8850292214cdd3a0",
+        "distance": "6ceb4a0be06de95a20bd82613cf801b2a19a84ea3f8cdc966febb6241a232344",
+        "draws": "743db8e845716bc7542387904c1ad3f3bb5929de6188de494594b70bbf601986",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "4c428f9af7d56b95e8f0f4d1317b3944c029db8c64118fdd18db4a935bb7828a",
+        "distance": "ece77a1fe8d8d06a258454b1e1bf62328ff373577ccf1ceb22a7627056e87bbd",
+        "draws": "129a0f43ee65a6ebc68ec511ac293c168cb4bbc0e78e38f9c0f116d567227e70",
+        "milp": null
+      },
+      "lattice": [
+        9,
+        9
+      ],
+      "original_draws": 13556,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 13423,
+      "repaired_rank_rows": 25,
+      "run_seed": 42,
+      "schema_version": 1,
+      "selected_added": [
+        6631,
+        168119,
+        169658
+      ],
+      "selected_removed": [
+        63115,
+        124760,
+        233583
+      ],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 3,
+        "distance": 3,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "af542bf9f8647ca2a1dec596c9995fecb2d46ab071f974faafccbacebead1e51",
+        "distance": "e0f0a9c27d6bd5f9d17d7927fdbf9965454f71fb6f05aef0a8675a3cf10f50b5",
+        "draws": "ff60e608f90a6e313f87686a7573599336422ff8524757c33f575cfa059cf250",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "b87ab1ea2ce1e839b770731c7262625b040d86230d45ab4674808ffd669b2d7d",
+        "distance": "706fd3e84b78747dd7b0ec1f2aa64b43abf72783c776440909e84e0b4126d20a",
+        "draws": "5db5821dbe6263b5286083e91ec6a45614f31a55d7a74cfe390ae995455fcbb4",
+        "milp": null
+      },
+      "lattice": [
+        10,
+        9
+      ],
+      "original_draws": 44267,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 44152,
+      "repaired_rank_rows": 73,
+      "run_seed": 42,
+      "schema_version": 1,
+      "selected_added": [
+        19583
+      ],
+      "selected_removed": [
+        291730
+      ],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 1,
+        "distance": 1,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "038fb7f9f9e625ec19debc8456b5f4916c29055f9af27ef7761697a6a864c39c",
+        "distance": "89d2fe3b605d8d6d8fa7fa75e430f4a7fd64dfea7827e6e0f924c78a55bd0903",
+        "draws": "6fac91c3d800264e17348e7f140ac9ec9e00ce514c49401e5890043eb7eab4a1",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "c6a51edc2d8848c4e6d491e6bdbbd4fa6b9443917fc1fe2db0ae6ad569013ca7",
+        "distance": "efeb2321b85ebde284bc7b397cc49ee9ce0462be424f226cda5719939e78d0d9",
+        "draws": "016bf0cd6704596436e91372a0b42fa98d6917ab52b4351528d41711a0aaa9a7",
+        "milp": null
+      },
+      "lattice": [
+        16,
+        12
+      ],
+      "original_draws": 4074,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 4072,
+      "repaired_rank_rows": 4,
+      "run_seed": 42,
+      "schema_version": 1,
+      "selected_added": [
+        145351
+      ],
+      "selected_removed": [
+        2060947
+      ],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 1,
+        "distance": 1,
+        "milp": 0
+      }
+    },
+    {
+      "lattice": [
+        15,
+        14
+      ],
+      "repaired_rank_rows": 0,
+      "run_seed": 42,
+      "status": "already_clean"
+    },
+    {
+      "after_sha256": {
+        "certification": "dbde5c19ac137eac34580de3b8bc655450a7c0928c609792e643a575a2bd5739",
+        "distance": "0e936551a77d91ffdb1c03df5e0eb55ce980f9fb57b190b0ad05f7c997e3d6c0",
+        "draws": "c0a3afc1e06292a2f16a20fef235c72bd6ece6c580b2841113e811af92cbf312",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "dbde5c19ac137eac34580de3b8bc655450a7c0928c609792e643a575a2bd5739",
+        "distance": "0e936551a77d91ffdb1c03df5e0eb55ce980f9fb57b190b0ad05f7c997e3d6c0",
+        "draws": "97a62e9a3eafb584ad7caf6b85b833e8d62ad7c90e0a29c46edf577fa28740ce",
+        "milp": null
+      },
+      "lattice": [
+        18,
+        12
+      ],
+      "original_draws": 1050,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 1050,
+      "repaired_rank_rows": 1,
+      "run_seed": 42,
+      "schema_version": 1,
+      "selected_added": [],
+      "selected_removed": [],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 0,
+        "distance": 0,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "22c2b591efcf508ae810bdbae20aff031ea86c231c97f3d5b30e2b2969586b71",
+        "distance": "dbdd9ed651d793e35b93728be48e4c84c10c2c21f94ec13b1f363ff388bf57e2",
+        "draws": "577eb809b331a0a32902da9d5e70b0e5e482b7fad52a103c372761427ed30a26",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "22c2b591efcf508ae810bdbae20aff031ea86c231c97f3d5b30e2b2969586b71",
+        "distance": "dbdd9ed651d793e35b93728be48e4c84c10c2c21f94ec13b1f363ff388bf57e2",
+        "draws": "3275450691d0947d99a6c6508f76de1ccb55391addfd5961cff6a91d34fdec81",
+        "milp": null
+      },
+      "lattice": [
+        6,
+        10
+      ],
+      "original_draws": 27933,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 27933,
+      "repaired_rank_rows": 102,
+      "run_seed": 314159,
+      "schema_version": 1,
+      "selected_added": [],
+      "selected_removed": [],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 0,
+        "distance": 0,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "1de4800930d9e29a302cd4d4479a648e6731efbd86e33964b761b8b5dba05552",
+        "distance": "658825eac4c25cc6b55e9c74b72180d015ae14c7a3d023aee57c50019eb76e52",
+        "draws": "142ba57e7e2c0368d742dc9891251d3c0f91f6e2b87e658a518c14fdab4c8876",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "f8922e4d71df84b72ca339cd6e2ad10f3f805f1b4a968df0184f187f09976029",
+        "distance": "ca16eb47574f4305695e305231b364e0fd7a9dc717a04a5e36b47aa9114d067b",
+        "draws": "6e9a9929a6d01081e54ab096918bbb13072585214ef6e997e75fddc41b03af70",
+        "milp": null
+      },
+      "lattice": [
+        9,
+        9
+      ],
+      "original_draws": 14074,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 14043,
+      "repaired_rank_rows": 30,
+      "run_seed": 314159,
+      "schema_version": 1,
+      "selected_added": [
+        6326,
+        6631,
+        6779,
+        84338,
+        168731
+      ],
+      "selected_removed": [
+        99769,
+        136866,
+        150413,
+        168890,
+        174309
+      ],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 5,
+        "distance": 5,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "4961ce4447c7b2525ae122996bf26e29094a6283f43964a93533d9382eb97359",
+        "distance": "1429a2faefa6aa2ab3a60e22894417734743568abfbeea0b1d6d154ee88f71b1",
+        "draws": "004c7c98ac80147a81faec31bf98806579405764892b18a0b68ca61a745e80a8",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "587ac843153e655a64ffe7d30c6ab21fc22f528447058543375db2e6e5b2cf63",
+        "distance": "e336169b0c264e22756066811742118663390c00639b81bed72e00045d95d393",
+        "draws": "ec9de3cf1ead30427ffff3a24439e79f90b536677aa795f14c593b3d4ab56ee5",
+        "milp": null
+      },
+      "lattice": [
+        10,
+        9
+      ],
+      "original_draws": 46134,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 46085,
+      "repaired_rank_rows": 69,
+      "run_seed": 314159,
+      "schema_version": 1,
+      "selected_added": [
+        19669
+      ],
+      "selected_removed": [
+        280777
+      ],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 1,
+        "distance": 1,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "958cc5d7500c94508008e6af20c0dd2a4515f29141d257052c9b6fa08541f0c4",
+        "distance": "b0deb46af8c0bf883229a37fc292eb62205c9d20ff9c648b28b3842b4d5b23f7",
+        "draws": "5613014ef51b3faa5baffa47be72967e1fa9757634f0432ca5419bf5470e4865",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "77fc0b03f6c092edd433d6c77adcca7c4c93b89baa6d26fe6c215995234fb7bf",
+        "distance": "a1c4350fa74826af95d24600b867703d13990278f5782fd6d63ef8ba03a69156",
+        "draws": "1d5ee66a2b10c71aa17eca8aced3486c5251833f23071e128acd9306d469cd35",
+        "milp": null
+      },
+      "lattice": [
+        16,
+        12
+      ],
+      "original_draws": 4004,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 3967,
+      "repaired_rank_rows": 4,
+      "run_seed": 314159,
+      "schema_version": 1,
+      "selected_added": [
+        145166
+      ],
+      "selected_removed": [
+        3370051
+      ],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 1,
+        "distance": 1,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "bf8a1d8138bdfac7569da8aa39196370db859c4cb26fbf571f0fae1128d896ca",
+        "distance": "06cf16d964d2f2948c538c8fb6129d668621b34d3ae78f6395da76b64f300afb",
+        "draws": "1acc483ba6e24ea59af2f8c2465478ca2065973ccbb502257f4d6ecf6745657b",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "bf8a1d8138bdfac7569da8aa39196370db859c4cb26fbf571f0fae1128d896ca",
+        "distance": "06cf16d964d2f2948c538c8fb6129d668621b34d3ae78f6395da76b64f300afb",
+        "draws": "56d26608b41f63b3189b7ffd21172b2292710a26fcdd65d2064e0e29ba1ac401",
+        "milp": null
+      },
+      "lattice": [
+        15,
+        14
+      ],
+      "original_draws": 3156,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 3156,
+      "repaired_rank_rows": 3,
+      "run_seed": 314159,
+      "schema_version": 1,
+      "selected_added": [],
+      "selected_removed": [],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 0,
+        "distance": 0,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "a53d1b60b262032ae1622d33e55bf694c671a2b160e30bbdf15ad05263c7960b",
+        "distance": "dba98f24787eebf7932d56198dff756f5f481e59e9ea78fe3835287f13a20e36",
+        "draws": "ebfbe2a82d22c813ff0aa5b2134b4c2039568bee422c07c79792cac0a53ae1c3",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "a53d1b60b262032ae1622d33e55bf694c671a2b160e30bbdf15ad05263c7960b",
+        "distance": "dba98f24787eebf7932d56198dff756f5f481e59e9ea78fe3835287f13a20e36",
+        "draws": "b177f42bb6731a9ccae872ada5e3764742e5627f620542a02eb92589977196bd",
+        "milp": null
+      },
+      "lattice": [
+        18,
+        12
+      ],
+      "original_draws": 1043,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 1043,
+      "repaired_rank_rows": 1,
+      "run_seed": 314159,
+      "schema_version": 1,
+      "selected_added": [],
+      "selected_removed": [],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 0,
+        "distance": 0,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "aab908b05f3a9ff98c3ad0622bc3b22d2dfe2738c2701b1854d21fd2d068eea0",
+        "distance": "cd56954ca7e00d1c300d3c045614d5490c01a2d489ad4951e4c7ca1b036a9a8a",
+        "draws": "90f78528b7c3930024eff3f70ee070136b1d82236a7a2e99078889493932cae3",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "bb13474f168850cc359961f35fc3261949dbd42e19ee24d0b9185b5447498126",
+        "distance": "08d3c6de816f8d841552c204320ee4a22dfe3226a6a144b4c113e8d4d9b08c62",
+        "draws": "4f96ca95d53a959e71e5d79fbeaa660ea48a3c6607e08c0c08622e3bc32d5313",
+        "milp": null
+      },
+      "lattice": [
+        6,
+        10
+      ],
+      "original_draws": 28934,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 28885,
+      "repaired_rank_rows": 104,
+      "run_seed": 271828,
+      "schema_version": 1,
+      "selected_added": [
+        50144,
+        51149
+      ],
+      "selected_removed": [
+        13042,
+        59100
+      ],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 1,
+        "distance": 2,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "e997b2bd8e33c20da0b076c361ec754e7486b04d670d1be4af5a278765692352",
+        "distance": "26d55515629663aec65fbf53284cec1cd161a85464bf5b2644c51e8174e3df71",
+        "draws": "95c70a8c0c22cb302d0db15f5da50a9758265eef79bf49e7fa35534e8853cabc",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "4b01cb8c9fa2f597b8d332358e78414a102238a4e9a1fd3391c8562cad65e74a",
+        "distance": "420e2b40e906d90588c2196608335193983b3e9becb322bd62a93db47c9913ef",
+        "draws": "73ae00ca4af387d98e27b2cb04e2cb5bb461c3578697e08e895581bafbbc1f91",
+        "milp": null
+      },
+      "lattice": [
+        9,
+        9
+      ],
+      "original_draws": 13153,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 13151,
+      "repaired_rank_rows": 27,
+      "run_seed": 271828,
+      "schema_version": 1,
+      "selected_added": [
+        6403
+      ],
+      "selected_removed": [
+        11538
+      ],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 1,
+        "distance": 1,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "30a95edf09ae5f491d7fcf0617e890e6286828f1e5565f4f24822b0caf862a42",
+        "distance": "b0a1e163fa945533733a6f7f990aba6f20f8cdf36b5d461cd41811f91926ddc9",
+        "draws": "1abf7f68d8e42f01927dabdb0c8feea1b7de1d7c2236de4c32851f901cf20d41",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "a2b918f4e6f081458b5d6f6d5e1189295689d64de8021f4e454e9c201c7a953b",
+        "distance": "06f14477854ca419389fb8cd7995e4ef319405f2a6dc1e1e6885bcf1c5072076",
+        "draws": "a4400662a3c8d377d1e4c90221a016b0d55ec128e7d40455d89bbe871588d9bb",
+        "milp": null
+      },
+      "lattice": [
+        10,
+        9
+      ],
+      "original_draws": 47481,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 47466,
+      "repaired_rank_rows": 79,
+      "run_seed": 271828,
+      "schema_version": 1,
+      "selected_added": [
+        8096
+      ],
+      "selected_removed": [
+        186073
+      ],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 1,
+        "distance": 1,
+        "milp": 0
+      }
+    },
+    {
+      "after_sha256": {
+        "certification": "625c2b698ed1c2e9ce654edc8584d2c19a9a94dbae867f478cf2b57f52843d38",
+        "distance": "d4df0f89ba919763b660bf706159617aafdf37c3d4b4c41c3ef1a61c3d9dfde5",
+        "draws": "5ac3978445a6d3b281355f59414bd786bbbe35d2a5c00fdeb005ab9e138b170c",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "625c2b698ed1c2e9ce654edc8584d2c19a9a94dbae867f478cf2b57f52843d38",
+        "distance": "d4df0f89ba919763b660bf706159617aafdf37c3d4b4c41c3ef1a61c3d9dfde5",
+        "draws": "579763591596e8f571dcdd1eead5ade9eefd5c597824be140e3425829d9f9bcd",
+        "milp": null
+      },
+      "lattice": [
+        16,
+        12
+      ],
+      "original_draws": 3352,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 3352,
+      "repaired_rank_rows": 2,
+      "run_seed": 271828,
+      "schema_version": 1,
+      "selected_added": [],
+      "selected_removed": [],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 0,
+        "distance": 0,
+        "milp": 0
+      }
+    },
+    {
+      "lattice": [
+        15,
+        14
+      ],
+      "repaired_rank_rows": 0,
+      "run_seed": 271828,
+      "status": "already_clean"
+    },
+    {
+      "after_sha256": {
+        "certification": "939a330aafdb7183cda9203ea2323d04b50b265db7f940dc91aecea9cdaf8513",
+        "distance": "c8df0721d30ff7e44376ac1917fb244eefb2796464a547f588b66e1e374fd64d",
+        "draws": "39b20d23dccc031eaf3c5ee0f6868ac9f6a1d501e92741a29f82bcc46e7f60e6",
+        "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "before_sha256": {
+        "certification": "939a330aafdb7183cda9203ea2323d04b50b265db7f940dc91aecea9cdaf8513",
+        "distance": "c8df0721d30ff7e44376ac1917fb244eefb2796464a547f588b66e1e374fd64d",
+        "draws": "66f411b310dd08e6b22828982467a54b6985e5f7c741e03f8423585c51e8010e",
+        "milp": null
+      },
+      "lattice": [
+        18,
+        12
+      ],
+      "original_draws": 968,
+      "record_type": "uniform_control_one_variable_rank_repair",
+      "repaired_draws": 968,
+      "repaired_rank_rows": 1,
+      "run_seed": 271828,
+      "schema_version": 1,
+      "selected_added": [],
+      "selected_removed": [],
+      "status": "repaired",
+      "superseded_stage_records": {
+        "certification": 0,
+        "distance": 0,
+        "milp": 0
+      }
+    }
+  ],
+  "totals": {
+    "repaired_rank_rows": 631,
+    "selected_added": 16,
+    "selected_removed": 16
+  }
+}

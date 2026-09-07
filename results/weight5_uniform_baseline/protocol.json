@@ -1,0 +1,192 @@
+{
+  "distance_quotas": {
+    "10x9": {
+      "k_4_5": 993,
+      "k_ge_6": 877
+    },
+    "15x14": {
+      "k_4_5": 166,
+      "k_ge_6": 114
+    },
+    "16x12": {
+      "k_4_5": 152,
+      "k_ge_6": 122
+    },
+    "18x12": {
+      "k_4_5": 150,
+      "k_ge_6": 130
+    },
+    "6x10": {
+      "k_4_5": 798,
+      "k_ge_6": 1072
+    },
+    "9x9": {
+      "k_4_5": 1324,
+      "k_ge_6": 546
+    }
+  },
+  "historical_decoder": {
+    "exact_timeout_seconds": 300,
+    "osd_cs_trials": 200,
+    "quick_trials": 1000,
+    "refine_batches": 3,
+    "refine_trials_per_batch": 500
+  },
+  "historical_gates": {
+    "fom_threshold_exact": 5.0,
+    "fom_threshold_refine": 3.0,
+    "min_k_threshold": 2,
+    "save_trust_ratio": 2.0
+  },
+  "historical_milp": {
+    "early_stop": 4,
+    "timeout_per_logical_seconds": 1800,
+    "total_timeout_seconds": 14400
+  },
+  "known_replay_differences": [
+    "The control samples the normalized universe directly, so generator Stage 1, the pre-build cap, and the fixed safety net do not apply.",
+    "Historical decoder RNG state was not persisted; the control derives a stable per-candidate decoder seed.",
+    "Historical quotas count repeated distance observations; the control uses the same counts but samples normalized pairs without replacement."
+  ],
+  "protocol": "weight5_css_matched_budget_uniform_control_v1",
+  "sampler": {
+    "algorithm": "lazy_fisher_yates_identity_anchored_v1",
+    "conditional_selection": "first draws filling each exact-k band quota",
+    "universe": "identity-anchored A binomial, B trinomial",
+    "universe_size_total": 13656867,
+    "universe_sizes": {
+      "10x9": 348524,
+      "15x14": 4542824,
+      "16x12": 3465695,
+      "18x12": 4946075,
+      "6x10": 100949,
+      "9x9": 252800
+    },
+    "without_replacement": true
+  },
+  "schema_version": 1,
+  "software_versions_at_protocol_write": {
+    "galois": "0.4.10",
+    "ldpc": "2.4.1",
+    "numpy": "2.3.5",
+    "qldpc": "0.2.6",
+    "scipy": "1.17.0",
+    "sympy": "1.14.0"
+  },
+  "source_evidence": {
+    "evaluator": {
+      "commit": "f86c1bccf1215c211f21c06bf97c7c2653b3147e",
+      "git_object_verified": true,
+      "path": "evolve/openevolve_evaluator_weight5_css.py",
+      "sha256": "c0971dee16048a3617cc7e9c5e45752e315ab255bd47669d43a94bda853fdf44"
+    },
+    "manifests": {
+      "large": {
+        "effective_gates": {
+          "fom_threshold_exact": 5.0,
+          "fom_threshold_exact_or_disabled": 5.0,
+          "fom_threshold_refine": 3.0,
+          "max_build_candidates_css": 5000,
+          "max_build_candidates_noncss": 3000,
+          "min_k_threshold": 2,
+          "min_k_threshold_noncss": 1,
+          "min_relevant_d": 4,
+          "min_relevant_d_noncss": 5,
+          "save_fom_threshold_css": 2.0,
+          "save_fom_threshold_noncss": 4.0,
+          "save_trust_ratio": 2.0,
+          "save_trust_ratio_noncss": 2.5
+        },
+        "git_commit": "87cdf0c1bbbef71f4ba0d18b9e2be62a4f659d3f",
+        "git_dirty": true,
+        "path": "results/evolution/weight5_css_large_v1/run_manifest.json",
+        "rng_seed": 42,
+        "run_id": "weight5_css_large_v1",
+        "sha256": "bf2358e6287af3900b0e2ca1ba53af4427f6bea2caed5d989331ad90c8d957ea"
+      },
+      "small": {
+        "effective_gates": {
+          "fom_threshold_exact": 5.0,
+          "fom_threshold_exact_or_disabled": 5.0,
+          "fom_threshold_refine": 3.0,
+          "max_build_candidates_css": 5000,
+          "max_build_candidates_noncss": 3000,
+          "min_k_threshold": 2,
+          "min_k_threshold_noncss": 1,
+          "min_relevant_d": 4,
+          "min_relevant_d_noncss": 5,
+          "save_fom_threshold_css": 2.0,
+          "save_fom_threshold_noncss": 4.0,
+          "save_trust_ratio": 2.0,
+          "save_trust_ratio_noncss": 2.5
+        },
+        "git_commit": "87cdf0c1bbbef71f4ba0d18b9e2be62a4f659d3f",
+        "git_dirty": true,
+        "path": "results/evolution/weight5_css_small_v1/run_manifest.json",
+        "rng_seed": 42,
+        "run_id": "weight5_css_small_v1",
+        "sha256": "1cb409277976ce356eac556d62eb570dad3089c41924a7160ef190a2038a9c9e"
+      }
+    },
+    "raw_positive_observation_logs": {
+      "large": {
+        "path": "results/evolution/weight5_css_large_v1/all_codes_weight5_css.jsonl",
+        "records": 834,
+        "sha256": "9dae8379fd5945c0a37b6ee060528141035f74896cff493a84ebdcb2da88d3a6"
+      },
+      "small": {
+        "path": "results/evolution/weight5_css_small_v1/all_codes_weight5_css.jsonl",
+        "records": 5610,
+        "sha256": "ad8348ac6b99698f1ec5ca8c14b062272bf310cc93318444bc557056d34d99cc"
+      }
+    },
+    "recovered_distance_quotas": {
+      "10x9": {
+        "k_4_5": 993,
+        "k_ge_6": 877
+      },
+      "15x14": {
+        "k_4_5": 166,
+        "k_ge_6": 114
+      },
+      "16x12": {
+        "k_4_5": 152,
+        "k_ge_6": 122
+      },
+      "18x12": {
+        "k_4_5": 150,
+        "k_ge_6": 130
+      },
+      "6x10": {
+        "k_4_5": 798,
+        "k_ge_6": 1072
+      },
+      "9x9": {
+        "k_4_5": 1324,
+        "k_ge_6": 546
+      }
+    },
+    "runtime_components": {
+      "evaluation/bb_code.py": {
+        "git_object_verified": true,
+        "local_sha256": "07b47a77e230cca4720b82d325efa7d4790408b08b977f096de0bda68a13ed1a",
+        "local_verified": true,
+        "local_verified_via": "reviewed_inert_revision",
+        "reviewed_inert_reason": "commit 1b2ebca added operator.index() validation rejecting non-integer exponent tuples; every exponent this historical run ever constructs is a plain Python int, so the added rejection path is never exercised and outputs are unaffected",
+        "sha256": "42ca66564844ef0d6b72652738fc055c1f597c8bf89d041c2740661fa1cbfbfa"
+      },
+      "evaluation/distance.py": {
+        "git_object_verified": true,
+        "local_verified": true,
+        "local_verified_via": "historical_pin",
+        "sha256": "3808b9bcd780de4a04cd971e724e43790e4e6eb2c4b252cba4da5f0fad12d3b1"
+      },
+      "evaluation/evaluator.py": {
+        "git_object_verified": true,
+        "local_verified": true,
+        "local_verified_via": "historical_pin",
+        "sha256": "99bd225a2fe6fa754bf19c851ad8e28daae02475827e8609b7309b3b53e5623d"
+      }
+    }
+  }
+}

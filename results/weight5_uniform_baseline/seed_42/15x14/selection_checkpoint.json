@@ -1,0 +1,17 @@
+{
+  "acceptance_rate": 0.11164274322169059,
+  "config_sha256": "d85365f9aba731b436e3b19da393b7f86e1e4233db68762a64935931d698b0d2",
+  "draws": 2508,
+  "elapsed_seconds_this_invocation": 178.49974810599815,
+  "new_draws_this_invocation": 2508,
+  "quotas": {
+    "k_4_5": 166,
+    "k_ge_6": 114
+  },
+  "schema_version": 1,
+  "selected_by_band": {
+    "k_4_5": 166,
+    "k_ge_6": 114
+  },
+  "status": "complete"
+}

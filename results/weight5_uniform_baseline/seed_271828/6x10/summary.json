@@ -1,0 +1,165 @@
+{
+  "best": {
+    "certified_lower_bound": {
+      "A_terms": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "B_terms": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "fom": 3.3333333333333335,
+      "parameters": [
+        120,
+        16,
+        5
+      ],
+      "stage": null,
+      "universe_index": 9513
+    },
+    "estimated": {
+      "A_terms": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "B_terms": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "fom": 120.33333333333333,
+      "parameters": [
+        120,
+        40,
+        19
+      ],
+      "stage": "exact_skipped",
+      "universe_index": 7974
+    },
+    "milp_exact": null
+  },
+  "completion": {
+    "certification": true,
+    "distance": true,
+    "milp": false,
+    "selection": true
+  },
+  "config_sha256": "65fec6bf2f6ac527b4c5727df99b836b18c39387c1c3b0a13827082c777cd1bd",
+  "diversity": {
+    "certified_d_ge_5_tanner_classes": 40,
+    "connected_certified_d_ge_5_tanner_classes": 22,
+    "connected_retained_d_gt_2_tanner_classes": 23,
+    "distinct_k_values_selected": [
+      4,
+      8,
+      16,
+      20,
+      40
+    ],
+    "retained_d_gt_2_tanner_classes": 49,
+    "unique_literal_selected_pairs": 1870,
+    "unique_translation_classes_selected": 1139
+  },
+  "errors": {
+    "certification": 0,
+    "distance": 0,
+    "draw": 0,
+    "milp": 0
+  },
+  "lattice": [
+    6,
+    10
+  ],
+  "matched_budget": true,
+  "overlap": {
+    "certified_d_ge_5_tanner_classes_in_retained_catalogue": 33,
+    "connected_certified_d_ge_5_tanner_classes_in_retained_catalogue": 19,
+    "selected_literal_in_historical_positive_log": 24,
+    "selected_literal_in_retained_catalogue": 21,
+    "selected_translation_class_in_historical_positive_log": 80,
+    "selected_translation_class_in_retained_catalogue": 71
+  },
+  "pilot": false,
+  "record_type": "uniform_control_lattice_summary",
+  "run_seed": 271828,
+  "sampling": {
+    "acceptance_rate": 0.06473948416132941,
+    "draws": 28885,
+    "k_positive_draws": 2331,
+    "quota": 1870,
+    "rank_draw_k_histogram": {
+      "0": 26554,
+      "16": 70,
+      "20": 13,
+      "4": 1259,
+      "40": 4,
+      "8": 985
+    },
+    "selected": 1870,
+    "selected_by_band": {
+      "k_4_5": 798,
+      "k_ge_6": 1072
+    },
+    "selected_k_histogram": {
+      "16": 70,
+      "20": 13,
+      "4": 798,
+      "40": 4,
+      "8": 985
+    },
+    "universe_size": 100949
+  },
+  "schema_version": 1,
+  "stage_counts": {
+    "exact_skipped": 26,
+    "osd_cs_verified": 79,
+    "quick_estimate": 849,
+    "refined_estimate": 517,
+    "trivial_distance": 399
+  },
+  "yield": {
+    "certified_d_ge_5": 1303,
+    "certified_d_ge_5_rate_per_distance_evaluation": 0.6967914438502674,
+    "connected_certified_d_ge_5_classes": 22,
+    "connected_certified_d_ge_5_presentations": 787,
+    "connected_class_yield_per_distance_evaluation": 0.011764705882352941,
+    "connected_retained_class_yield_per_distance_evaluation": 0.01229946524064171,
+    "connected_retained_presentations": 802,
+    "connected_retained_tanner_classes": 23,
+    "estimated_d_ge_5": 1333,
+    "estimated_d_ge_5_rate_per_distance_evaluation": 0.7128342245989305,
+    "retained_d_gt_2": 1425
+  }
+}

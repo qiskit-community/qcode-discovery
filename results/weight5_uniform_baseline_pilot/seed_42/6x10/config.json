@@ -1,0 +1,41 @@
+{
+  "config": {
+    "certification": {
+      "algorithm": "css_weight_le_4_syndrome_quotient_mitm_v1",
+      "selection": "decoder upper bound d>=5"
+    },
+    "distance": {
+      "decoder_rng": "sha256-derived per-candidate numpy Generator",
+      "exact_timeout_seconds": 300,
+      "fom_threshold_exact": 5.0,
+      "fom_threshold_refine": 3.0,
+      "osd_cs_trials": 200,
+      "quick_trials": 20,
+      "refine_batches": 3,
+      "refine_trials_per_batch": 10,
+      "skip_exact": true
+    },
+    "historical_evaluator_sha256": "c0971dee16048a3617cc7e9c5e45752e315ab255bd47669d43a94bda853fdf44",
+    "lattice": [
+      6,
+      10
+    ],
+    "matched_budget": false,
+    "milp": {
+      "early_stop": 4,
+      "selection": "estimated FOM>=5 and certified d>=5",
+      "timeout_per_logical_seconds": 1800,
+      "total_timeout_seconds": 14400
+    },
+    "pilot": true,
+    "quotas": {
+      "k_4_5": 2,
+      "k_ge_6": 2
+    },
+    "run_seed": 42,
+    "sampler_version": "lazy_fisher_yates_identity_anchored_v1",
+    "schema_version": 1,
+    "universe_size": 100949
+  },
+  "config_sha256": "6083a50ff778cd30e5f4581a23e875719abb34649b607128219130f566ba2ece"
+}

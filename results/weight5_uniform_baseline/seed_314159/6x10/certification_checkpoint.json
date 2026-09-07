@@ -1,0 +1,10 @@
+{
+  "certification_records": 1510,
+  "config_sha256": "5695dbd179e16c386e26c6e26b2e27d98fc9648204e6f12be45e9ff869c4bca1",
+  "elapsed_seconds_this_invocation": 8.445204002782702e-05,
+  "estimated_d_ge_5_targets": 1378,
+  "new_records_this_invocation": 0,
+  "retained_d_gt_2_targets": 1510,
+  "schema_version": 1,
+  "status": "complete"
+}

@@ -1,0 +1,36 @@
+{
+  "after_sha256": {
+    "certification": "30a95edf09ae5f491d7fcf0617e890e6286828f1e5565f4f24822b0caf862a42",
+    "distance": "b0a1e163fa945533733a6f7f990aba6f20f8cdf36b5d461cd41811f91926ddc9",
+    "draws": "1abf7f68d8e42f01927dabdb0c8feea1b7de1d7c2236de4c32851f901cf20d41",
+    "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "before_sha256": {
+    "certification": "a2b918f4e6f081458b5d6f6d5e1189295689d64de8021f4e454e9c201c7a953b",
+    "distance": "06f14477854ca419389fb8cd7995e4ef319405f2a6dc1e1e6885bcf1c5072076",
+    "draws": "a4400662a3c8d377d1e4c90221a016b0d55ec128e7d40455d89bbe871588d9bb",
+    "milp": null
+  },
+  "lattice": [
+    10,
+    9
+  ],
+  "original_draws": 47481,
+  "record_type": "uniform_control_one_variable_rank_repair",
+  "repaired_draws": 47466,
+  "repaired_rank_rows": 79,
+  "run_seed": 271828,
+  "schema_version": 1,
+  "selected_added": [
+    8096
+  ],
+  "selected_removed": [
+    186073
+  ],
+  "status": "repaired",
+  "superseded_stage_records": {
+    "certification": 1,
+    "distance": 1,
+    "milp": 0
+  }
+}

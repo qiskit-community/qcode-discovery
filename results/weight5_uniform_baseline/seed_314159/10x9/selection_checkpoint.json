@@ -1,0 +1,16 @@
+{
+  "acceptance_rate": 0.04057719431485299,
+  "config_sha256": "1cf8b6d68444c3a4b105b36638a82a3d279d74704493595db6f4c07f4840d321",
+  "draws": 46085,
+  "quotas": {
+    "k_4_5": 993,
+    "k_ge_6": 877
+  },
+  "repair": "one_variable_rank_v1",
+  "schema_version": 1,
+  "selected_by_band": {
+    "k_4_5": 993,
+    "k_ge_6": 877
+  },
+  "status": "complete"
+}

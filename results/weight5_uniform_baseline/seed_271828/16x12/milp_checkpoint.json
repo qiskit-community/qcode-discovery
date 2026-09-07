@@ -1,0 +1,7 @@
+{
+  "config_sha256": "2f200b8c277623c00f91f037dbb9f87a555a2742f6f746d6dd8ddced3e52e200",
+  "milp_records": 0,
+  "repair": "one_variable_rank_v1",
+  "schema_version": 1,
+  "status": "in_progress"
+}

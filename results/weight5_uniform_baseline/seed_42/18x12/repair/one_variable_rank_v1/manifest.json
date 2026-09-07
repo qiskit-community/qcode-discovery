@@ -1,0 +1,32 @@
+{
+  "after_sha256": {
+    "certification": "dbde5c19ac137eac34580de3b8bc655450a7c0928c609792e643a575a2bd5739",
+    "distance": "0e936551a77d91ffdb1c03df5e0eb55ce980f9fb57b190b0ad05f7c997e3d6c0",
+    "draws": "c0a3afc1e06292a2f16a20fef235c72bd6ece6c580b2841113e811af92cbf312",
+    "milp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "before_sha256": {
+    "certification": "dbde5c19ac137eac34580de3b8bc655450a7c0928c609792e643a575a2bd5739",
+    "distance": "0e936551a77d91ffdb1c03df5e0eb55ce980f9fb57b190b0ad05f7c997e3d6c0",
+    "draws": "97a62e9a3eafb584ad7caf6b85b833e8d62ad7c90e0a29c46edf577fa28740ce",
+    "milp": null
+  },
+  "lattice": [
+    18,
+    12
+  ],
+  "original_draws": 1050,
+  "record_type": "uniform_control_one_variable_rank_repair",
+  "repaired_draws": 1050,
+  "repaired_rank_rows": 1,
+  "run_seed": 42,
+  "schema_version": 1,
+  "selected_added": [],
+  "selected_removed": [],
+  "status": "repaired",
+  "superseded_stage_records": {
+    "certification": 0,
+    "distance": 0,
+    "milp": 0
+  }
+}
