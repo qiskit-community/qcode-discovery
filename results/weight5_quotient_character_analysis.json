@@ -1,0 +1,666 @@
+{
+  "all_css": {
+    "classes": 535,
+    "cyclic_classes": 283,
+    "cyclic_presentations": 332,
+    "order_15_classes": 23,
+    "order_15_presentations": 31,
+    "order_3_and_7_classes": 3,
+    "order_3_classes": 474,
+    "order_3_or_5_or_7_or_15_classes": 520,
+    "order_3_or_5_or_7_or_15_presentations": 874,
+    "order_3_or_7_classes": 503,
+    "order_3_or_7_or_15_classes": 520,
+    "order_3_or_7_or_15_presentations": 874,
+    "order_3_or_7_presentations": 849,
+    "order_3_presentations": 819,
+    "order_5_classes": 0,
+    "order_5_presentations": 0,
+    "order_7_classes": 32,
+    "order_7_presentations": 33,
+    "presentations": 912
+  },
+  "connected_css": {
+    "classes": 329,
+    "cyclic_classes": 215,
+    "cyclic_presentations": 254,
+    "order_15_classes": 12,
+    "order_15_presentations": 18,
+    "order_3_and_7_classes": 2,
+    "order_3_classes": 298,
+    "order_3_or_5_or_7_or_15_classes": 329,
+    "order_3_or_5_or_7_or_15_presentations": 605,
+    "order_3_or_7_classes": 317,
+    "order_3_or_7_or_15_classes": 329,
+    "order_3_or_7_or_15_presentations": 605,
+    "order_3_or_7_presentations": 587,
+    "order_3_presentations": 567,
+    "order_5_classes": 0,
+    "order_5_presentations": 0,
+    "order_7_classes": 21,
+    "order_7_presentations": 22,
+    "presentations": 605
+  },
+  "connected_css_lattice_strata": {
+    "10x9": {
+      "ambient_exponent": 90,
+      "ambient_order": 90,
+      "ambient_order_divisible_by": [
+        3,
+        5,
+        15
+      ],
+      "connected_css_classes": 83,
+      "cyclic_ambient": true,
+      "cyclic_quotient_orders_available": [
+        3,
+        5,
+        15
+      ],
+      "ell": 10,
+      "exact_connected_css_classes": 16,
+      "m": 9,
+      "quotient_stratum_class_counts": {
+        "15": 5,
+        "3": 78,
+        "5": 0,
+        "7": 0
+      },
+      "two_direction_cyclic_support_classes": 0
+    },
+    "15x14": {
+      "ambient_exponent": 210,
+      "ambient_order": 210,
+      "ambient_order_divisible_by": [
+        3,
+        5,
+        7,
+        15
+      ],
+      "connected_css_classes": 132,
+      "cyclic_ambient": true,
+      "cyclic_quotient_orders_available": [
+        3,
+        5,
+        7,
+        15
+      ],
+      "ell": 15,
+      "exact_connected_css_classes": 6,
+      "m": 14,
+      "quotient_stratum_class_counts": {
+        "15": 7,
+        "3": 106,
+        "5": 0,
+        "7": 21
+      },
+      "two_direction_cyclic_support_classes": 0
+    },
+    "16x12": {
+      "ambient_exponent": 48,
+      "ambient_order": 192,
+      "ambient_order_divisible_by": [
+        3
+      ],
+      "connected_css_classes": 36,
+      "cyclic_ambient": false,
+      "cyclic_quotient_orders_available": [
+        3
+      ],
+      "ell": 16,
+      "exact_connected_css_classes": 7,
+      "m": 12,
+      "quotient_stratum_class_counts": {
+        "15": 0,
+        "3": 36,
+        "5": 0,
+        "7": 0
+      },
+      "two_direction_cyclic_support_classes": 11
+    },
+    "18x12": {
+      "ambient_exponent": 36,
+      "ambient_order": 216,
+      "ambient_order_divisible_by": [
+        3
+      ],
+      "connected_css_classes": 51,
+      "cyclic_ambient": false,
+      "cyclic_quotient_orders_available": [
+        3
+      ],
+      "ell": 18,
+      "exact_connected_css_classes": 2,
+      "m": 12,
+      "quotient_stratum_class_counts": {
+        "15": 0,
+        "3": 51,
+        "5": 0,
+        "7": 0
+      },
+      "two_direction_cyclic_support_classes": 7
+    },
+    "6x10": {
+      "ambient_exponent": 30,
+      "ambient_order": 60,
+      "ambient_order_divisible_by": [
+        3,
+        5,
+        15
+      ],
+      "connected_css_classes": 20,
+      "cyclic_ambient": false,
+      "cyclic_quotient_orders_available": [
+        3,
+        5,
+        15
+      ],
+      "ell": 6,
+      "exact_connected_css_classes": 5,
+      "m": 10,
+      "quotient_stratum_class_counts": {
+        "15": 0,
+        "3": 20,
+        "5": 0,
+        "7": 0
+      },
+      "two_direction_cyclic_support_classes": 9
+    },
+    "9x9": {
+      "ambient_exponent": 9,
+      "ambient_order": 81,
+      "ambient_order_divisible_by": [
+        3
+      ],
+      "connected_css_classes": 7,
+      "cyclic_ambient": false,
+      "cyclic_quotient_orders_available": [
+        3
+      ],
+      "ell": 9,
+      "exact_connected_css_classes": 2,
+      "m": 9,
+      "quotient_stratum_class_counts": {
+        "15": 0,
+        "3": 7,
+        "5": 0,
+        "7": 0
+      },
+      "two_direction_cyclic_support_classes": 1
+    }
+  },
+  "connected_css_support_strata": {
+    "classes_with_cyclic_ambient_presentation": 215,
+    "classes_with_only_noncyclic_ambient_presentations": 114,
+    "common_kernel_vs_k_S_for_two_direction_classes": {
+      "class_histogram": {
+        "k_S=0,common_kernel=2": 8,
+        "k_S=2,common_kernel=2": 20
+      },
+      "classes_with_equality": 20,
+      "classes_with_strict_inequality": 8,
+      "k_S_is_a_lower_bound": true
+    },
+    "connected_css_classes": 329,
+    "distance_control": {
+      "interpretation": "Descriptive class counts only: exact certification was targeted and the interval endpoints are censored, so these counts do not estimate a distance distribution or establish predictive value.",
+      "other_noncyclic_support": {
+        "certified_interval_classes": 77,
+        "certified_lower_bound_histogram": {
+          "3": 2,
+          "4": 4,
+          "5": 80
+        },
+        "classes": 86,
+        "classes_with_certified_lower_bound_at_least_5": 80,
+        "exact_classes": 9,
+        "exact_classes_with_distance_at_least_10": 0,
+        "exact_distance_histogram": {
+          "3": 2,
+          "4": 4,
+          "5": 3
+        },
+        "lattice_class_histogram": {
+          "16x12": 25,
+          "18x12": 44,
+          "6x10": 11,
+          "9x9": 6
+        },
+        "logical_dimension_histogram": {
+          "16": 1,
+          "4": 77,
+          "8": 8
+        }
+      },
+      "two_direction_cyclic_support": {
+        "certified_interval_classes": 21,
+        "certified_lower_bound_histogram": {
+          "10": 2,
+          "4": 5,
+          "5": 21
+        },
+        "classes": 28,
+        "classes_with_certified_lower_bound_at_least_5": 23,
+        "exact_classes": 7,
+        "exact_classes_with_distance_at_least_10": 2,
+        "exact_distance_histogram": {
+          "10": 2,
+          "4": 5
+        },
+        "lattice_class_histogram": {
+          "16x12": 11,
+          "18x12": 7,
+          "6x10": 9,
+          "9x9": 1
+        },
+        "logical_dimension_histogram": {
+          "4": 28
+        }
+      }
+    },
+    "exact_examples": {
+      "120_4_10": {
+        "class_id": "TC-bc2db601d8",
+        "generators": {
+          "A_terms": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              5,
+              5
+            ]
+          ],
+          "B_terms": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        "parameters": {
+          "ell": 6,
+          "k": 4,
+          "m": 10,
+          "n": 120
+        },
+        "presentation_id": "CS-07d0fcb6",
+        "support_subgroups": {
+          "A": {
+            "cyclic_generator": [
+              1,
+              1
+            ],
+            "is_cyclic": true,
+            "normalized_support_differences": [
+              [
+                1,
+                1
+              ],
+              [
+                5,
+                5
+              ]
+            ],
+            "order": 30
+          },
+          "B": {
+            "cyclic_generator": [
+              0,
+              1
+            ],
+            "is_cyclic": true,
+            "normalized_support_differences": [
+              [
+                0,
+                1
+              ]
+            ],
+            "order": 10
+          },
+          "ambient_invariant_factors": [
+            2,
+            30
+          ],
+          "ambient_order": 60,
+          "cyclic_support_extensions_split": {
+            "A": true,
+            "B": true,
+            "both": true
+          },
+          "first_shared_power": {
+            "A_exponent": 6,
+            "B_exponent": 6,
+            "element": [
+              0,
+              6
+            ],
+            "element_order": 5
+          },
+          "generated_together_order": 60,
+          "generates_ambient_group": true,
+          "intersection_order": 5
+        },
+        "two_block_rank_structure": {
+          "block_erasure_is_common_kernel_lower_bound": true,
+          "block_erasure_subsystem_k": 2,
+          "common_kernel_excess_over_k_S": 0,
+          "common_right_kernel_dimension": 2,
+          "kernel_sum_equality": true,
+          "logical_dimension": 4,
+          "logical_dimension_from_common_kernel": 4,
+          "rank_defects": {
+            "delta_X": 0,
+            "delta_Z": 0
+          },
+          "ranks": {
+            "A": 56,
+            "AB": 52,
+            "B": 54,
+            "H_X": 58,
+            "H_Z": 58
+          }
+        }
+      },
+      "432_4_10": {
+        "class_id": "TC-34328062f5",
+        "generators": {
+          "A_terms": [
+            [
+              0,
+              0
+            ],
+            [
+              4,
+              3
+            ]
+          ],
+          "B_terms": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              11
+            ],
+            [
+              2,
+              10
+            ]
+          ]
+        },
+        "parameters": {
+          "ell": 18,
+          "k": 4,
+          "m": 12,
+          "n": 432
+        },
+        "presentation_id": "CL-5be73e9c",
+        "support_subgroups": {
+          "A": {
+            "cyclic_generator": [
+              4,
+              3
+            ],
+            "is_cyclic": true,
+            "normalized_support_differences": [
+              [
+                4,
+                3
+              ]
+            ],
+            "order": 36
+          },
+          "B": {
+            "cyclic_generator": [
+              1,
+              11
+            ],
+            "is_cyclic": true,
+            "normalized_support_differences": [
+              [
+                1,
+                11
+              ],
+              [
+                2,
+                10
+              ]
+            ],
+            "order": 36
+          },
+          "ambient_invariant_factors": [
+            6,
+            36
+          ],
+          "ambient_order": 216,
+          "cyclic_support_extensions_split": {
+            "A": false,
+            "B": false,
+            "both": false
+          },
+          "first_shared_power": {
+            "A_exponent": 6,
+            "B_exponent": 6,
+            "element": [
+              6,
+              6
+            ],
+            "element_order": 6
+          },
+          "generated_together_order": 216,
+          "generates_ambient_group": true,
+          "intersection_order": 6
+        },
+        "two_block_rank_structure": {
+          "block_erasure_is_common_kernel_lower_bound": true,
+          "block_erasure_subsystem_k": 0,
+          "common_kernel_excess_over_k_S": 2,
+          "common_right_kernel_dimension": 2,
+          "kernel_sum_equality": false,
+          "logical_dimension": 4,
+          "logical_dimension_from_common_kernel": 4,
+          "rank_defects": {
+            "delta_X": 2,
+            "delta_Z": 2
+          },
+          "ranks": {
+            "A": 210,
+            "AB": 198,
+            "B": 204,
+            "H_X": 214,
+            "H_Z": 214
+          }
+        }
+      }
+    },
+    "exact_noncyclic_only_two_direction_cyclic_support_classes": 7,
+    "noncyclic_only_nonsplit_cyclic_support_classes": 10,
+    "noncyclic_only_nonsplit_nonzero_rank_defect_classes": 8,
+    "noncyclic_only_nonsplit_zero_rank_defect_classes": 2,
+    "noncyclic_only_rank_two_support_classes": 86,
+    "noncyclic_only_split_cyclic_support_classes": 18,
+    "noncyclic_only_two_direction_cyclic_support_classes": 28,
+    "noncyclic_only_two_direction_nonzero_rank_defect_classes": 8,
+    "noncyclic_only_two_direction_zero_rank_defect_classes": 20
+  },
+  "connected_cyclic_common_factors_by_class": {
+    "z^2+z+1": 182,
+    "z^3+z+1": 12,
+    "z^3+z^2+1": 7,
+    "z^4+z+1": 4,
+    "z^4+z^3+1": 8,
+    "z^5+z+1": 2
+  },
+  "connected_cyclic_gcd_multiplicities": {
+    "classes_by_maximum_factor_multiplicity": {
+      "1": 215
+    },
+    "classes_with_repeated_irreducible_factor": 0,
+    "classes_with_unclassified_factor": 0,
+    "cyclic_classes": 215,
+    "dimension_formula_mismatch_class_ids": [],
+    "factor_occurrences_by_order_and_multiplicity": {
+      "order_15_multiplicity_1": 12,
+      "order_3_multiplicity_1": 184,
+      "order_7_multiplicity_1": 21
+    },
+    "factorization_profiles": [
+      {
+        "classes": 182,
+        "common_factor": "z^2+z+1",
+        "degree_with_multiplicity": 2,
+        "factors": [
+          {
+            "degree": 2,
+            "multiplicity": 1,
+            "order": 3,
+            "polynomial": "z^2+z+1"
+          }
+        ],
+        "squarefree": true,
+        "unclassified_factor": null
+      },
+      {
+        "classes": 12,
+        "common_factor": "z^3+z+1",
+        "degree_with_multiplicity": 3,
+        "factors": [
+          {
+            "degree": 3,
+            "multiplicity": 1,
+            "order": 7,
+            "polynomial": "z^3+z+1"
+          }
+        ],
+        "squarefree": true,
+        "unclassified_factor": null
+      },
+      {
+        "classes": 7,
+        "common_factor": "z^3+z^2+1",
+        "degree_with_multiplicity": 3,
+        "factors": [
+          {
+            "degree": 3,
+            "multiplicity": 1,
+            "order": 7,
+            "polynomial": "z^3+z^2+1"
+          }
+        ],
+        "squarefree": true,
+        "unclassified_factor": null
+      },
+      {
+        "classes": 4,
+        "common_factor": "z^4+z+1",
+        "degree_with_multiplicity": 4,
+        "factors": [
+          {
+            "degree": 4,
+            "multiplicity": 1,
+            "order": 15,
+            "polynomial": "z^4+z+1"
+          }
+        ],
+        "squarefree": true,
+        "unclassified_factor": null
+      },
+      {
+        "classes": 8,
+        "common_factor": "z^4+z^3+1",
+        "degree_with_multiplicity": 4,
+        "factors": [
+          {
+            "degree": 4,
+            "multiplicity": 1,
+            "order": 15,
+            "polynomial": "z^4+z^3+1"
+          }
+        ],
+        "squarefree": true,
+        "unclassified_factor": null
+      },
+      {
+        "classes": 2,
+        "common_factor": "z^5+z+1",
+        "degree_with_multiplicity": 5,
+        "factors": [
+          {
+            "degree": 2,
+            "multiplicity": 1,
+            "order": 3,
+            "polynomial": "z^2+z+1"
+          },
+          {
+            "degree": 3,
+            "multiplicity": 1,
+            "order": 7,
+            "polynomial": "z^3+z^2+1"
+          }
+        ],
+        "squarefree": true,
+        "unclassified_factor": null
+      }
+    ],
+    "multiplicity_semantics": "degree_with_multiplicity is the degree of gcd(a,b,z^N-1); each listed irreducible-factor multiplicity is retained."
+  },
+  "connected_pbb_backbone": {
+    "classes": 33,
+    "cyclic_classes": 6,
+    "cyclic_presentations": 30,
+    "order_15_classes": 0,
+    "order_15_presentations": 0,
+    "order_3_and_7_classes": 0,
+    "order_3_classes": 33,
+    "order_3_or_5_or_7_or_15_classes": 33,
+    "order_3_or_5_or_7_or_15_presentations": 128,
+    "order_3_or_7_classes": 33,
+    "order_3_or_7_or_15_classes": 33,
+    "order_3_or_7_or_15_presentations": 128,
+    "order_3_or_7_presentations": 128,
+    "order_3_presentations": 128,
+    "order_5_classes": 0,
+    "order_5_presentations": 0,
+    "order_7_classes": 0,
+    "order_7_presentations": 0,
+    "presentations": 128
+  },
+  "exact_connected_css": {
+    "classes": 38,
+    "cyclic_classes": 22,
+    "cyclic_presentations": 26,
+    "order_15_classes": 1,
+    "order_15_presentations": 1,
+    "order_3_and_7_classes": 1,
+    "order_3_classes": 35,
+    "order_3_or_5_or_7_or_15_classes": 38,
+    "order_3_or_5_or_7_or_15_presentations": 65,
+    "order_3_or_7_classes": 37,
+    "order_3_or_7_or_15_classes": 38,
+    "order_3_or_7_or_15_presentations": 65,
+    "order_3_or_7_presentations": 64,
+    "order_3_presentations": 62,
+    "order_5_classes": 0,
+    "order_5_presentations": 0,
+    "order_7_classes": 3,
+    "order_7_presentations": 3,
+    "presentations": 65
+  },
+  "record_type": "weight5_quotient_character_analysis",
+  "schema_version": 1,
+  "source_catalogue": {
+    "path": "results/weight5_publication_catalogue.jsonl",
+    "sha256": "fd177f878bf10d2d1e84ce3e64bb56f9610a1501fa578ae4d09db14700a659c5"
+  }
+}
