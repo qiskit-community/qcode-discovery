@@ -1,0 +1,13 @@
+{
+  "accessed": "2026-09-04",
+  "local_dimension": 2,
+  "source": "https://www.codetables.de/QECC/index.html",
+  "entries": [
+    {"n": 12, "k": 2, "lower_bound": 4, "upper_bound": 4},
+    {"n": 30, "k": 4, "lower_bound": 8, "upper_bound": 10},
+    {"n": 36, "k": 4, "lower_bound": 9, "upper_bound": 12},
+    {"n": 48, "k": 4, "lower_bound": 11, "upper_bound": 16},
+    {"n": 60, "k": 4, "lower_bound": 14, "upper_bound": 20}
+  ],
+  "note": "Lower bounds certify existence of the stated stabilizer-code constructions; only the 12,2 entry has matching lower and upper bounds."
+}

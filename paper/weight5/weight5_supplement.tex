@@ -1,0 +1,74 @@
+\documentclass[aps,prx,onecolumn,superscriptaddress,nofootinbib]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{hyperref}
+\addtolength{\textheight}{1pt}
+\setlength{\emergencystretch}{3em}
+\setlength{\LTcapwidth}{\textwidth}
+
+\newcommand{\FF}{\ensuremath{\mathbb{F}}}
+\newcommand{\code}[1]{\ensuremath{\left[\!\left[#1\right]\!\right]}}
+\newcolumntype{T}{>{\scriptsize}l}
+\newcolumntype{N}{>{\scriptsize}r}
+
+\begin{document}
+\raggedbottom
+
+\title{Supplemental Material for ``Large Language Model-Guided Discovery of
+Weight-Five Bivariate Bicycle Codes''}
+
+\author{Juan Cruz-Benito}
+\affiliation{IBM Research}
+% \author{Andrew W. Cross}
+% \affiliation{IBM Research}
+
+\date{September 6, 2026}
+
+\maketitle
+
+Throughout, BB denotes bivariate bicycle, PBB denotes perturbed bivariate
+bicycle, and CSS denotes Calderbank--Shor--Steane.  We use BP--OSD for belief
+propagation with ordered-statistics decoding, MILP for mixed-integer linear
+programming, and FOM for the figure of merit $kd^2/n$.
+
+\section*{Campaign and certification settings}
+
+\begin{center}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Campaign & Iterations & Population & Islands & Workers & Eval. timeout (s)\\
+\midrule
+CSS-small & 300 & 500 & 5 & 6 & 1,200\\
+CSS-large & 300 & 750 & 6 & 24 & 900\\
+PBB-small & 300 & 300 & 4 & 6 & 1,200\\
+PBB-large & 300 & 450 & 5 & 16 & 1,800\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All campaigns used random seed 42, temperature 1.0, and model-selection
+probabilities 0.49 for Claude Opus 5 and 0.51 for GPT-5.6 Sol.  CSS ranking
+used 1,000 BP--OSD trials, three 500-trial refinements, 200 combination-sweep
+ordered-statistics decoding (OSD-CS) trials, and a 300-s exact-search attempt;
+post-search MILP allowed 1,800 s per logical objective and 14,400 s per code.
+PBB ranking used low-weight enumeration, adaptive MILP budgets of 15/90,
+30/180, or 60/360 s per logical objective/per code, and 1,000+500 BP--OSD
+trials.  Initial post-search all-logical PBB MILP passes allowed 180 s per
+logical objective for the small profile and 1,800 s for the large profile;
+unresolved objectives were rerun with limits up to 3,600 and 14,400 s,
+respectively.  Because the profiles used different time and parallelism
+budgets, their output counts are descriptive rather than equal-budget yields.
+Further configuration details are available in the code repository
+~\cite{cruzbenito2026qcode}.
+
+\input{weight5_supplemental_tables}
+
+\bibliographystyle{apsrev4-2}
+\bibliography{weight5_references}
+
+\end{document}

@@ -1,0 +1,1145 @@
+{
+  "source": "https://github.com/unitaryfoundation/qldpc-challenge",
+  "website": "https://unitaryfoundation.github.io/qldpc-challenge/",
+  "commit": "3b50503b058a0c09500c1017b54c3d547e1101cc",
+  "commit_date": "2026-08-28",
+  "retrieved": "2026-08-29",
+  "selection": "Every codes/*.json entry whose family tag is bivariate-bicycle.",
+  "derivation": "n, k, and d are copied from the code entry; max_check_weight is recomputed from checks.X and checks.Z; exact requires a matching certs/<slug>.json record with d_exact=true, otherwise d is a witness-backed upper bound.",
+  "records": [
+    {
+      "slug": "108-8-10",
+      "n": 108,
+      "k": 8,
+      "d": 10,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2308.07915"
+      ]
+    },
+    {
+      "slug": "108-8-12",
+      "n": 108,
+      "k": 8,
+      "d": 12,
+      "max_check_weight": 26,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "112-6-7",
+      "n": 112,
+      "k": 6,
+      "d": 7,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "114-4-14",
+      "n": 114,
+      "k": 4,
+      "d": 14,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "12-4-2",
+      "n": 12,
+      "k": 4,
+      "d": 2,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "120-5-8",
+      "n": 120,
+      "k": 5,
+      "d": 8,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "120-8-12",
+      "n": 120,
+      "k": 8,
+      "d": 12,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2308.07915"
+      ]
+    },
+    {
+      "slug": "128-6-8",
+      "n": 128,
+      "k": 6,
+      "d": 8,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "128-8-6",
+      "n": 128,
+      "k": 8,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "14-6-2",
+      "n": 14,
+      "k": 6,
+      "d": 2,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "140-6-14",
+      "n": 140,
+      "k": 6,
+      "d": 14,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "144-12-12",
+      "n": 144,
+      "k": 12,
+      "d": 12,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2308.07915"
+      ]
+    },
+    {
+      "slug": "144-16-8",
+      "n": 144,
+      "k": 16,
+      "d": 8,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "144-24-6",
+      "n": 144,
+      "k": 24,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "146-18-4",
+      "n": 146,
+      "k": 18,
+      "d": 4,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "153-5-9",
+      "n": 153,
+      "k": 5,
+      "d": 9,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "154-6-16",
+      "n": 154,
+      "k": 6,
+      "d": 16,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "154-8-17",
+      "n": 154,
+      "k": 8,
+      "d": 17,
+      "max_check_weight": 8,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "160-6-9",
+      "n": 160,
+      "k": 6,
+      "d": 9,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "162-36-4",
+      "n": 162,
+      "k": 36,
+      "d": 4,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": [
+        "arXiv:2308.07915"
+      ]
+    },
+    {
+      "slug": "162-8-14",
+      "n": 162,
+      "k": 8,
+      "d": 14,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "174-4-18",
+      "n": 174,
+      "k": 4,
+      "d": 18,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "176-22-4",
+      "n": 176,
+      "k": 22,
+      "d": 4,
+      "max_check_weight": 4,
+      "distance_status": "upper_bound",
+      "origin": null,
+      "references": [
+        "arXiv:2406.19151"
+      ]
+    },
+    {
+      "slug": "18-4-4",
+      "n": 18,
+      "k": 4,
+      "d": 4,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "180-6-10",
+      "n": 180,
+      "k": 6,
+      "d": 10,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "182-6-18",
+      "n": 182,
+      "k": 6,
+      "d": 18,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "183-12-10",
+      "n": 183,
+      "k": 12,
+      "d": 10,
+      "max_check_weight": 8,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "186-10-14",
+      "n": 186,
+      "k": 10,
+      "d": 14,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "192-12-8",
+      "n": 192,
+      "k": 12,
+      "d": 8,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887 (Liang, Eberhardt, Chen -- planar bivariate-bicycle codes; this code is provably NOT of their Eq. (9) form)",
+        "arXiv:2410.11942 (Liang, Yang, Iosue, Chen -- open-boundary theory)"
+      ]
+    },
+    {
+      "slug": "192-24-4",
+      "n": 192,
+      "k": 24,
+      "d": 4,
+      "max_check_weight": 4,
+      "distance_status": "exact",
+      "origin": null,
+      "references": [
+        "arXiv:2406.19151"
+      ]
+    },
+    {
+      "slug": "192-6-8",
+      "n": 192,
+      "k": 6,
+      "d": 8,
+      "max_check_weight": 4,
+      "distance_status": "upper_bound",
+      "origin": null,
+      "references": [
+        "arXiv:2406.19151"
+      ]
+    },
+    {
+      "slug": "192-8-16",
+      "n": 192,
+      "k": 8,
+      "d": 16,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "198-12-7",
+      "n": 198,
+      "k": 12,
+      "d": 7,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "200-8-9",
+      "n": 200,
+      "k": 8,
+      "d": 9,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "204-4-20",
+      "n": 204,
+      "k": 4,
+      "d": 20,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "216-15-11",
+      "n": 216,
+      "k": 15,
+      "d": 11,
+      "max_check_weight": 8,
+      "distance_status": "exact",
+      "origin": null,
+      "references": [
+        "arXiv:2504.08887 (planar BB + grafting technique)",
+        "arXiv:2410.11942 (open-boundary theory)"
+      ]
+    },
+    {
+      "slug": "224-6-20",
+      "n": 224,
+      "k": 6,
+      "d": 20,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "231-5-11",
+      "n": 231,
+      "k": 5,
+      "d": 11,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "234-8-18",
+      "n": 234,
+      "k": 8,
+      "d": 18,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "240-6-11",
+      "n": 240,
+      "k": 6,
+      "d": 11,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "242-12-12",
+      "n": 242,
+      "k": 12,
+      "d": 12,
+      "max_check_weight": 8,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "246-4-22",
+      "n": 246,
+      "k": 4,
+      "d": 22,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "248-10-18",
+      "n": 248,
+      "k": 10,
+      "d": 18,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "252-12-16",
+      "n": 252,
+      "k": 12,
+      "d": 16,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "263-16-12",
+      "n": 263,
+      "k": 16,
+      "d": 12,
+      "max_check_weight": 8,
+      "distance_status": "upper_bound",
+      "origin": null,
+      "references": [
+        "arXiv:2504.08887 (planar BB + grafting technique)",
+        "arXiv:2410.11942 (open-boundary theory)"
+      ]
+    },
+    {
+      "slug": "264-6-12",
+      "n": 264,
+      "k": 6,
+      "d": 12,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "266-6-22",
+      "n": 266,
+      "k": 6,
+      "d": 22,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "270-8-20",
+      "n": 270,
+      "k": 8,
+      "d": 20,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "276-4-24",
+      "n": 276,
+      "k": 4,
+      "d": 24,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "288-12-18",
+      "n": 288,
+      "k": 12,
+      "d": 18,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2308.07915"
+      ]
+    },
+    {
+      "slug": "288-32-8",
+      "n": 288,
+      "k": 32,
+      "d": 8,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "288-46-8",
+      "n": 288,
+      "k": 46,
+      "d": 8,
+      "max_check_weight": 8,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2606.02418"
+      ]
+    },
+    {
+      "slug": "288-48-6",
+      "n": 288,
+      "k": 48,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "288-48-8",
+      "n": 288,
+      "k": 48,
+      "d": 8,
+      "max_check_weight": 10,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2606.02418"
+      ]
+    },
+    {
+      "slug": "288-50-8",
+      "n": 288,
+      "k": 50,
+      "d": 8,
+      "max_check_weight": 8,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2606.02418"
+      ]
+    },
+    {
+      "slug": "288-8-12",
+      "n": 288,
+      "k": 8,
+      "d": 12,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "288-8-35",
+      "n": 288,
+      "k": 8,
+      "d": 35,
+      "max_check_weight": 27,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "292-18-8",
+      "n": 292,
+      "k": 18,
+      "d": 8,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "299-5-13",
+      "n": 299,
+      "k": 5,
+      "d": 13,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "30-4-6",
+      "n": 30,
+      "k": 4,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "308-6-24",
+      "n": 308,
+      "k": 6,
+      "d": 24,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "312-10-26",
+      "n": 312,
+      "k": 10,
+      "d": 26,
+      "max_check_weight": 26,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "312-8-22",
+      "n": 312,
+      "k": 8,
+      "d": 22,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "318-4-26",
+      "n": 318,
+      "k": 4,
+      "d": 26,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "330-8-24",
+      "n": 330,
+      "k": 8,
+      "d": 24,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "336-6-14",
+      "n": 336,
+      "k": 6,
+      "d": 14,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "340-16-18",
+      "n": 340,
+      "k": 16,
+      "d": 18,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "350-6-26",
+      "n": 350,
+      "k": 6,
+      "d": 26,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "354-4-28",
+      "n": 354,
+      "k": 4,
+      "d": 28,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "360-12-24",
+      "n": 360,
+      "k": 12,
+      "d": 24,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "360-16-14",
+      "n": 360,
+      "k": 16,
+      "d": 14,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "360-24-10",
+      "n": 360,
+      "k": 24,
+      "d": 10,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "360-32-6",
+      "n": 360,
+      "k": 32,
+      "d": 6,
+      "max_check_weight": 8,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "360-8-48",
+      "n": 360,
+      "k": 8,
+      "d": 48,
+      "max_check_weight": 29,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "384-12-17",
+      "n": 384,
+      "k": 12,
+      "d": 17,
+      "max_check_weight": 8,
+      "distance_status": "upper_bound",
+      "origin": null,
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "392-8-15",
+      "n": 392,
+      "k": 8,
+      "d": 15,
+      "max_check_weight": 6,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887",
+        "arXiv:2410.11942"
+      ]
+    },
+    {
+      "slug": "401-12-18",
+      "n": 401,
+      "k": 12,
+      "d": 18,
+      "max_check_weight": 8,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "45-5-4",
+      "n": 45,
+      "k": 5,
+      "d": 4,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "48-4-8",
+      "n": 48,
+      "k": 4,
+      "d": 8,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "50-6-4",
+      "n": 50,
+      "k": 6,
+      "d": 4,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "54-8-6",
+      "n": 54,
+      "k": 8,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "60-8-6",
+      "n": 60,
+      "k": 8,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "600-8-96",
+      "n": 600,
+      "k": 8,
+      "d": 96,
+      "max_check_weight": 27,
+      "distance_status": "upper_bound",
+      "origin": "submission",
+      "references": []
+    },
+    {
+      "slug": "62-10-6",
+      "n": 62,
+      "k": 10,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "66-5-5",
+      "n": 66,
+      "k": 5,
+      "d": 5,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "70-6-8",
+      "n": 70,
+      "k": 6,
+      "d": 8,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "72-12-6",
+      "n": 72,
+      "k": 12,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2308.07915"
+      ]
+    },
+    {
+      "slug": "72-6-6",
+      "n": 72,
+      "k": 6,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "78-4-10",
+      "n": 78,
+      "k": 4,
+      "d": 10,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "84-2-9",
+      "n": 84,
+      "k": 2,
+      "d": 9,
+      "max_check_weight": 4,
+      "distance_status": "exact",
+      "origin": null,
+      "references": [
+        "arXiv:2406.19151"
+      ]
+    },
+    {
+      "slug": "84-6-10",
+      "n": 84,
+      "k": 6,
+      "d": 10,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "88-6-6",
+      "n": 88,
+      "k": 6,
+      "d": 6,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "90-8-10",
+      "n": 90,
+      "k": 8,
+      "d": 10,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2308.07915"
+      ]
+    },
+    {
+      "slug": "91-5-7",
+      "n": 91,
+      "k": 5,
+      "d": 7,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "submission",
+      "references": [
+        "arXiv:2504.08887"
+      ]
+    },
+    {
+      "slug": "96-12-4-mvb",
+      "n": 96,
+      "k": 12,
+      "d": 4,
+      "max_check_weight": 4,
+      "distance_status": "exact",
+      "origin": null,
+      "references": [
+        "arXiv:2406.19151"
+      ]
+    },
+    {
+      "slug": "96-4-12",
+      "n": 96,
+      "k": 4,
+      "d": 12,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    },
+    {
+      "slug": "98-6-12",
+      "n": 98,
+      "k": 6,
+      "d": 12,
+      "max_check_weight": 6,
+      "distance_status": "exact",
+      "origin": "baseline",
+      "references": [
+        "arXiv:2503.03827"
+      ]
+    }
+  ]
+}

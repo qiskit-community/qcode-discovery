@@ -1,0 +1,66 @@
+{
+  "source": "https://github.com/unitaryfoundation/qldpc-challenge",
+  "website": "https://unitaryfoundation.github.io/qldpc-challenge/",
+  "commit": "3b50503b058a0c09500c1017b54c3d547e1101cc",
+  "commit_date": "2026-08-28",
+  "retrieved": "2026-08-29",
+  "selection": "Every codes/*.json entry whose recomputed maximum row weight across checks.X and checks.Z is exactly five.",
+  "derivation": "n, k, d, and family are copied from the code entry; max_check_weight is recomputed from checks.X and checks.Z; exact requires a matching certs/<slug>.json record with d_exact=true, otherwise d is a witness-backed upper bound.",
+  "records": [
+    {
+      "slug": "18-4-3",
+      "family": "other",
+      "n": 18,
+      "k": 4,
+      "d": 3,
+      "max_check_weight": 5,
+      "distance_status": "upper_bound",
+      "code_sha256": "e74d11822892553516691bae56ede4e77292e24a0acda27da519087e683ef297",
+      "certificate_sha256": null
+    },
+    {
+      "slug": "40-10-4",
+      "family": "topological",
+      "n": 40,
+      "k": 10,
+      "d": 4,
+      "max_check_weight": 5,
+      "distance_status": "exact",
+      "code_sha256": "f008541c471eadc3f383395fa0e080439f574983227423afa5687b730e3da04d",
+      "certificate_sha256": "2be4cca49ea846870c71bebef635c6f3038ffed701de8d5f34714e191283cf6d"
+    },
+    {
+      "slug": "40-6-4",
+      "family": "topological",
+      "n": 40,
+      "k": 6,
+      "d": 4,
+      "max_check_weight": 5,
+      "distance_status": "exact",
+      "code_sha256": "708e0f87d429e6e78af8c1d672981ccbed298c199f617526b5a90f4f503e5087",
+      "certificate_sha256": "d2f3f726fc01ec29b1db5ae4f62439b8831c1cabeeed9ec1599152a853df4d46"
+    },
+    {
+      "slug": "45-9-3",
+      "family": "hypergraph-product",
+      "n": 45,
+      "k": 9,
+      "d": 3,
+      "max_check_weight": 5,
+      "distance_status": "exact",
+      "code_sha256": "7a3c2810188f162af38aa536364af138d5827ca73b5f81bfaddde604640749eb",
+      "certificate_sha256": "f634158393510f4963b403e66bb39525f73ecb9fdece266a6a8e93630d9d54f3"
+    },
+    {
+      "slug": "676-71-4",
+      "family": "lifted-product",
+      "n": 676,
+      "k": 71,
+      "d": 4,
+      "max_check_weight": 5,
+      "distance_status": "upper_bound",
+      "code_sha256": "93c210fad001e00f156f658655acbebdfa47bb41782ac5959b7f721f3b7d1447",
+      "certificate_sha256": null
+    }
+  ]
+}

@@ -1,0 +1,1134 @@
+% AUTO-GENERATED; do not edit.
+% Required in the parent preamble: \usepackage{longtable}.
+% Retained data rows: 1142; removed data rows: 155.
+% Retained raw observations: 12036; logged raw observations: 13923.
+% PBB-large audit latest embedded timestamp: 2026-08-26T18:16:13.816373+00:00.
+% Retained disconnected proposals: 409/1142; exact disconnected: 235/398.
+% Presentation classes: 630/1142; disconnected classes: 268/630.
+
+\setcounter{table}{0}
+\renewcommand{\thetable}{S\arabic{table}}
+
+\section{Weight-five catalogue and supporting audits}
+\label{sec:w5-complete-catalogue}
+\subsection{Catalogue construction}
+The source logs contain 1,297 proposals (13,923 observations).  After duplicate observations are merged, the catalogue retains 1,142 proposals (12,036 observations), omitting exact $d\leq2$ rows and rows with a verified upper bound $d_{\rm ub}\leq2$.  Canonical labelling groups the retained normalized tuples into 630 presentation classes, defined here as stored-generator colored-Tanner isomorphism classes: 535 CSS and 95 PBB.  This classification captures sector exchanges, monomial shifts, and lattice automorphisms that preserve the colored generator graph.  It does not capture equivalences requiring stabilizer-basis changes or local Clifford operations, so 630 remains an upper bound on the number of inequivalent codes.  ID prefixes CS, CL, PS, and PL denote CSS-small, CSS-large, PBB-small, and PBB-large; the C or P label after the slash identifies the presentation class.  The four campaign tables print all 436 proposals in exact classes and one representative of each interval class (839 rows total); the complete 1,142-row catalogue and supporting evidence are available through the project repository~\cite{cruzbenito2026qcode}.
+
+\subsection{Distance evidence and class merging}
+Duplicate observations are merged conservatively: exact values must agree, certified lower bounds are maximized, and witnessed upper bounds are minimized.  For one representative of each of 492 presentation classes containing all 858 formerly upper-bound-only proposals, we exhaustively searched both CSS logical sectors for nontrivial operators of weight at most four.  The search enumerates supports of at most two qubits and combines pairs whose syndromes cancel, rejecting combinations that are stabilizers.  The audit resolved 64 classes (94 proposals) at low weight: two $d=2$ proposals were omitted, and 62 classes (92 retained proposals) have $d=3$ or 4.  For the other 428 classes (764 proposals), it certified $d\geq5$.  Every retained row has either an exact distance or a certified two-sided interval.  The catalogue contains 398 exact proposals and 744 certified-interval proposals.  30 exact rows inherit an exact $d\leq4$ result from an audited class representative.  A separate set of 15 exact rows combines a transferred $d\geq5$ result with its own weight-five witness.  These transferred-evidence subsets measure a different property from the 45 proposals in the main text that already carried weight-five witnesses before the audit.
+
+Merging distance evidence within each presentation class gives 227 exact classes and 403 certified-interval classes.  The exact classes cover 436 proposals: 398 directly exact rows and 38 rows made exact by class isomorphism.  Class merging tightens without closing the interval for another 100 rows.  The campaign tables separate each proposal's own evidence from the class effect.  Where a class effect is shown, the displayed $d$ and FOM use the class-level interval, whereas Evid. lists only evidence attached to that proposal.  The figure of merit is $\mathrm{FOM}=kd^2/n$; values are rounded to two decimals unless three are needed to distinguish a close comparison.
+
+\subsection{Connectivity and component classes}
+The basis-independent connectivity test finds that 409 of 1,142 retained proposals are disconnected, including 235 of the 398 directly exact proposals.  By family, 307 of the 912 CSS proposals and 102 of the 230 PBB proposals are disconnected.  The component partition agrees with the generator-graph partition for every retained row.  At the class level, 268 of 630 classes are disconnected, including 166 of 227 exact classes.
+
+The high-$k$ component audit resolves six retained direct sums: $10\times\code{42,6,3}$, $16\times\code{24,4,3}$, $12\times\code{36,4,3}$, $10\times\code{42,4,5}$, $8\times\code{48,4,3}$, and $8\times\code{48,4,6}$.  The seventh, $18\times\code{24,4,2}$, is excluded from the retained catalogue because $d=2$.
+
+Selecting one connected component from each parent presentation and repeating the canonical labelling reduces 630 parent classes to 608 component classes: 528 CSS and 80 PBB, of which 206 are exact and 402 have certified distance intervals.  Because this comparison uses presentation-graph isomorphism rather than complete stabilizer-code equivalence, 608 remains an upper bound on the number of inequivalent component codes.
+
+\subsection{Local-Clifford screen}
+A separate complete local-Clifford-to-CSS audit covers all four exact PBB component classes with parameters $\code{12,2,3}$.  An exhaustive branch-and-bound search over the $6^{12}$ assignments of Pauli-axis permutations to the 12 qubits shows that none is locally Clifford equivalent to CSS.  The machine-readable certificates are available through the project repository~\cite{cruzbenito2026qcode}.
+
+\subsection{Table conventions}
+Evidence codes are Exh. (exact exhaustive search), H$_c$ (exact component enumeration plus isomorphism and dimension additivity), M (MILP optimality for every logical sector), $L_w$ (exhaustive exclusion of logical operators through weight $w$), I (MILP incumbent), and B (BP--OSD witness).  Obs. is the number of raw-log observations, not an equivalence-class multiplicity.  Decomp. gives the connectivity decomposition computed from the displayed polynomials: \texttt{conn.} for one component, or $r\times\code{n_0,k_0}$ for $r$ pairwise-isomorphic disjoint components with parameters $\code{n_0,k_0}$.  Each component has the same true distance as the direct sum, so the row's exact distance or certified interval carries over unchanged.
+
+\subsection{Generator attribution and artifacts}
+Attr. uses G for GPT-5.6-sol, O for Claude Opus 5, N for the seed/null source, F for the fixed PBB baseline evaluated in every run, and -- when no attribution record exists.  These labels record associated generator programs, not independent discovery or the distance-certification method.  At the proposal level, the retained CSS association counts are G=739 and O=313, with 181 in both sets, 35 seed/null-only rows, and six rows without an event.  For PBB-small, the attribution counts are 90 G, 51 G/O, 2 G/N, and 8 G/O/N; for PBB-large, they are 8 G, 56 G/O, 11 G/O/N, and 4 O.  F marks 20 retained fixed-baseline proposals and is orthogonal to the G/O/N partition: it can be appended to any model-association label and is not included in those partition counts.  Twenty-five PBB-large bursts remain ambiguous at the individual-program level, although their sets of associated models are fixed.
+
+For the 51 retained PBB-large targets, the completed audit certifies 26 exact distances and leaves 25 certified intervals.  Further details, the complete machine-readable catalogue, and supporting evidence are available through the project repository~\cite{cruzbenito2026qcode}.
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{longtable}{lrrrrrrrr}
+\caption{Catalogue accounting after filtering.  ``Logged obs.'' counts all observations with a positive reported distance; ``Kept obs.'' restricts this count to retained proposals.  ``All'' and ``Kept'' give proposal counts before and after filtering, and ``Classes'' gives the number of retained presentation classes.  Exact and certified-interval counts are proposal-level statuses before the final class merge and can include low-weight evidence transferred from a verified representative.}\label{tab:w5-supp-summary}\\
+\toprule
+Campaign & Logged obs. & Kept obs. & All & Kept & Classes & Removed & Exact & Interval\\
+\midrule
+CSS-small & 5,610 & 5,269 & 382 & 365 & 164 & 17 & 99 & 266\\
+CSS-large & 834 & 824 & 554 & 547 & 371 & 7 & 94 & 453\\
+PBB-small & 4,890 & 3,625 & 257 & 151 & 39 & 106 & 151 & 0\\
+PBB-large & 2,589 & 2,318 & 104 & 79 & 56 & 25 & 54 & 25\\
+\midrule
+Total & 13,923 & 12,036 & 1,297 & 1,142 & 630 & 155 & 398 & 744\\
+\bottomrule
+\end{longtable}
+\endgroup
+
+\begin{longtable}{llllll}
+\caption{Explicit connected BB presentations of components of certified disconnected parents.  Canonical labelling verifies that the corresponding presentation graphs are isomorphic, transferring the component's certified distance to each presentation.}\label{tab:w5-explicit-components}\\
+\toprule
+Code & $(\ell,m)$ & $A$ & $B$ & FOM & Certified parent\\
+\midrule
+$\code{90,4,9}$ & $(5,9)$ & $1+x^{2}y^{8}+x^{3}y^{7}$ & $1+x^{2}y^{6}$ & 3.60 & $\code{180,8,9}$\\
+$\code{96,4,10}$ & $(16,3)$ & $1+y+x^{2}y^{2}$ & $1+x^{3}$ & 4.17 & $\code{384,16,10}$\\
+$\code{140,6,10}$ & $(5,14)$ & $1+y^{13}+x^{4}y^{11}$ & $1+xy^{7}$ & 4.29 & $\code{420,18,10}$\\
+\bottomrule
+\end{longtable}
+
+\begin{longtable}{llllll}
+\caption{Explicit connected PBB presentations of components of certified disconnected parents.  Canonical labelling verifies that the corresponding presentation graphs are isomorphic, transferring the component's certified distance to each presentation.}\label{tab:w5-explicit-pbb-components}\\
+\toprule
+Code & $(\ell,m)$ & $(A,B)$ & $(C,D)$ & FOM & Certified parent\\
+\midrule
+$\code{144,4,8}$ & $(18,4)$ & $(1+x^{3}y,\ 1+xy^{2}+x^{2})$ & $(1+x^{3}y,\ xy^{2})$ & 1.78 & $\code{432,12,8}$\\
+$\code{180,2,11}$ & $(15,6)$ & $(1+x^{2}y^{2},\ 1+x^{2}y^{3}+x^{4})$ & $(1+x^{2}y^{2},\ 1+x^{4})$ & 1.34 & $\code{360,4,11}$\\
+$\code{216,4,10}$ & $(18,6)$ & $(1+x^{2}y,\ 1+xy^{3}+x^{2})$ & $(1+x^{2}y,\ 1+x^{2})$ & 1.85 & $\code{432,8,10}$\\
+$\code{216,4,10}$ & $(18,6)$ & $(1+x^{4}y,\ 1+xy^{3}+x^{2})$ & $(0,\ 1+x^{2})$ & 1.85 & $\code{432,8,10}$\\
+\bottomrule
+\end{longtable}
+
+\begingroup
+\renewcommand{\arraystretch}{0.92}
+\setlength{\tabcolsep}{1pt}
+\begin{longtable}{@{}TTTTTTTNNNN@{}}
+\caption{Certified parameter summary after combining evidence within presentation classes.  For each exact parameter triple, Props. and Cls. respectively count retained proposals and presentation classes; Conn./disc. splits the classes into connected and disconnected.  The displayed distance and FOM reflect class-level evidence.  Rep. is chosen deterministically, preferring an exact proposal-level status and then a connected presentation.  The representative columns give its lattice, generators (with -- in $(C,D)$ for CSS), and component decomposition.  The selected representative need not supply the decisive certificate.  An asterisk marks a row containing both connected and disconnected classes; in such a row Decomp. still describes only the representative.  The seven explicit connected-component presentations in Tables~\ref{tab:w5-explicit-components} and \ref{tab:w5-explicit-pbb-components} are excluded from these counts.}\label{tab:w5-certified-summary}\\
+\toprule
+Fam. & Code & Rep. & $(\ell,m)$ & $(A,B)$ & $(C,D)$ & Decomp. & FOM & Props. & Cls. & Conn./disc.\\
+\midrule
+\endfirsthead
+\multicolumn{11}{c}{\tablename\ \thetable\ (continued)}\\
+\toprule
+Fam. & Code & Rep. & $(\ell,m)$ & $(A,B)$ & $(C,D)$ & Decomp. & FOM & Props. & Cls. & Conn./disc.\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
+CSS & $\code{120,4,4}$ & \texttt{CS-d74f23a3} & $(6,10)$ & $(1+y^{3},\,1+x+x^{2})$ & -- & conn. & 0.53 & 1 & 1 & 1/0\\
+CSS & $\code{120,4,10}$ & \texttt{CS-07d0fcb6} & $(6,10)$ & $(1+xy+x^{5}y^{5},\,1+y)$ & -- & conn. & 3.33 & 6 & 1 & 1/0\\
+CSS & $\code{120,8,3}$ & \texttt{CS-183fa7f4} & $(6,10)$ & $(1+xy^{2}+x^{2}y^{4},\,1+x^{3}y^{6})$ & -- & $2\times\code{60,4}$ & 0.60 & 2 & 1 & 0/1\\
+CSS & $\code{120,8,4}$ & \texttt{CS-ab5fa0e9} & $(6,10)$ & $(1+x^{2}y^{2}+x^{4}y^{4},\,1+x^{3}y^{8})$ & -- & $2\times\code{60,4}$ & 1.07 & 5 & 3 & 0/3\\
+CSS & $\code{120,8,5}$ & \texttt{CS-999229aa} & $(6,10)$ & $(1+y^{2},\,1+x+x^{5}y^{3})$ & -- & conn.\textsuperscript{*} & 1.67 & 17 & 9 & 3/6\\
+CSS & $\code{120,16,3}$ & \texttt{CS-c600e4d1} & $(6,10)$ & $(1+x^{2}y^{2}+x^{4}y^{6},\,1+y^{2})$ & -- & $4\times\code{30,4}$ & 1.20 & 1 & 1 & 0/1\\
+CSS & $\code{120,16,4}$ & \texttt{CS-9dfccec1} & $(6,10)$ & $(1+y^{4},\,1+x^{2}+x^{4}y^{4})$ & -- & $4\times\code{30,4}$ & 2.13 & 2 & 1 & 0/1\\
+CSS & $\code{120,16,5}$ & \texttt{CS-435681c1} & $(6,10)$ & $(1+x^{2}y^{2}+x^{4},\,1+y^{6})$ & -- & $4\times\code{30,4}$ & 3.33 & 1 & 1 & 0/1\\
+CSS & $\code{162,4,3}$ & \texttt{CS-b50a397b} & $(9,9)$ & $(1+y^{3},\,1+y^{4}+x^{4}y^{7})$ & -- & conn. & 0.22 & 9 & 2 & 2/0\\
+CSS & $\code{162,12,3}$ & \texttt{CS-a8c58a3b} & $(9,9)$ & $(1+y^{3},\,1+x^{4}y^{4}+x^{8}y^{5})$ & -- & $3\times\code{54,4}$ & 0.67 & 10 & 4 & 0/4\\
+CSS & $\code{162,12,4}$ & \texttt{CS-df3ce049} & $(9,9)$ & $(1+x^{2},\,1+y^{6}+x^{2}y^{3})$ & -- & $3\times\code{54,4}$ & 1.19 & 2 & 1 & 0/1\\
+CSS & $\code{162,12,5}$ & \texttt{CS-7701034d} & $(9,9)$ & $(1+xy^{6}+x^{8}y^{3},\,1+x)$ & -- & $3\times\code{54,4}$ & 1.85 & 3 & 1 & 0/1\\
+CSS & $\code{162,12,6}$ & \texttt{CS-5aa2af5d} & $(9,9)$ & $(1+y^{7}+x^{3}y^{4},\,1+x^{3}y^{5})$ & -- & $3\times\code{54,4}$ & 2.67 & 21 & 3 & 0/3\\
+CSS & $\code{180,4,3}$ & \texttt{CS-d501d19e} & $(10,9)$ & $(1+y^{2}+x^{3}y^{4},\,1+y^{6})$ & -- & conn. & 0.20 & 6 & 5 & 5/0\\
+CSS & $\code{180,4,5}$ & \texttt{CS-712a2f67} & $(10,9)$ & $(1+xy+x^{2}y^{2},\,1+x^{6})$ & -- & conn. & 0.56 & 11 & 8 & 8/0\\
+CSS & $\code{180,4,13}$ & \texttt{CS-6a4be7ad} & $(10,9)$ & $(1+x^{2}y^{3},\,1+x^{5}y+x^{7}y^{8})$ & -- & conn. & 3.76 & 1 & 1 & 1/0\\
+CSS & $\code{180,4,14}$ & \texttt{CS-1530f6fa} & $(10,9)$ & $(1+x^{2}y^{2}+x^{5}y,\,1+x^{3}y^{3})$ & -- & conn. & 4.356 & 1 & 1 & 1/0\\
+CSS & $\code{180,8,3}$ & \texttt{CS-7223b27c} & $(10,9)$ & $(1+y^{3},\,1+x^{6}y^{2}+x^{9}y^{5})$ & -- & conn.\textsuperscript{*} & 0.40 & 3 & 3 & 1/2\\
+CSS & $\code{180,8,4}$ & \texttt{CS-54e115ab} & $(10,9)$ & $(1+x^{6}y+x^{8}y^{5},\,1+x^{2}y^{3})$ & -- & $2\times\code{90,4}$ & 0.71 & 1 & 1 & 0/1\\
+CSS & $\code{180,8,5}$ & \texttt{CS-770cc2a8} & $(10,9)$ & $(1+y^{2}+x^{8}y,\,1+x^{6})$ & -- & $2\times\code{90,4}$ & 1.11 & 10 & 7 & 0/7\\
+CSS & $\code{180,8,9}$ & \texttt{CS-d473da9b} & $(10,9)$ & $(1+x^{4}y^{8}+x^{6}y^{7},\,1+x^{4}y^{6})$ & -- & $2\times\code{90,4}$ & 3.60 & 1 & 1 & 0/1\\
+CSS & $\code{180,12,4}$ & \texttt{CS-359b0899} & $(10,9)$ & $(1+y^{3}+x^{5}y^{6},\,1+x^{2})$ & -- & $3\times\code{60,4}$ & 1.07 & 2 & 2 & 0/2\\
+CSS & $\code{180,12,5}$ & \texttt{CS-6d6a31f9} & $(10,9)$ & $(1+x^{6},\,1+xy^{3}+x^{5}y^{6})$ & -- & $3\times\code{60,4}$ & 1.67 & 2 & 2 & 0/2\\
+CSS & $\code{180,16,3}$ & \texttt{CS-4496a7f0} & $(10,9)$ & $(1+y^{3},\,1+x^{2}y^{7}+x^{4})$ & -- & $2\times\code{90,8}$ & 0.80 & 2 & 1 & 0/1\\
+CSS & $\code{180,20,5}$ & \texttt{CS-31aff634} & $(10,9)$ & $(1+x^{5}y^{2}+x^{5}y^{4},\,1+x^{5}y^{3})$ & -- & $5\times\code{36,4}$ & 2.78 & 1 & 1 & 0/1\\
+CSS & $\code{180,24,3}$ & \texttt{CS-fb880f70} & $(10,9)$ & $(1+x^{2},\,1+x^{2}y^{6}+x^{6}y^{3})$ & -- & $6\times\code{30,4}$ & 1.20 & 2 & 1 & 0/1\\
+CSS & $\code{180,24,5}$ & \texttt{CS-6a1b1dfe} & $(10,9)$ & $(1+x^{2}y^{3}+x^{2}y^{6},\,1+x^{6})$ & -- & $6\times\code{30,4}$ & 3.33 & 1 & 1 & 0/1\\
+CSS & $\code{384,4,4}$ & \texttt{CL-6e950816} & $(16,12)$ & $(1+y^{3},\,1+x^{3}y^{10}+x^{13}y^{5})$ & -- & conn. & 0.17 & 11 & 6 & 6/0\\
+CSS & $\code{384,8,4}$ & \texttt{CL-bea18d22} & $(16,12)$ & $(1+x,\,1+y^{2}+y^{4})$ & -- & $2\times\code{192,4}$ & 0.33 & 5 & 3 & 0/3\\
+CSS & $\code{384,8,10}$ & \texttt{CL-cbea6bcb} & $(16,12)$ & $(1+xy^{3},\,1+x^{4}y^{10}+x^{11}y^{5})$ & -- & $2\times\code{192,4}$ & 2.08 & 3 & 1 & 0/1\\
+CSS & $\code{384,16,3}$ & \texttt{CL-64686929} & $(16,12)$ & $(1+x^{5}y^{4}+x^{11}y^{8},\,1+x)$ & -- & $4\times\code{96,4}$ & 0.38 & 1 & 1 & 0/1\\
+CSS & $\code{384,16,4}$ & \texttt{CL-f1c90545} & $(16,12)$ & $(1+x^{4},\,1+x^{2}y+x^{15}y^{5})$ & -- & conn.\textsuperscript{*} & 0.67 & 9 & 8 & 1/7\\
+CSS & $\code{384,16,6}$ & \texttt{CL-52dcc64d} & $(16,12)$ & $(1+x^{2}y^{9},\,1+x^{2}y^{11}+x^{14}y)$ & -- & $4\times\code{96,4}$ & 1.50 & 3 & 2 & 0/2\\
+CSS & $\code{384,16,7}$ & \texttt{CL-9fc416af} & $(16,12)$ & $(1+x,\,1+y^{4}+x^{3}y^{8})$ & -- & $4\times\code{96,4}$ & 2.04 & 2 & 2 & 0/2\\
+CSS & $\code{384,16,8}$ & \texttt{CL-49103759} & $(16,12)$ & $(1+x,\,1+x^{3}y^{4}+x^{7}y^{8})$ & -- & $4\times\code{96,4}$ & 2.67 & 6 & 4 & 0/4\\
+CSS & $\code{384,16,10}$ & \texttt{CL-885dfa58} & $(16,12)$ & $(1+y^{4}+x^{2}y^{8},\,1+x^{3}y^{6})$ & -- & $4\times\code{96,4}$ & 4.17 & 1 & 1 & 0/1\\
+CSS & $\code{384,32,3}$ & \texttt{CL-d9f65a7e} & $(16,12)$ & $(1+x^{4}y^{2}+x^{10}y^{7},\,1+x^{2}y^{3})$ & -- & $8\times\code{48,4}$ & 0.75 & 1 & 1 & 0/1\\
+CSS & $\code{384,32,4}$ & \texttt{CL-a94de289} & $(16,12)$ & $(1+x^{2}y^{5}+x^{4}y^{10},\,1+x^{4}y^{6})$ & -- & $8\times\code{48,4}$ & 1.33 & 2 & 2 & 0/2\\
+CSS & $\code{384,32,5}$ & \texttt{CL-83dd7b5d} & $(16,12)$ & $(1+x^{2}y^{6},\,1+x^{2}y^{2}+x^{4}y^{4})$ & -- & $8\times\code{48,4}$ & 2.08 & 1 & 1 & 0/1\\
+CSS & $\code{384,32,6}$ & \texttt{CL-a25b2baf} & $(16,12)$ & $(1+x^{4}y^{2}+x^{4}y^{10},\,1+x^{2}y^{9})$ & -- & $8\times\code{48,4}$ & 3.00 & 1 & 1 & 0/1\\
+CSS & $\code{384,64,3}$ & \texttt{CL-929c2a70} & $(16,12)$ & $(1+x^{4}y^{4}+x^{12}y^{8},\,1+x^{4})$ & -- & $16\times\code{24,4}$ & 1.50 & 1 & 1 & 0/1\\
+CSS & $\code{420,4,5}$ & \texttt{CL-89dd6c68} & $(15,14)$ & $(1+x^{2}y^{10}+x^{10}y^{5},\,1+x^{6})$ & -- & conn. & 0.24 & 3 & 3 & 3/0\\
+CSS & $\code{420,6,3}$ & \texttt{CL-01ad3134} & $(15,14)$ & $(1+x^{2}y^{2}+x^{3}y^{3},\,1+x^{5})$ & -- & conn. & 0.13 & 1 & 1 & 1/0\\
+CSS & $\code{420,6,5}$ & \texttt{CL-c065aeaf} & $(15,14)$ & $(1+xy^{7},\,1+x^{9}y^{9}+x^{13}y^{3})$ & -- & conn. & 0.36 & 1 & 1 & 1/0\\
+CSS & $\code{420,8,4}$ & \texttt{CL-ae04e166} & $(15,14)$ & $(1+xy^{2}+x^{2}y^{4},\,1+x^{6}y^{4})$ & -- & $2\times\code{210,4}$ & 0.30 & 1 & 1 & 0/1\\
+CSS & $\code{420,8,5}$ & \texttt{CL-37987300} & $(15,14)$ & $(1+xy^{6}+x^{11}y^{2},\,1+x^{3}y^{6})$ & -- & $2\times\code{210,4}$ & 0.48 & 2 & 1 & 0/1\\
+CSS & $\code{420,10,5}$ & \texttt{CL-94086b72} & $(15,14)$ & $(1+x^{2}y+x^{10}y^{5},\,1+x^{6})$ & -- & conn. & 0.60 & 1 & 1 & 1/0\\
+CSS & $\code{420,12,3}$ & \texttt{CL-7a5b9b2b} & $(15,14)$ & $(1+x^{5},\,1+xy^{4}+x^{8}y^{12})$ & -- & $2\times\code{210,6}$ & 0.26 & 1 & 1 & 0/1\\
+CSS & $\code{420,12,9}$ & \texttt{CL-84c084df} & $(15,14)$ & $(1+x,\,1+x^{2}y^{2}+x^{8}y^{6})$ & -- & $2\times\code{210,6}$ & 2.31 & 1 & 1 & 0/1\\
+CSS & $\code{420,12,10}$ & \texttt{CL-97118c06} & $(15,14)$ & $(1+x^{4},\,1+y^{4}+x^{9}y^{6})$ & -- & $2\times\code{210,6}$ & 2.86 & 1 & 1 & 0/1\\
+CSS & $\code{420,16,7}$ & \texttt{CL-e6216eab} & $(15,14)$ & $(1+y^{2},\,1+x^{3}+x^{4}y^{4})$ & -- & $2\times\code{210,8}$ & 1.87 & 3 & 3 & 0/3\\
+CSS & $\code{420,18,9}$ & \texttt{CL-0286b883} & $(15,14)$ & $(1+x^{3}y^{7},\,1+x^{6}y^{5}+x^{9}y)$ & -- & $3\times\code{140,6}$ & 3.47 & 1 & 1 & 0/1\\
+CSS & $\code{420,18,10}$ & \texttt{CL-f8ef7ae2} & $(15,14)$ & $(1+y^{13}+x^{12}y^{11},\,1+x^{3}y^{7})$ & -- & $3\times\code{140,6}$ & 4.29 & 1 & 1 & 0/1\\
+CSS & $\code{420,20,5}$ & \texttt{CL-253c2c53} & $(15,14)$ & $(1+x^{6},\,1+x^{7}y^{2}+x^{14}y^{6})$ & -- & $2\times\code{210,10}$ & 1.19 & 1 & 1 & 0/1\\
+CSS & $\code{420,20,6}$ & \texttt{CL-e2ab51c4} & $(15,14)$ & $(1+y^{2},\,1+x^{5}y^{3}+x^{10}y^{13})$ & -- & $5\times\code{84,4}$ & 1.71 & 2 & 2 & 0/2\\
+CSS & $\code{420,20,7}$ & \texttt{CL-0eaa9430} & $(15,14)$ & $(1+y^{4},\,1+x^{5}y^{10}+x^{10}y^{5})$ & -- & $5\times\code{84,4}$ & 2.33 & 1 & 1 & 0/1\\
+CSS & $\code{420,20,8}$ & \texttt{CL-1830493f} & $(15,14)$ & $(1+x^{5}y^{2}+x^{10}y^{6},\,1+y^{3})$ & -- & $5\times\code{84,4}$ & 3.05 & 1 & 1 & 0/1\\
+CSS & $\code{420,30,3}$ & \texttt{CL-abc3d2fe} & $(15,14)$ & $(1+x^{5},\,1+y^{2}+x^{5}y^{3})$ & -- & $5\times\code{84,6}$ & 0.64 & 1 & 1 & 0/1\\
+CSS & $\code{420,40,5}$ & \texttt{CL-437b6e5f} & $(15,14)$ & $(1+x^{5}y^{4}+x^{10}y^{6},\,1+y^{6})$ & -- & $10\times\code{42,4}$ & 2.38 & 1 & 1 & 0/1\\
+CSS & $\code{420,60,3}$ & \texttt{CL-4b943aa2} & $(15,14)$ & $(1+x^{5}y^{12}+x^{10}y^{8},\,1+x^{10})$ & -- & $10\times\code{42,6}$ & 1.29 & 1 & 1 & 0/1\\
+CSS & $\code{432,4,4}$ & \texttt{CL-2de98d42} & $(18,12)$ & $(1+x^{4}y^{3},\,1+x^{3}y^{4}+x^{6}y^{8})$ & -- & conn. & 0.15 & 1 & 1 & 1/0\\
+CSS & $\code{432,4,10}$ & \texttt{CL-afd67a34} & $(18,12)$ & $(1+x^{14}y^{5},\,1+xy^{9}+x^{17}y^{3})$ & -- & conn. & 0.93 & 5 & 1 & 1/0\\
+CSS & $\code{432,8,4}$ & \texttt{CL-7ae78520} & $(18,12)$ & $(1+x,\,1+y^{2}+y^{4})$ & -- & $2\times\code{216,4}$ & 0.30 & 1 & 1 & 0/1\\
+CSS & $\code{432,12,4}$ & \texttt{CL-db6df8c9} & $(18,12)$ & $(1+y^{3},\,1+x+x^{2})$ & -- & $3\times\code{144,4}$ & 0.44 & 1 & 1 & 0/1\\
+CSS & $\code{432,12,10}$ & \texttt{CL-f85559a3} & $(18,12)$ & $(1+x^{3}y^{3},\,1+x^{5}y^{7}+x^{16}y^{11})$ & -- & $3\times\code{144,4}$ & 2.78 & 1 & 1 & 0/1\\
+CSS & $\code{432,16,3}$ & \texttt{CL-aa2abeb9} & $(18,12)$ & $(1+x^{12}y^{8},\,1+xy^{4}+x^{5})$ & -- & $4\times\code{108,4}$ & 0.33 & 1 & 1 & 0/1\\
+CSS & $\code{432,16,4}$ & \texttt{CL-8157fe5b} & $(18,12)$ & $(1+x^{4},\,1+y^{2}+y^{4})$ & -- & $4\times\code{108,4}$ & 0.59 & 3 & 2 & 0/2\\
+CSS & $\code{432,16,6}$ & \texttt{CL-c9d42fcb} & $(18,12)$ & $(1+y^{2},\,1+x^{2}+x^{4})$ & -- & $4\times\code{108,4}$ & 1.33 & 2 & 2 & 0/2\\
+CSS & $\code{432,16,7}$ & \texttt{CL-d72254a8} & $(18,12)$ & $(1+x^{2}+x^{3}y^{8},\,1+xy^{4})$ & -- & $4\times\code{108,4}$ & 1.81 & 2 & 1 & 0/1\\
+CSS & $\code{432,16,8}$ & \texttt{CL-c5ca6b9a} & $(18,12)$ & $(1+xy^{6},\,1+x^{11}y^{10}+x^{15}y^{2})$ & -- & $4\times\code{108,4}$ & 2.37 & 2 & 2 & 0/2\\
+CSS & $\code{432,16,9}$ & \texttt{CL-8fe7fff8} & $(18,12)$ & $(1+x^{5}y^{4},\,1+x^{5}+x^{17}y^{8})$ & -- & $4\times\code{108,4}$ & 3.00 & 1 & 1 & 0/1\\
+CSS & $\code{432,24,3}$ & \texttt{CL-fedc4d95} & $(18,12)$ & $(1+x^{3}y^{11}+x^{12}y,\,1+x^{6})$ & -- & $3\times\code{144,8}$ & 0.50 & 1 & 1 & 0/1\\
+CSS & $\code{432,24,4}$ & \texttt{CL-2c508b86} & $(18,12)$ & $(1+y^{3},\,1+x^{2}+x^{4})$ & -- & $6\times\code{72,4}$ & 0.89 & 3 & 3 & 0/3\\
+CSS & $\code{432,24,5}$ & \texttt{CL-7827219c} & $(18,12)$ & $(1+x^{6}y^{6},\,1+xy+x^{2}y^{2})$ & -- & $6\times\code{72,4}$ & 1.39 & 1 & 1 & 0/1\\
+CSS & $\code{432,24,6}$ & \texttt{CL-63ba351e} & $(18,12)$ & $(1+y+x^{12}y^{11},\,1+x^{6}y^{6})$ & -- & $6\times\code{72,4}$ & 2.00 & 1 & 1 & 0/1\\
+CSS & $\code{432,24,7}$ & \texttt{CL-f93732aa} & $(18,12)$ & $(1+x^{3}y^{3},\,1+y^{10}+x^{3}y^{5})$ & -- & $6\times\code{72,4}$ & 2.72 & 1 & 1 & 0/1\\
+CSS & $\code{432,32,3}$ & \texttt{CL-5e6f356a} & $(18,12)$ & $(1+y^{4},\,1+x^{2}+x^{4})$ & -- & $8\times\code{54,4}$ & 0.67 & 1 & 1 & 0/1\\
+CSS & $\code{432,32,6}$ & \texttt{CL-21ad24a2} & $(18,12)$ & $(1+x^{4}+x^{12}y^{4},\,1+x^{4}y^{4})$ & -- & $8\times\code{54,4}$ & 2.67 & 1 & 1 & 0/1\\
+CSS & $\code{432,48,3}$ & \texttt{CL-b9275593} & $(18,12)$ & $(1+y^{4},\,1+x^{6}y^{2}+x^{12}y^{4})$ & -- & $12\times\code{36,4}$ & 1.00 & 1 & 1 & 0/1\\
+PBB & $\code{72,4,3}$ & \texttt{PS-46a007cb} & $(6,6)$ & $(1+x^{2}y^{2},\,1+xy^{3}+x^{2})$ & $(1+x^{2}y^{2},\,1+x^{2})$ & $2\times\code{36,2}$ & 0.50 & 7 & 3 & 0/3\\
+PBB & $\code{72,4,4}$ & \texttt{PS-bb41fc22} & $(6,6)$ & $(1+y,\,1+x+x^{2})$ & $(1+y,\,x)$ & conn.\textsuperscript{*} & 0.89 & 41 & 7 & 4/3\\
+PBB & $\code{72,12,3}$ & \texttt{PS-5feb6ebb} & $(6,6)$ & $(1+x^{3}y^{3},\,1+xy^{3}+x^{2})$ & $(0,\,1+x^{2})$ & $6\times\code{12,2}$ & 1.50 & 8 & 4 & 0/4\\
+PBB & $\code{108,2,4}$ & \texttt{PS-dcbd4997} & $(6,9)$ & $(1+y,\,1+x+x^{2})$ & $(1+y,\,x)$ & conn. & 0.30 & 2 & 1 & 1/0\\
+PBB & $\code{120,4,4}$ & \texttt{PS-9828cd17} & $(6,10)$ & $(1+y,\,1+x+x^{2})$ & $(1+y,\,x)$ & conn.\textsuperscript{*} & 0.53 & 36 & 7 & 4/3\\
+PBB & $\code{120,20,3}$ & \texttt{PS-194f5d29} & $(6,10)$ & $(1+x^{3}y^{5},\,1+xy^{5}+x^{2})$ & $(0,\,1+x^{2})$ & $10\times\code{12,2}$ & 1.50 & 8 & 4 & 0/4\\
+PBB & $\code{144,4,6}$ & \texttt{PS-b9bd7fa4} & $(9,8)$ & $(1+y,\,1+x+x^{2})$ & $(1+y,\,x)$ & conn. & 1.00 & 28 & 5 & 5/0\\
+PBB & $\code{144,8,3}$ & \texttt{PS-c2455d37} & $(9,8)$ & $(1+x^{3}y^{4},\,1+x+x^{5}y^{4})$ & $(0,\,1+x)$ & $4\times\code{36,2}$ & 0.50 & 8 & 3 & 0/3\\
+PBB & $\code{144,8,4}$ & \texttt{PS-85429f03} & $(9,8)$ & $(1+x^{3}y^{2},\,1+x+x^{5}y^{4})$ & $(0,\,1+x)$ & $2\times\code{72,4}$ & 0.89 & 11 & 4 & 0/4\\
+PBB & $\code{162,2,6}$ & \texttt{PS-aacbee20} & $(9,9)$ & $(1+y,\,1+x+x^{2})$ & $(1+y,\,x)$ & conn. & 0.44 & 2 & 1 & 1/0\\
+PBB & $\code{216,2,8}$ & \texttt{PL-ba29a9df} & $(12,9)$ & $(1+y,\,1+x+x^{2})$ & $(1+y,\,x)$ & conn. & 0.59 & 2 & 1 & 1/0\\
+PBB & $\code{288,4,8}$ & \texttt{PL-592409d9} & $(12,12)$ & $(1+x+x^{2},\,1+y)$ & $(x,\,1+y)$ & conn. & 0.89 & 6 & 3 & 3/0\\
+PBB & $\code{288,8,4}$ & \texttt{PL-605688ff} & $(12,12)$ & $(1+x^{2}y,\,1+x^{2}y^{6}+x^{4})$ & $(0,\,1+x^{4})$ & $2\times\code{144,4}$ & 0.44 & 6 & 2 & 0/2\\
+PBB & $\code{288,8,6}$ & \texttt{PL-adcbb3fc} & $(12,12)$ & $(1+x^{4}y^{2},\,1+xy^{6}+x^{2})$ & $(1+x^{4}y^{2},\,1+x^{2})$ & $2\times\code{144,4}$ & 1.00 & 1 & 1 & 0/1\\
+PBB & $\code{288,16,4}$ & \texttt{PL-ad1cc828} & $(12,12)$ & $(1+xy,\,1+x^{2}y^{6}+x^{4})$ & $(0,\,1+x^{4})$ & $4\times\code{72,4}$ & 0.89 & 6 & 4 & 0/4\\
+PBB & $\code{288,24,4}$ & \texttt{PL-78c3e7bf} & $(12,12)$ & $(1+x^{3}y^{6},\,1+x^{2}y^{6}+x^{4})$ & $(0,\,1+x^{4})$ & $6\times\code{48,4}$ & 1.33 & 1 & 1 & 0/1\\
+PBB & $\code{288,48,3}$ & \texttt{PL-9b97a02b} & $(12,12)$ & $(1+x^{6}y^{6},\,1+x^{2}y^{6}+x^{4})$ & $(1+x^{6}y^{6},\,1+x^{4})$ & $24\times\code{12,2}$ & 1.50 & 1 & 1 & 0/1\\
+PBB & $\code{360,4,5}$ & \texttt{PL-6b21188d} & $(15,12)$ & $(1+x^{2}y^{2},\,1+x^{2}y^{6}+x^{4})$ & $(0,\,x^{2}y^{6})$ & $2\times\code{180,2}$ & 0.28 & 3 & 2 & 0/2\\
+PBB & $\code{360,4,7}$ & \texttt{PL-48f3faa4} & $(15,12)$ & $(1+x^{3}y^{4},\,1+xy^{6}+x^{2})$ & $(1+x^{3}y^{4},\,xy^{6})$ & $2\times\code{180,2}$ & 0.54 & 1 & 1 & 0/1\\
+PBB & $\code{360,4,8}$ & \texttt{PL-93708752} & $(15,12)$ & $(1+xy,\,1+x^{2}y^{6}+x^{4})$ & $(1+xy,\,1+x^{4})$ & conn. & 0.71 & 4 & 2 & 2/0\\
+PBB & $\code{360,4,10}$ & \texttt{PL-4602a8fa} & $(15,12)$ & $(1+x+x^{2},\,1+y)$ & $(x,\,1+y)$ & conn. & 1.11 & 2 & 1 & 1/0\\
+PBB & $\code{360,4,11}$ & \texttt{PL-8ee754a5} & $(15,12)$ & $(1+x^{2}y^{4},\,1+x^{2}y^{6}+x^{4})$ & $(1+x^{2}y^{4},\,1+x^{4})$ & $2\times\code{180,2}$ & 1.34 & 1 & 1 & 0/1\\
+PBB & $\code{360,12,4}$ & \texttt{PL-93be42eb} & $(15,12)$ & $(1+x^{3}y^{3},\,1+x^{2}y^{6}+x^{4})$ & $(1+x^{3}y^{3},\,x^{2}y^{6})$ & $3\times\code{120,4}$ & 0.53 & 2 & 2 & 0/2\\
+PBB & $\code{420,4,10}$ & \texttt{PL-ce4ae900} & $(15,14)$ & $(1+y,\,1+x+x^{2})$ & $(1+y,\,x)$ & conn. & 0.95 & 2 & 1 & 1/0\\
+PBB & $\code{432,8,3}$ & \texttt{PL-232490ff} & $(18,12)$ & $(1+x^{6}y^{4},\,1+x^{2}y^{6}+x^{4})$ & $(0,\,x^{2}y^{6})$ & $4\times\code{108,2}$ & 0.17 & 1 & 1 & 0/1\\
+PBB & $\code{432,8,7}$ & \texttt{PL-2b5f2b8d} & $(18,12)$ & $(1+x^{2}y^{4},\,1+xy^{6}+x^{2})$ & $(0,\,1+x^{2})$ & $4\times\code{108,2}$ & 0.91 & 4 & 3 & 0/3\\
+PBB & $\code{432,8,8}$ & \texttt{PL-cdaa4f44} & $(18,12)$ & $(1+xy,\,1+x^{2}y^{6}+x^{4})$ & $(1+xy,\,x^{2}y^{6})$ & $2\times\code{216,4}$ & 1.19 & 3 & 2 & 0/2\\
+PBB & $\code{432,8,10}$ & \texttt{PL-36c5ce3b} & $(18,12)$ & $(1+x^{2}y^{2},\,1+xy^{6}+x^{2})$ & $(1+x^{2}y^{2},\,1+x^{2})$ & $2\times\code{216,4}$ & 1.85 & 2 & 2 & 0/2\\
+PBB & $\code{432,12,4}$ & \texttt{PL-597f6b12} & $(18,12)$ & $(1+x^{3}y,\,1+x^{3}y^{6}+x^{6})$ & $(0,\,x^{3}y^{6})$ & $3\times\code{144,4}$ & 0.44 & 2 & 2 & 0/2\\
+PBB & $\code{432,12,8}$ & \texttt{PL-aefa6773} & $(18,12)$ & $(1+x^{3}y^{3},\,1+xy^{6}+x^{2})$ & $(1+x^{3}y^{3},\,xy^{6})$ & $3\times\code{144,4}$ & 1.78 & 1 & 1 & 0/1\\
+PBB & $\code{432,24,3}$ & \texttt{PL-88c05b17} & $(18,12)$ & $(1+x^{3}y^{6},\,1+xy^{6}+x^{2})$ & $(1+x^{3}y^{6},\,1+x^{2})$ & $12\times\code{36,2}$ & 0.50 & 5 & 5 & 0/5\\
+PBB & $\code{432,24,4}$ & \texttt{PL-5f3d871a} & $(18,12)$ & $(1+x^{3}y^{2},\,1+x^{3}y^{6}+x^{6})$ & $(0,\,x^{3}y^{6})$ & $12\times\code{36,2}$ & 0.89 & 3 & 3 & 0/3\\
+\end{longtable}
+\endgroup
+
+\begingroup
+\setlength{\tabcolsep}{0.84pt}
+\renewcommand{\arraystretch}{0.96}
+\begin{longtable}{@{}TTTTTTTT@{\kern.5pt\vrule\kern.5pt}TTTTT@{}}
+\caption{CSS-small compact catalogue (224 displayed of 365 retained proposals; 164 presentation classes).  The table includes every proposal in an exact class and one deterministic representative of every interval class.  Own evidence and Evid. describe the proposal before class merging; Class effect reports when merging makes the displayed $d$ and FOM exact or tighter.  Column abbreviations, filtering, and evidence conventions are defined above.}\label{tab:w5-supp-css-small}\\
+\toprule
+ID/class & $(\ell,m)$ & $\code{n,k}$ & $d$ & Own evidence & Class effect & FOM & $A$ & $B$ & Evid. & Obs. & Attr. & Decomp.\\
+\midrule
+\endfirsthead
+\multicolumn{13}{c}{\tablename\ \thetable\ (continued)}\\
+\toprule
+ID/class & $(\ell,m)$ & $\code{n,k}$ & $d$ & Own evidence & Class effect & FOM & $A$ & $B$ & Evid. & Obs. & Attr. & Decomp.\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
+\texttt{CS-435681c1/C040} & $(6,10)$ & $\code{120,16}$ & $5$ & Exact & -- & $3.33$ & $1+x^{2}y^{2}+x^{4}$ & $1+y^{6}$ & M & 9 & G & $4\times\code{30,4}$\\
+\texttt{CS-9dfccec1/C038} & $(6,10)$ & $\code{120,16}$ & $4$ & Exact & -- & $2.13$ & $1+y^{4}$ & $1+x^{2}+x^{4}y^{4}$ & Exh. & 1 & G & $4\times\code{30,4}$\\
+\texttt{CS-8146fb41/C038} & $(6,10)$ & $\code{120,16}$ & $4$ & Exact & -- & $2.13$ & $1+x^{2}y^{4}+x^{4}$ & $1+y^{6}$ & Exh. & 1 & G & $4\times\code{30,4}$\\
+\texttt{CS-c600e4d1/C039} & $(6,10)$ & $\code{120,16}$ & $3$ & Exact & -- & $1.20$ & $1+x^{2}y^{2}+x^{4}y^{6}$ & $1+y^{2}$ & Exh. & 121 & G/O & $4\times\code{30,4}$\\
+\texttt{CS-999229aa/C022} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+y^{2}$ & $1+x+x^{5}y^{3}$ & L4+B & 2 & G & conn.\\
+\texttt{CS-fc4dc8ca/C025} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+y^{2}$ & $1+xy^{2}+x^{2}y^{6}$ & L4+B & 1 & G & $2\times\code{60,4}$\\
+\texttt{CS-461d5f82/C031} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+y^{4}$ & $1+xy+x^{5}y^{4}$ & L4+B & 7 & G & conn.\\
+\texttt{CS-83ce21aa/C031} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+y^{8}$ & $1+xy^{4}+x^{5}y^{7}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-373a98a4/C029} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+y^{8}$ & $1+x^{2}y^{8}+x^{4}y$ & L4+B & 2 & O & $2\times\code{60,4}$\\
+\texttt{CS-654080d0/C030} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+xy^{4}+x^{2}y^{8}$ & $1+x^{3}y^{4}$ & L4+B & 5 & G/O & $2\times\code{60,4}$\\
+\texttt{CS-95b2af5c/C031} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+xy^{4}+x^{5}y^{3}$ & $1+y^{6}$ & L4+B & 7 & G & conn.\\
+\texttt{CS-ba902f48/C025} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+xy^{6}+x^{2}y^{8}$ & $1+y^{4}$ & L4+B & 1 & O & $2\times\code{60,4}$\\
+\texttt{CS-56984308/C026} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+xy^{6}+x^{5}y^{6}$ & $1+y^{6}$ & L4+B & 5 & G/O & $2\times\code{60,4}$\\
+\texttt{CS-81c206b7/C027} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+x^{2}y+x^{4}$ & $1+y^{2}$ & L4+B & 3 & G/O & $2\times\code{60,4}$\\
+\texttt{CS-75b1d537/C025} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+x^{2}y^{3}+x^{4}y^{9}$ & $1+y^{8}$ & L4+B & 1 & G & $2\times\code{60,4}$\\
+\texttt{CS-f0ceea98/C029} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+x^{2}y^{4}+x^{4}y^{3}$ & $1+y^{4}$ & L4+B & 13 & G/O & $2\times\code{60,4}$\\
+\texttt{CS-2aa84247/C029} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+x^{2}y^{4}+x^{4}y^{3}$ & $1+y^{6}$ & L4+B & 2 & G & $2\times\code{60,4}$\\
+\texttt{CS-49a65af6/C036} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+x^{3}y^{2}$ & $1+x+x^{2}y^{6}$ & L4+B & 2 & O/N & $2\times\code{60,4}$\\
+\texttt{CS-1363c9b9/C036} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+x^{3}y^{4}$ & $1+x^{4}y^{2}+x^{5}y^{2}$ & L4+B & 1 & G & $2\times\code{60,4}$\\
+\texttt{CS-48842317/C034} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+x^{4}y+x^{5}y$ & $1+y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-ff5ab961/C036} & $(6,10)$ & $\code{120,8}$ & $5$ & Exact & -- & $1.67$ & $1+x^{4}y^{4}+x^{5}y^{5}$ & $1+x^{3}y^{3}$ & L4+B & 2 & G & $2\times\code{60,4}$\\
+\texttt{CS-ab5fa0e9/C028} & $(6,10)$ & $\code{120,8}$ & $4$ & Exact & -- & $1.07$ & $1+x^{2}y^{2}+x^{4}y^{4}$ & $1+x^{3}y^{8}$ & Exh. & 1 & G & $2\times\code{60,4}$\\
+\texttt{CS-139f4bc6/C019} & $(6,10)$ & $\code{120,8}$ & $4$ & Exact & -- & $1.07$ & $1+x^{3}y^{6}$ & $1+x^{4}+x^{5}$ & Exh. & 162 & G/O & $2\times\code{60,4}$\\
+\texttt{CS-35bf8221/C021} & $(6,10)$ & $\code{120,8}$ & $4$ & Exact & -- & $1.07$ & $1+x^{3}y^{7}$ & $1+xy^{3}+x^{2}$ & Exh. & 5 & G & $2\times\code{60,4}$\\
+\texttt{CS-f0816ca6/C028} & $(6,10)$ & $\code{120,8}$ & $4$ & Exact & -- & $1.07$ & $1+x^{3}y^{8}$ & $1+x^{2}y^{8}+x^{4}y^{2}$ & Exh. & 5 & G & $2\times\code{60,4}$\\
+\texttt{CS-3a584232/C021} & $(6,10)$ & $\code{120,8}$ & $4$ & Exact & -- & $1.07$ & $1+x^{4}+x^{5}y^{6}$ & $1+x^{3}y^{4}$ & Exh. & 1 & G & $2\times\code{60,4}$\\
+\texttt{CS-183fa7f4/C035} & $(6,10)$ & $\code{120,8}$ & $3$ & Exact & -- & $0.60$ & $1+xy^{2}+x^{2}y^{4}$ & $1+x^{3}y^{6}$ & Exh. & 1 & G & $2\times\code{60,4}$\\
+\texttt{CS-3aa743db/C035} & $(6,10)$ & $\code{120,8}$ & $3$ & Exact & -- & $0.60$ & $1+x^{2}y^{6}+x^{4}y^{3}$ & $1+y^{9}$ & Exh. & 1 & G & $2\times\code{60,4}$\\
+\texttt{CS-b1622590/C023} & $(6,10)$ & $\code{120,8}$ & $[5,7]$ & Interval & Tighter & $[1.67,3.27]$ & $1+y$ & $1+x^{2}y+x^{4}y^{3}$ & L4+B & 170 & G/O & $2\times\code{60,4}$\\
+\texttt{CS-61381a4d/C032} & $(6,10)$ & $\code{120,8}$ & $[5,8]$ & Interval & -- & $[1.67,4.27]$ & $1+x^{3}y^{2}$ & $1+x^{2}y^{8}+x^{4}$ & L4+B & 2 & G & $2\times\code{60,4}$\\
+\texttt{CS-c6d700d2/C020} & $(6,10)$ & $\code{120,8}$ & $[5,7]$ & Interval & Tighter & $[1.67,3.27]$ & $1+x^{3}y^{3}$ & $1+xy+x^{2}$ & L4+B & 4 & G/O/N & $2\times\code{60,4}$\\
+\texttt{CS-4ae19507/C024} & $(6,10)$ & $\code{120,8}$ & $[5,6]$ & Interval & Tighter & $[1.67,2.40]$ & $1+xy+x^{5}y^{5}$ & $1+x^{3}y$ & L4+B & 2 & G/O & $2\times\code{60,4}$\\
+\texttt{CS-5f82ded4/C037} & $(6,10)$ & $\code{120,8}$ & $[5,7]$ & Interval & -- & $[1.67,3.27]$ & $1+xy^{6}+x^{2}y^{8}$ & $1+x^{3}y^{8}$ & L4+B & 2 & G & $2\times\code{60,4}$\\
+\texttt{CS-960aef72/C018} & $(6,10)$ & $\code{120,8}$ & $[5,6]$ & Interval & -- & $[1.67,2.40]$ & $1+y^{7}$ & $1+x^{2}y^{2}+x^{4}y^{6}$ & L4+B & 2 & G & $2\times\code{60,4}$\\
+\texttt{CS-f5976984/C033} & $(6,10)$ & $\code{120,8}$ & $[5,6]$ & Interval & -- & $[1.67,2.40]$ & $1+x^{2}y^{2}+x^{4}y^{2}$ & $1+x^{3}y^{9}$ & L4+B & 1 & G & $2\times\code{60,4}$\\
+\texttt{CS-07d0fcb6/C011} & $(6,10)$ & $\code{120,4}$ & $10$ & Exact & -- & $3.33$ & $1+xy+x^{5}y^{5}$ & $1+y$ & M & 2 & G & conn.\\
+\texttt{CS-d74f23a3/C001} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+y^{3}$ & $1+x+x^{2}$ & Exh. & 1 & G & conn.\\
+\texttt{CS-2a6c3475/C006} & $(6,10)$ & $\code{120,4}$ & $[5,10]$ & Interval & Tighter & $[0.83,3.33]$ & $1+x^{3}y^{8}$ & $1+x^{2}y^{5}+x^{4}y^{4}$ & L4+B & 2 & G & conn.\\
+\texttt{CS-681e1b89/C007} & $(6,10)$ & $\code{120,4}$ & $[5,10]$ & Interval & Tighter & $[0.83,3.33]$ & $1+x^{4}y^{9}+x^{5}y$ & $1+x^{3}y$ & L4+B & 1 & O & conn.\\
+\texttt{CS-442a59e3/C003} & $(6,10)$ & $\code{120,4}$ & $[5,10]$ & Interval & Tighter & $[0.83,3.33]$ & $1+y^{3}$ & $1+xy^{3}+x^{5}y^{2}$ & L4+B & 13 & G/O & conn.\\
+\texttt{CS-1eb1785f/C002} & $(6,10)$ & $\code{120,4}$ & $[5,8]$ & Interval & Tighter & $[0.83,2.13]$ & $1+xy+x^{2}y^{2}$ & $1+x^{3}y^{4}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-21cfa1e9/C017} & $(6,10)$ & $\code{120,4}$ & $[5,10]$ & Interval & -- & $[0.83,3.33]$ & $1+xy^{3}+x^{5}y^{9}$ & $1+x^{3}y^{4}$ & L4+B & 2 & G & conn.\\
+\texttt{CS-23cbbfbd/C016} & $(6,10)$ & $\code{120,4}$ & $[5,10]$ & Interval & -- & $[0.83,3.33]$ & $1+xy^{6}+x^{5}y$ & $1+y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-a583e335/C010} & $(6,10)$ & $\code{120,4}$ & $[5,10]$ & Interval & -- & $[0.83,3.33]$ & $1+xy^{7}+x^{5}y^{2}$ & $1+y^{3}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CS-12c8b44e/C011} & $(6,10)$ & $\code{120,4}$ & $10$ & Interval & Exact & $3.33$ & $1+x^{2}y^{8}+x^{4}y^{3}$ & $1+x^{3}y^{2}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-06a00cb2/C012} & $(6,10)$ & $\code{120,4}$ & $[5,10]$ & Interval & -- & $[0.83,3.33]$ & $1+x^{3}y$ & $1+x^{2}y^{7}+x^{4}y^{7}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-0a7f4a24/C011} & $(6,10)$ & $\code{120,4}$ & $10$ & Interval & Exact & $3.33$ & $1+x^{3}y^{3}$ & $1+xy^{2}+x^{5}$ & L4+B & 1 & N & conn.\\
+\texttt{CS-85b452ec/C011} & $(6,10)$ & $\code{120,4}$ & $10$ & Interval & Exact & $3.33$ & $1+x^{3}y^{3}$ & $1+x^{2}y^{2}+x^{4}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-e21fcaf6/C011} & $(6,10)$ & $\code{120,4}$ & $10$ & Interval & Exact & $3.33$ & $1+x^{3}y^{6}$ & $1+x^{4}y^{4}+x^{5}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-fa6ee2a0/C011} & $(6,10)$ & $\code{120,4}$ & $10$ & Interval & Exact & $3.33$ & $1+x^{3}y^{6}$ & $1+x^{4}y^{4}+x^{5}y^{9}$ & L4+B & 13 & G/O & conn.\\
+\texttt{CS-289980e5/C004} & $(6,10)$ & $\code{120,4}$ & $[5,8]$ & Interval & Tighter & $[0.83,2.13]$ & $1+y^{3}$ & $1+xy^{2}+x^{5}y^{2}$ & L4+B & 7 & G/O & conn.\\
+\texttt{CS-cd30a97d/C008} & $(6,10)$ & $\code{120,4}$ & $[5,8]$ & Interval & Tighter & $[0.83,2.13]$ & $1+x+x^{2}y^{7}$ & $1+x^{3}y^{7}$ & L4+B & 2 & G & conn.\\
+\texttt{CS-1b5f2c76/C014} & $(6,10)$ & $\code{120,4}$ & $[5,8]$ & Interval & Tighter & $[0.83,2.13]$ & $1+xy+x^{5}y^{3}$ & $1+x^{3}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-f9c94426/C005} & $(6,10)$ & $\code{120,4}$ & $[5,8]$ & Interval & Tighter & $[0.83,2.13]$ & $1+xy^{7}+x^{5}y^{4}$ & $1+x^{3}y^{6}$ & L4+B & 3 & G & conn.\\
+\texttt{CS-18b82d12/C013} & $(6,10)$ & $\code{120,4}$ & $[5,6]$ & Interval & Tighter & $[0.83,1.20]$ & $1+x^{3}y^{2}$ & $1+x^{4}y+x^{5}y^{4}$ & L4+B & 15 & G/O & conn.\\
+\texttt{CS-20bcc637/C015} & $(6,10)$ & $\code{120,4}$ & $[5,6]$ & Interval & -- & $[0.83,1.20]$ & $1+x^{3}y^{3}$ & $1+xy^{5}+x^{5}$ & L4+B & 1 & N & conn.\\
+\texttt{CS-06d9c8e4/C009} & $(6,10)$ & $\code{120,4}$ & $[5,6]$ & Interval & -- & $[0.83,1.20]$ & $1+x^{3}y^{3}$ & $1+x^{2}y^{2}+x^{4}y$ & L4+B & 1 & O & conn.\\
+\texttt{CS-5aa2af5d/C053} & $(9,9)$ & $\code{162,12}$ & $6$ & Exact & -- & $2.67$ & $1+y^{7}+x^{3}y^{4}$ & $1+x^{3}y^{5}$ & M & 2 & G & $3\times\code{54,4}$\\
+\texttt{CS-0e4d0ef4/C056} & $(9,9)$ & $\code{162,12}$ & $6$ & Exact & -- & $2.67$ & $1+x^{3}y$ & $1+x^{3}y^{3}+x^{6}$ & M & 1 & O & $3\times\code{54,4}$\\
+\texttt{CS-ed9ea89a/C053} & $(9,9)$ & $\code{162,12}$ & $6$ & Exact & -- & $2.67$ & $1+x^{3}y^{4}+x^{6}y^{4}$ & $1+y^{2}$ & M & 28 & G/O & $3\times\code{54,4}$\\
+\texttt{CS-0c92ab37/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Exact & -- & $2.67$ & $1+x^{4}y^{6}$ & $1+x^{2}+x^{2}y^{6}$ & M & 135 & G/O/N & $3\times\code{54,4}$\\
+\texttt{CS-7701034d/C055} & $(9,9)$ & $\code{162,12}$ & $5$ & Exact & -- & $1.85$ & $1+xy^{6}+x^{8}y^{3}$ & $1+x$ & L4+B & 1 & O & $3\times\code{54,4}$\\
+\texttt{CS-dc117df8/C055} & $(9,9)$ & $\code{162,12}$ & $5$ & Exact & -- & $1.85$ & $1+x^{6}y^{2}$ & $1+x^{3}y^{5}+x^{6}y^{7}$ & L4+B & 10 & G/O & $3\times\code{54,4}$\\
+\texttt{CS-df3ce049/C054} & $(9,9)$ & $\code{162,12}$ & $4$ & Exact & -- & $1.19$ & $1+x^{2}$ & $1+y^{6}+x^{2}y^{3}$ & Exh. & 147 & G/O & $3\times\code{54,4}$\\
+\texttt{CS-0b911359/C054} & $(9,9)$ & $\code{162,12}$ & $4$ & Exact & -- & $1.19$ & $1+x^{5}$ & $1+x^{2}y^{6}+x^{3}y^{3}$ & Exh. & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-a8c58a3b/C052} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+y^{3}$ & $1+x^{4}y^{4}+x^{8}y^{5}$ & Exh. & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-fb456ca8/C048} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+y^{5}+x^{3}y^{7}$ & $1+y^{3}$ & Exh. & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-52e7ba0e/C052} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+xy^{3}+x^{2}y^{3}$ & $1+x^{6}y^{6}$ & Exh. & 2 & G & $3\times\code{54,4}$\\
+\texttt{CS-c5681bf5/C049} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+x^{3}y^{3}$ & $1+xy^{6}+x^{5}y^{3}$ & Exh. & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-4dd38060/C051} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+x^{5}y^{7}+x^{8}y^{7}$ & $1+x^{6}y^{3}$ & Exh. & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-47731b90/C051} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+x^{5}y^{8}+x^{8}y^{8}$ & $1+x^{3}y^{3}$ & Exh. & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-f5cfd10f/C052} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+x^{6}$ & $1+xy^{2}+x^{5}y^{7}$ & Exh. & 18 & G/O & $3\times\code{54,4}$\\
+\texttt{CS-52200a16/C052} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+x^{6}$ & $1+x^{2}y^{7}+x^{7}y^{8}$ & Exh. & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-615a8fd3/C048} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+x^{6}y^{2}+x^{6}y^{7}$ & $1+y^{6}$ & Exh. & 2 & G & $3\times\code{54,4}$\\
+\texttt{CS-a6051954/C049} & $(9,9)$ & $\code{162,12}$ & $3$ & Exact & -- & $0.67$ & $1+x^{6}y^{6}$ & $1+xy^{8}+x^{5}y^{4}$ & Exh. & 11 & G/O & $3\times\code{54,4}$\\
+\texttt{CS-18882b71/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{2}y^{4}$ & $1+x^{4}y^{5}+x^{7}y^{8}$ & L4+B & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-a86a3fa0/C053} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{3}y^{6}+x^{8}y^{2}$ & $1+xy^{4}$ & L4+B & 1 & O & $3\times\code{54,4}$\\
+\texttt{CS-78838dd5/C053} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+y$ & $1+x^{3}+x^{6}y^{7}$ & L4+B & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-85b036e7/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+y+x^{3}y$ & $1+x^{6}y^{7}$ & L4+B & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-cd3a1f8b/C053} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+y^{3}+xy^{8}$ & $1+x^{5}y$ & L4+B & 7 & G/O & $3\times\code{54,4}$\\
+\texttt{CS-b21878a6/C053} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+y^{4}+x^{6}y^{6}$ & $1+x^{3}y^{5}$ & L4+B & 1 & O & $3\times\code{54,4}$\\
+\texttt{CS-9b5d54bf/C053} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+y^{7}+x^{3}y^{6}$ & $1+x^{6}y^{2}$ & L4+B & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-8367793c/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+xy^{2}+x^{3}$ & $1+xy^{5}$ & L4+B & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-bc57e3bb/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+xy^{3}+xy^{6}$ & $1+x^{7}$ & L4+B & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-6eaa2f94/C055} & $(9,9)$ & $\code{162,12}$ & $5$ & Interval & Exact & $1.85$ & $1+xy^{6}$ & $1+x^{2}+x^{7}$ & L4+B & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-3e385a2f/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{3}+x^{5}y^{4}$ & $1+x^{2}y$ & L4+B & 7 & G & $3\times\code{54,4}$\\
+\texttt{CS-98c3dcc5/C053} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{3}y$ & $1+x^{3}+x^{3}y^{2}$ & L4+B & 1 & O & $3\times\code{54,4}$\\
+\texttt{CS-e6c3d6f7/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{4}y$ & $1+y^{6}+x^{2}y^{8}$ & L4+B & 149 & G/O & $3\times\code{54,4}$\\
+\texttt{CS-a99e1b35/C056} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{4}y^{5}$ & $1+x^{6}+x^{6}y^{6}$ & L4+B & 1 & N & $3\times\code{54,4}$\\
+\texttt{CS-766a79b8/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{5}y^{2}$ & $1+xy+x^{6}$ & L4+B & 1 & N & $3\times\code{54,4}$\\
+\texttt{CS-ca862d04/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{5}y^{2}+x^{6}$ & $1+x^{4}y^{4}$ & L4+B & 2 & G & $3\times\code{54,4}$\\
+\texttt{CS-4f82636c/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{5}y^{5}+x^{6}y^{3}$ & $1+x^{5}y^{2}$ & L4+B & 1 & G & $3\times\code{54,4}$\\
+\texttt{CS-929021ff/C050} & $(9,9)$ & $\code{162,12}$ & $6$ & Interval & Exact & $2.67$ & $1+x^{7}$ & $1+y^{6}+x^{8}y^{3}$ & L4+B & 4 & G/O & $3\times\code{54,4}$\\
+\texttt{CS-b50a397b/C046} & $(9,9)$ & $\code{162,4}$ & $3$ & Exact & -- & $0.22$ & $1+y^{3}$ & $1+y^{4}+x^{4}y^{7}$ & Exh. & 2 & G & conn.\\
+\texttt{CS-8672e923/C042} & $(9,9)$ & $\code{162,4}$ & $3$ & Exact & -- & $0.22$ & $1+y^{6}$ & $1+xy^{8}+x^{5}y^{8}$ & Exh. & 1 & G & conn.\\
+\texttt{CS-dee1f3c3/C046} & $(9,9)$ & $\code{162,4}$ & $3$ & Exact & -- & $0.22$ & $1+x^{3}y^{3}$ & $1+x^{4}y^{2}+x^{5}y^{5}$ & Exh. & 1 & O & conn.\\
+\texttt{CS-83c45948/C046} & $(9,9)$ & $\code{162,4}$ & $3$ & Exact & -- & $0.22$ & $1+x^{3}y^{6}$ & $1+x+x^{2}y$ & Exh. & 1 & N & conn.\\
+\texttt{CS-57124862/C046} & $(9,9)$ & $\code{162,4}$ & $3$ & Exact & -- & $0.22$ & $1+x^{3}y^{6}$ & $1+xy^{8}+x^{5}y^{6}$ & Exh. & 1 & G & conn.\\
+\texttt{CS-a4ab3427/C046} & $(9,9)$ & $\code{162,4}$ & $3$ & Exact & -- & $0.22$ & $1+x^{4}y^{2}+x^{5}y^{2}$ & $1+x^{3}y^{6}$ & Exh. & 3 & G & conn.\\
+\texttt{CS-892b4e2d/C046} & $(9,9)$ & $\code{162,4}$ & $3$ & Exact & -- & $0.22$ & $1+x^{6}$ & $1+x+xy$ & Exh. & 1 & N & conn.\\
+\texttt{CS-4f70cb6a/C046} & $(9,9)$ & $\code{162,4}$ & $3$ & Exact & -- & $0.22$ & $1+x^{6}y^{6}$ & $1+xy+x^{4}$ & Exh. & 1 & N & conn.\\
+\texttt{CS-acb810ff/C046} & $(9,9)$ & $\code{162,4}$ & $3$ & Exact & -- & $0.22$ & $1+x^{7}y^{2}+x^{7}y^{7}$ & $1+x^{3}y^{3}$ & Exh. & 1 & G & conn.\\
+\texttt{CS-5cdbb079/C045} & $(9,9)$ & $\code{162,4}$ & $[5,9]$ & Interval & Tighter & $[0.62,2.00]$ & $1+y$ & $1+x^{4}y^{2}+x^{5}y^{4}$ & L4+B & 2 & G & conn.\\
+\texttt{CS-bf90a085/C041} & $(9,9)$ & $\code{162,4}$ & $[5,9]$ & Interval & Tighter & $[0.62,2.00]$ & $1+xy+x^{2}y^{6}$ & $1+x^{6}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-daee6552/C047} & $(9,9)$ & $\code{162,4}$ & $[5,9]$ & Interval & Tighter & $[0.62,2.00]$ & $1+x^{4}y^{4}+x^{7}y^{2}$ & $1+x^{2}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-29a56c86/C043} & $(9,9)$ & $\code{162,4}$ & $[5,9]$ & Interval & -- & $[0.62,2.00]$ & $1+xy^{2}$ & $1+x^{3}y^{5}+x^{5}y^{5}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-000c990b/C044} & $(9,9)$ & $\code{162,4}$ & $[5,6]$ & Interval & Tighter & $[0.62,0.89]$ & $1+x^{5}$ & $1+x^{4}y^{4}+x^{8}y^{8}$ & L4+B & 2 & G & conn.\\
+\texttt{CS-6a1b1dfe/C164} & $(10,9)$ & $\code{180,24}$ & $5$ & Exact & -- & $3.33$ & $1+x^{2}y^{3}+x^{2}y^{6}$ & $1+x^{6}$ & M & 158 & G/O & $6\times\code{30,4}$\\
+\texttt{CS-fb880f70/C163} & $(10,9)$ & $\code{180,24}$ & $3$ & Exact & -- & $1.20$ & $1+x^{2}$ & $1+x^{2}y^{6}+x^{6}y^{3}$ & Exh. & 1 & G & $6\times\code{30,4}$\\
+\texttt{CS-1a073225/C163} & $(10,9)$ & $\code{180,24}$ & $3$ & Exact & -- & $1.20$ & $1+x^{2}y^{3}+x^{8}y^{6}$ & $1+x^{4}$ & Exh. & 1 & G & $6\times\code{30,4}$\\
+\texttt{CS-31aff634/C162} & $(10,9)$ & $\code{180,20}$ & $5$ & Exact & -- & $2.78$ & $1+x^{5}y^{2}+x^{5}y^{4}$ & $1+x^{5}y^{3}$ & M & 15 & G/O & $5\times\code{36,4}$\\
+\texttt{CS-4496a7f0/C161} & $(10,9)$ & $\code{180,16}$ & $3$ & Exact & -- & $0.80$ & $1+y^{3}$ & $1+x^{2}y^{7}+x^{4}$ & Exh. & 12 & G & $2\times\code{90,8}$\\
+\texttt{CS-091bd1b5/C161} & $(10,9)$ & $\code{180,16}$ & $3$ & Exact & -- & $0.80$ & $1+x^{4}y^{5}+x^{6}y^{5}$ & $1+y^{3}$ & Exh. & 18 & G/O & $2\times\code{90,8}$\\
+\texttt{CS-6d6a31f9/C156} & $(10,9)$ & $\code{180,12}$ & $5$ & Exact & -- & $1.67$ & $1+x^{6}$ & $1+xy^{3}+x^{5}y^{6}$ & L4+B & 16 & G/O & $3\times\code{60,4}$\\
+\texttt{CS-c4765355/C160} & $(10,9)$ & $\code{180,12}$ & $5$ & Exact & -- & $1.67$ & $1+x^{6}$ & $1+xy^{6}+x^{4}y^{3}$ & M & 38 & G/O & $3\times\code{60,4}$\\
+\texttt{CS-359b0899/C158} & $(10,9)$ & $\code{180,12}$ & $4$ & Exact & -- & $1.07$ & $1+y^{3}+x^{5}y^{6}$ & $1+x^{2}$ & Exh. & 167 & G/O & $3\times\code{60,4}$\\
+\texttt{CS-cc25cf74/C155} & $(10,9)$ & $\code{180,12}$ & $4$ & Exact & -- & $1.07$ & $1+y^{6}+x^{3}y^{3}$ & $1+x^{3}$ & Exh. & 1 & G & $3\times\code{60,4}$\\
+\texttt{CS-265c73ea/C157} & $(10,9)$ & $\code{180,12}$ & $[5,8]$ & Interval & -- & $[1.67,4.27]$ & $1+x^{4}y^{6}+x^{5}y^{3}$ & $1+x^{2}$ & L4+B & 1 & O & $3\times\code{60,4}$\\
+\texttt{CS-1eaea74d/C159} & $(10,9)$ & $\code{180,12}$ & $[5,8]$ & Interval & -- & $[1.67,4.27]$ & $1+x^{8}y^{3}+x^{8}y^{6}$ & $1+x^{3}$ & L4+B & 2 & G & $3\times\code{60,4}$\\
+\texttt{CS-d473da9b/C142} & $(10,9)$ & $\code{180,8}$ & $9$ & Exact & -- & $3.60$ & $1+x^{4}y^{8}+x^{6}y^{7}$ & $1+x^{4}y^{6}$ & M & 8 & G/O & $2\times\code{90,4}$\\
+\texttt{CS-770cc2a8/C138} & $(10,9)$ & $\code{180,8}$ & $5$ & Exact & -- & $1.11$ & $1+y^{2}+x^{8}y$ & $1+x^{6}$ & L4+B & 111 & G/O & $2\times\code{90,4}$\\
+\texttt{CS-2d69d929/C152} & $(10,9)$ & $\code{180,8}$ & $5$ & Exact & -- & $1.11$ & $1+y^{4}+x^{6}y^{2}$ & $1+x^{4}$ & L4+B & 1 & G & $2\times\code{90,4}$\\
+\texttt{CS-8ca0927a/C141} & $(10,9)$ & $\code{180,8}$ & $5$ & Exact & -- & $1.11$ & $1+x^{2}$ & $1+x^{4}y^{2}+x^{4}y^{4}$ & L4+B & 8 & G/O & $2\times\code{90,4}$\\
+\texttt{CS-de1d2921/C148} & $(10,9)$ & $\code{180,8}$ & $5$ & Exact & -- & $1.11$ & $1+x^{2}y^{2}+x^{4}y^{4}$ & $1+x^{2}$ & L4+B & 1 & G & $2\times\code{90,4}$\\
+\texttt{CS-a6d60d3d/C154} & $(10,9)$ & $\code{180,8}$ & $5$ & Exact & -- & $1.11$ & $1+x^{4}$ & $1+y^{2}+y^{4}$ & L4+B & 1 & N & $2\times\code{90,4}$\\
+\texttt{CS-c29564a1/C144} & $(10,9)$ & $\code{180,8}$ & $5$ & Exact & -- & $1.11$ & $1+x^{4}$ & $1+x^{2}y^{5}+x^{8}y^{4}$ & L4+B & 1 & G & $2\times\code{90,4}$\\
+\texttt{CS-0893ef17/C140} & $(10,9)$ & $\code{180,8}$ & $5$ & Exact & -- & $1.11$ & $1+x^{8}y^{6}$ & $1+x^{4}y^{2}+x^{4}y^{4}$ & L4+B & 2 & G & $2\times\code{90,4}$\\
+\texttt{CS-accf4ce7/C140} & $(10,9)$ & $\code{180,8}$ & $5$ & Exact & -- & $1.11$ & $1+x^{8}y^{7}+x^{8}y^{8}$ & $1+x^{6}y^{6}$ & L4+B & 2 & G & $2\times\code{90,4}$\\
+\texttt{CS-54e115ab/C146} & $(10,9)$ & $\code{180,8}$ & $4$ & Exact & -- & $0.71$ & $1+x^{6}y+x^{8}y^{5}$ & $1+x^{2}y^{3}$ & Exh. & 4 & G & $2\times\code{90,4}$\\
+\texttt{CS-7223b27c/C139} & $(10,9)$ & $\code{180,8}$ & $3$ & Exact & -- & $0.40$ & $1+y^{3}$ & $1+x^{6}y^{2}+x^{9}y^{5}$ & Exh. & 6 & G & conn.\\
+\texttt{CS-69c61aee/C145} & $(10,9)$ & $\code{180,8}$ & $3$ & Exact & -- & $0.40$ & $1+x^{4}y+x^{6}y^{8}$ & $1+y^{6}$ & Exh. & 3 & G & $2\times\code{90,4}$\\
+\texttt{CS-ab23b32b/C147} & $(10,9)$ & $\code{180,8}$ & $3$ & Exact & -- & $0.40$ & $1+x^{6}y^{6}$ & $1+x^{6}y^{5}+x^{8}y^{7}$ & Exh. & 1 & G & $2\times\code{90,4}$\\
+\texttt{CS-a24f8c4e/C152} & $(10,9)$ & $\code{180,8}$ & $5$ & Interval & Exact & $1.11$ & $1+y^{7}+x^{4}y^{8}$ & $1+x^{4}$ & L4+B & 1 & G & $2\times\code{90,4}$\\
+\texttt{CS-b6830444/C143} & $(10,9)$ & $\code{180,8}$ & $[5,8]$ & Interval & -- & $[1.11,2.84]$ & $1+x^{4}y^{5}+x^{6}y$ & $1+x^{2}y^{3}$ & L4+B & 2 & G & $2\times\code{90,4}$\\
+\texttt{CS-b7fe6960/C151} & $(10,9)$ & $\code{180,8}$ & $[5,7]$ & Interval & -- & $[1.11,2.18]$ & $1+x^{2}y^{5}+x^{4}y^{7}$ & $1+x^{2}y^{3}$ & L4+B & 9 & G/O & $2\times\code{90,4}$\\
+\texttt{CS-36a5bff0/C153} & $(10,9)$ & $\code{180,8}$ & $[5,6]$ & Interval & -- & $[1.11,1.60]$ & $1+y+y^{2}$ & $1+x^{2}y^{6}$ & L4+B & 156 & G/O & $2\times\code{90,4}$\\
+\texttt{CS-2c0066a4/C140} & $(10,9)$ & $\code{180,8}$ & $5$ & Interval & Exact & $1.11$ & $1+x^{2}y^{3}$ & $1+y^{5}+x^{6}y^{4}$ & L4+B & 1 & G & $2\times\code{90,4}$\\
+\texttt{CS-fe2ca145/C149} & $(10,9)$ & $\code{180,8}$ & $[5,6]$ & Interval & -- & $[1.11,1.60]$ & $1+x^{4}y^{6}$ & $1+x^{2}y^{5}+x^{4}y$ & L4+B & 2 & G & $2\times\code{90,4}$\\
+\texttt{CS-0bd3fc2a/C150} & $(10,9)$ & $\code{180,8}$ & $[5,6]$ & Interval & -- & $[1.11,1.60]$ & $1+x^{5}y^{3}$ & $1+xy^{4}+x^{2}$ & L4+B & 1 & N & conn.\\
+\texttt{CS-77a004c8/C136} & $(10,9)$ & $\code{180,8}$ & $[5,6]$ & Interval & -- & $[1.11,1.60]$ & $1+x^{5}y^{3}$ & $1+x^{2}+x^{6}y$ & L4+B & 1 & N & conn.\\
+\texttt{CS-1062c49e/C135} & $(10,9)$ & $\code{180,8}$ & $[5,6]$ & Interval & -- & $[1.11,1.60]$ & $1+x^{5}y^{3}$ & $1+x^{3}+x^{4}y^{4}$ & L4+B & 1 & N & conn.\\
+\texttt{CS-ceda6f39/C137} & $(10,9)$ & $\code{180,8}$ & $[5,6]$ & Interval & -- & $[1.11,1.60]$ & $1+x^{5}y^{6}$ & $1+x^{6}y^{5}+x^{7}y^{3}$ & L4+B & 112 & G/O & conn.\\
+\texttt{CS-1530f6fa/C119} & $(10,9)$ & $\code{180,4}$ & $14$ & Exact & -- & $4.356$ & $1+x^{2}y^{2}+x^{5}y$ & $1+x^{3}y^{3}$ & M & 1 & O & conn.\\
+\texttt{CS-6a4be7ad/C072} & $(10,9)$ & $\code{180,4}$ & $13$ & Exact & -- & $3.76$ & $1+x^{2}y^{3}$ & $1+x^{5}y+x^{7}y^{8}$ & M & 3 & G/O & conn.\\
+\texttt{CS-712a2f67/C129} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+xy+x^{2}y^{2}$ & $1+x^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-98bca4ef/C096} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+xy^{2}+xy^{7}$ & $1+x^{4}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CS-6cecbcd3/C085} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+x^{2}$ & $1+y^{5}+x^{3}y$ & L4+B & 5 & G & conn.\\
+\texttt{CS-02441504/C085} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+x^{2}$ & $1+y^{5}+x^{7}y$ & L4+B & 1 & G & conn.\\
+\texttt{CS-c73a5314/C129} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+x^{2}$ & $1+x^{3}y^{4}+x^{6}y^{8}$ & L4+B & 9 & G & conn.\\
+\texttt{CS-4a07bbcc/C102} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+x^{3}y^{5}+x^{7}y$ & $1+x^{6}$ & L4+B & 3 & G/O & conn.\\
+\texttt{CS-fcc9d58d/C104} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+x^{3}y^{8}+x^{7}y^{7}$ & $1+x^{8}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-21e1c012/C068} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+x^{4}$ & $1+x^{3}y^{8}+x^{5}y$ & L4+B & 1 & G & conn.\\
+\texttt{CS-0f220f7a/C122} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+x^{4}y^{5}+x^{5}y$ & $1+x^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-67685e6f/C129} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+x^{4}y^{5}+x^{7}y^{7}$ & $1+x^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-64d66132/C080} & $(10,9)$ & $\code{180,4}$ & $5$ & Exact & -- & $0.56$ & $1+x^{6}$ & $1+x^{2}y^{5}+x^{5}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-d501d19e/C067} & $(10,9)$ & $\code{180,4}$ & $3$ & Exact & -- & $0.20$ & $1+y^{2}+x^{3}y^{4}$ & $1+y^{6}$ & Exh. & 5 & G & conn.\\
+\texttt{CS-101586ac/C095} & $(10,9)$ & $\code{180,4}$ & $3$ & Exact & -- & $0.20$ & $1+y^{3}$ & $1+xy+x^{2}y^{5}$ & Exh. & 1 & G & conn.\\
+\texttt{CS-7934812b/C095} & $(10,9)$ & $\code{180,4}$ & $3$ & Exact & -- & $0.20$ & $1+y^{3}$ & $1+x^{8}y^{5}+x^{9}y$ & Exh. & 1 & G & conn.\\
+\texttt{CS-cc0df40f/C073} & $(10,9)$ & $\code{180,4}$ & $3$ & Exact & -- & $0.20$ & $1+xy^{5}+x^{2}y$ & $1+x^{3}y^{6}$ & Exh. & 5 & G/O & conn.\\
+\texttt{CS-4f746110/C111} & $(10,9)$ & $\code{180,4}$ & $3$ & Exact & -- & $0.20$ & $1+x^{4}y+x^{7}y^{5}$ & $1+y^{6}$ & Exh. & 1 & G & conn.\\
+\texttt{CS-70b8f4ec/C060} & $(10,9)$ & $\code{180,4}$ & $3$ & Exact & -- & $0.20$ & $1+x^{5}y^{7}+x^{6}y^{2}$ & $1+y^{6}$ & Exh. & 1 & G & conn.\\
+\texttt{CS-0d018ae6/C123} & $(10,9)$ & $\code{180,4}$ & $[5,14]$ & Interval & -- & $[0.56,4.36]$ & $1+xy^{3}$ & $1+x^{2}y^{8}+x^{3}y$ & L4+B & 7 & G/O & conn.\\
+\texttt{CS-0bdaa7ef/C074} & $(10,9)$ & $\code{180,4}$ & $[5,11]$ & Interval & Tighter & $[0.56,2.69]$ & $1+xy^{6}$ & $1+y^{5}+xy$ & L4+B & 4 & G & conn.\\
+\texttt{CS-e6cde6bd/C098} & $(10,9)$ & $\code{180,4}$ & $[5,14]$ & Interval & -- & $[0.56,4.36]$ & $1+xy^{6}$ & $1+xy^{4}+x^{2}y^{2}$ & L4+B & 152 & G/O & conn.\\
+\texttt{CS-3c0c301f/C101} & $(10,9)$ & $\code{180,4}$ & $[5,14]$ & Interval & -- & $[0.56,4.36]$ & $1+x^{2}y^{3}$ & $1+xy^{5}+x^{3}y^{4}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-9e96e9b1/C112} & $(10,9)$ & $\code{180,4}$ & $[5,14]$ & Interval & -- & $[0.56,4.36]$ & $1+x^{2}y^{7}+x^{5}y^{2}$ & $1+x^{2}y^{6}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CS-7a2dfee7/C109} & $(10,9)$ & $\code{180,4}$ & $[5,14]$ & Interval & -- & $[0.56,4.36]$ & $1+x^{3}y^{3}$ & $1+xy^{2}+x^{5}y$ & L4+B & 1 & O & conn.\\
+\texttt{CS-80fb270b/C078} & $(10,9)$ & $\code{180,4}$ & $[5,14]$ & Interval & -- & $[0.56,4.36]$ & $1+x^{6}y^{6}$ & $1+x^{5}y^{7}+x^{9}y^{8}$ & L4+B & 5 & G & conn.\\
+\texttt{CS-8c50fa75/C126} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & Tighter & $[0.56,3.20]$ & $1+x^{8}y^{6}$ & $1+x^{3}y^{8}+x^{6}y$ & L4+B & 1 & G & conn.\\
+\texttt{CS-89a9b5af/C114} & $(10,9)$ & $\code{180,4}$ & $[5,13]$ & Interval & -- & $[0.56,3.76]$ & $1+y+x^{8}y^{2}$ & $1+x^{7}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-ada32c2c/C092} & $(10,9)$ & $\code{180,4}$ & $[5,13]$ & Interval & -- & $[0.56,3.76]$ & $1+y^{8}+xy^{7}$ & $1+x^{2}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-6d15be47/C099} & $(10,9)$ & $\code{180,4}$ & $[5,13]$ & Interval & -- & $[0.56,3.76]$ & $1+xy^{2}+xy^{7}$ & $1+x^{6}y^{3}$ & L4+B & 2 & G & conn.\\
+\texttt{CS-4c09b2cb/C087} & $(10,9)$ & $\code{180,4}$ & $[5,13]$ & Interval & -- & $[0.56,3.76]$ & $1+xy^{2}+x^{4}y^{4}$ & $1+x^{8}y^{6}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-d1864182/C058} & $(10,9)$ & $\code{180,4}$ & $[5,13]$ & Interval & -- & $[0.56,3.76]$ & $1+xy^{6}$ & $1+x^{2}y+x^{5}y^{5}$ & L4+B & 2 & G & conn.\\
+\texttt{CS-56761fec/C082} & $(10,9)$ & $\code{180,4}$ & $[5,13]$ & Interval & -- & $[0.56,3.76]$ & $1+x^{2}y^{3}$ & $1+x^{4}y^{7}+x^{7}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-7e3ffbde/C134} & $(10,9)$ & $\code{180,4}$ & $[5,13]$ & Interval & -- & $[0.56,3.76]$ & $1+x^{3}y^{5}+x^{5}y^{4}$ & $1+x^{8}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-c71b9786/C113} & $(10,9)$ & $\code{180,4}$ & $[5,13]$ & Interval & -- & $[0.56,3.76]$ & $1+x^{4}y^{3}$ & $1+x^{5}y^{7}+x^{8}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-7f731439/C132} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & Tighter & $[0.56,2.22]$ & $1+x^{6}y^{3}$ & $1+x^{3}y^{4}+x^{3}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-1646a2ea/C066} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+y+xy^{5}$ & $1+x$ & L4+B & 1 & G & conn.\\
+\texttt{CS-851ee57c/C077} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+xy^{3}$ & $1+y^{5}+x^{5}y^{4}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-3ac0d487/C091} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+xy^{3}$ & $1+x^{2}y+x^{4}y^{5}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-b1faded5/C116} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+xy^{3}$ & $1+x^{2}y^{5}+x^{6}y^{4}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-c4be49cb/C103} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+xy^{6}$ & $1+x^{4}y^{8}+x^{6}y$ & L4+B & 2 & G & conn.\\
+\texttt{CS-598df9f0/C079} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+x^{2}y+x^{2}y^{8}$ & $1+x^{7}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-abf6bdb6/C100} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+x^{3}y^{6}$ & $1+xy^{7}+x^{2}y^{5}$ & L4+B & 6 & G & conn.\\
+\texttt{CS-75e2b64e/C127} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+x^{4}y^{6}$ & $1+x^{3}y^{2}+x^{6}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-581178c7/C059} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+x^{5}y^{2}+x^{9}y$ & $1+x^{6}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-1a8512d1/C061} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+x^{6}y^{3}$ & $1+xy^{7}+x^{8}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-fc37a8ea/C075} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+x^{6}y^{4}+x^{7}y^{2}$ & $1+x^{6}y^{3}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-ddbf7682/C070} & $(10,9)$ & $\code{180,4}$ & $[5,12]$ & Interval & -- & $[0.56,3.20]$ & $1+x^{9}y^{6}$ & $1+x^{7}y^{5}+x^{8}y$ & L4+B & 1 & G & conn.\\
+\texttt{CS-00515ca4/C115} & $(10,9)$ & $\code{180,4}$ & $[5,11]$ & Interval & -- & $[0.56,2.69]$ & $1+y^{4}+x^{3}y^{5}$ & $1+x^{6}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-fa20271f/C128} & $(10,9)$ & $\code{180,4}$ & $[5,11]$ & Interval & -- & $[0.56,2.69]$ & $1+y^{7}+x^{3}y^{2}$ & $1+x^{2}y^{6}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CS-b13425d8/C106} & $(10,9)$ & $\code{180,4}$ & $[5,11]$ & Interval & -- & $[0.56,2.69]$ & $1+x^{3}y^{3}$ & $1+xy^{5}+x^{2}y^{4}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CS-b09acff6/C063} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & Tighter & $[0.56,2.22]$ & $1+x^{3}y^{3}$ & $1+x^{3}y+x^{4}y^{2}$ & L4+B & 3 & G/O & conn.\\
+\texttt{CS-33b930a7/C108} & $(10,9)$ & $\code{180,4}$ & $[5,11]$ & Interval & -- & $[0.56,2.69]$ & $1+x^{4}y^{4}+x^{5}y^{2}$ & $1+x^{7}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-17bc0f33/C118} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+y+xy^{5}$ & $1+x^{8}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-3ff88cc4/C083} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+y^{8}+x^{4}y^{7}$ & $1+x^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-ba416885/C093} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x$ & $1+xy^{5}+x^{7}y$ & L4+B & 2 & G/O & conn.\\
+\texttt{CS-1ce7d07e/C065} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+xy^{3}$ & $1+y^{4}+x^{8}y^{2}$ & L4+B & 5 & G & conn.\\
+\texttt{CS-07daf45c/C071} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+xy^{6}$ & $1+xy^{4}+x^{7}y^{8}$ & L4+B & 4 & G & conn.\\
+\texttt{CS-fdc311e1/C131} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{3}$ & $1+x^{2}y^{7}+x^{9}y^{8}$ & L4+B & 5 & G/O & conn.\\
+\texttt{CS-c1829d74/C110} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{3}$ & $1+x^{3}y^{5}+x^{4}y$ & L4+B & 1 & G & conn.\\
+\texttt{CS-74fea5e9/C088} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{3}$ & $1+x^{3}y^{5}+x^{5}y$ & L4+B & 4 & G & conn.\\
+\texttt{CS-10b07986/C094} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{3}y+x^{3}y^{2}$ & $1+x^{9}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-0bc90821/C124} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{3}y+x^{8}y^{2}$ & $1+x^{3}$ & L4+B & 143 & G/O & conn.\\
+\texttt{CS-e6c23694/C089} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{3}y^{3}$ & $1+x^{5}y+x^{8}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-1d84a2a3/C107} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{4}y^{2}+x^{7}y^{7}$ & $1+x$ & L4+B & 1 & G & conn.\\
+\texttt{CS-5ee45526/C069} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{6}y^{5}+x^{9}y$ & $1+x^{3}$ & L4+B & 27 & G/O & conn.\\
+\texttt{CS-879fb436/C133} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{7}$ & $1+x^{5}y+x^{9}y^{8}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-202f136b/C090} & $(10,9)$ & $\code{180,4}$ & $[5,10]$ & Interval & -- & $[0.56,2.22]$ & $1+x^{7}y^{8}+x^{9}y^{7}$ & $1+x^{2}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-93af0190/C105} & $(10,9)$ & $\code{180,4}$ & $[5,9]$ & Interval & -- & $[0.56,1.80]$ & $1+y^{2}+xy^{4}$ & $1+x^{3}y^{6}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-436f137b/C130} & $(10,9)$ & $\code{180,4}$ & $[5,9]$ & Interval & -- & $[0.56,1.80]$ & $1+x^{3}y^{3}$ & $1+xy+x^{2}y^{5}$ & L4+B & 1 & O & conn.\\
+\texttt{CS-53609662/C117} & $(10,9)$ & $\code{180,4}$ & $[5,9]$ & Interval & -- & $[0.56,1.80]$ & $1+x^{4}y^{3}$ & $1+x^{5}y+x^{5}y^{8}$ & L4+B & 17 & G/O & conn.\\
+\texttt{CS-8590bd89/C125} & $(10,9)$ & $\code{180,4}$ & $[5,9]$ & Interval & -- & $[0.56,1.80]$ & $1+x^{5}y^{3}$ & $1+xy^{8}+x^{7}y^{7}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-192b33e7/C064} & $(10,9)$ & $\code{180,4}$ & $[5,8]$ & Interval & -- & $[0.56,1.42]$ & $1+x^{3}y^{5}+x^{6}y$ & $1+x^{8}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-7c4decca/C086} & $(10,9)$ & $\code{180,4}$ & $[5,7]$ & Interval & -- & $[0.56,1.09]$ & $1+xy^{3}$ & $1+x^{5}y^{2}+x^{6}y$ & L4+B & 1 & O & conn.\\
+\texttt{CS-4480c730/C121} & $(10,9)$ & $\code{180,4}$ & $[5,6]$ & Interval & -- & $[0.56,0.80]$ & $1+y^{4}+x^{9}y^{8}$ & $1+x^{5}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-652bb7cb/C120} & $(10,9)$ & $\code{180,4}$ & $[5,6]$ & Interval & -- & $[0.56,0.80]$ & $1+x$ & $1+y+y^{2}$ & L4+B & 1 & N & conn.\\
+\texttt{CS-6c8c0afc/C084} & $(10,9)$ & $\code{180,4}$ & $[5,6]$ & Interval & -- & $[0.56,0.80]$ & $1+xy^{2}+x^{6}y^{4}$ & $1+x^{5}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-9e4d1df4/C081} & $(10,9)$ & $\code{180,4}$ & $[5,6]$ & Interval & -- & $[0.56,0.80]$ & $1+x^{2}y^{7}+x^{3}y^{5}$ & $1+x^{5}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CS-2c2a34da/C057} & $(10,9)$ & $\code{180,4}$ & $[5,6]$ & Interval & -- & $[0.56,0.80]$ & $1+x^{2}y^{8}+x^{8}y^{7}$ & $1+x^{5}y^{6}$ & L4+B & 7 & G/O & conn.\\
+\texttt{CS-6be91ab3/C062} & $(10,9)$ & $\code{180,4}$ & $[5,6]$ & Interval & -- & $[0.56,0.80]$ & $1+x^{5}y^{3}$ & $1+x^{8}y^{7}+x^{9}y^{2}$ & L4+B & 6 & G/O & conn.\\
+\texttt{CS-237fb0ad/C097} & $(10,9)$ & $\code{180,4}$ & $[5,6]$ & Interval & -- & $[0.56,0.80]$ & $1+x^{5}y^{6}$ & $1+x^{3}y^{2}+x^{9}y^{7}$ & L4+B & 141 & G/O & conn.\\
+\texttt{CS-2c036c5a/C076} & $(10,9)$ & $\code{180,4}$ & $[5,6]$ & Interval & -- & $[0.56,0.80]$ & $1+x^{5}y^{6}$ & $1+x^{8}y^{5}+x^{9}y^{7}$ & L4+B & 2 & G/O & conn.\\
+\end{longtable}
+\endgroup
+
+\begingroup
+\setlength{\tabcolsep}{0.84pt}
+\renewcommand{\arraystretch}{0.96}
+\begin{longtable}{@{}TTTTTTTT@{\kern.5pt\vrule\kern.5pt}TTTTT@{}}
+\caption{CSS-large compact catalogue (391 displayed of 547 retained proposals; 371 presentation classes).  The table includes every proposal in an exact class and one deterministic representative of every interval class.  Own evidence and Evid. describe the proposal before class merging; Class effect reports when merging makes the displayed $d$ and FOM exact or tighter.  Column abbreviations, filtering, and evidence conventions are defined above.}\label{tab:w5-supp-css-large}\\
+\toprule
+ID/class & $(\ell,m)$ & $\code{n,k}$ & $d$ & Own evidence & Class effect & FOM & $A$ & $B$ & Evid. & Obs. & Attr. & Decomp.\\
+\midrule
+\endfirsthead
+\multicolumn{13}{c}{\tablename\ \thetable\ (continued)}\\
+\toprule
+ID/class & $(\ell,m)$ & $\code{n,k}$ & $d$ & Own evidence & Class effect & FOM & $A$ & $B$ & Evid. & Obs. & Attr. & Decomp.\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
+\texttt{CL-929c2a70/C248} & $(16,12)$ & $\code{384,64}$ & $3$ & Exact & -- & $1.50$ & $1+x^{4}y^{4}+x^{12}y^{8}$ & $1+x^{4}$ & H$_c$ & 1 & -- & $16\times\code{24,4}$\\
+\texttt{CL-a25b2baf/C247} & $(16,12)$ & $\code{384,32}$ & $6$ & Exact & -- & $3.00$ & $1+x^{4}y^{2}+x^{4}y^{10}$ & $1+x^{2}y^{9}$ & H$_c$ & 1 & -- & $8\times\code{48,4}$\\
+\texttt{CL-83dd7b5d/C245} & $(16,12)$ & $\code{384,32}$ & $5$ & Exact & -- & $2.08$ & $1+x^{2}y^{6}$ & $1+x^{2}y^{2}+x^{4}y^{4}$ & M & 2 & G & $8\times\code{48,4}$\\
+\texttt{CL-a94de289/C244} & $(16,12)$ & $\code{384,32}$ & $4$ & Exact & -- & $1.33$ & $1+x^{2}y^{5}+x^{4}y^{10}$ & $1+x^{4}y^{6}$ & Exh.+I & 4 & G/O & $8\times\code{48,4}$\\
+\texttt{CL-02bb1787/C243} & $(16,12)$ & $\code{384,32}$ & $4$ & Exact & -- & $1.33$ & $1+x^{4}$ & $1+y^{2}+y^{4}$ & Exh. & 2 & G/N & $8\times\code{48,4}$\\
+\texttt{CL-d9f65a7e/C246} & $(16,12)$ & $\code{384,32}$ & $3$ & Exact & -- & $0.75$ & $1+x^{4}y^{2}+x^{10}y^{7}$ & $1+x^{2}y^{3}$ & H$_c$ & 1 & -- & $8\times\code{48,4}$\\
+\texttt{CL-885dfa58/C233} & $(16,12)$ & $\code{384,16}$ & $10$ & Exact & -- & $4.17$ & $1+y^{4}+x^{2}y^{8}$ & $1+x^{3}y^{6}$ & M & 1 & O & $4\times\code{96,4}$\\
+\texttt{CL-49103759/C232} & $(16,12)$ & $\code{384,16}$ & $8$ & Exact & -- & $2.67$ & $1+x$ & $1+x^{3}y^{4}+x^{7}y^{8}$ & M & 3 & G/O & $4\times\code{96,4}$\\
+\texttt{CL-b71ff5d9/C223} & $(16,12)$ & $\code{384,16}$ & $8$ & Exact & -- & $2.67$ & $1+x^{2}$ & $1+y^{8}+x^{2}y^{10}$ & M & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-05841223/C232} & $(16,12)$ & $\code{384,16}$ & $8$ & Exact & -- & $2.67$ & $1+x^{4}y^{8}+x^{7}y^{10}$ & $1+xy^{6}$ & M & 2 & G/O & $4\times\code{96,4}$\\
+\texttt{CL-8c40001b/C229} & $(16,12)$ & $\code{384,16}$ & $8$ & Exact & -- & $2.67$ & $1+x^{6}y^{3}$ & $1+x^{10}y+x^{12}y^{8}$ & M & 2 & G & $4\times\code{96,4}$\\
+\texttt{CL-ebc1d7c4/C229} & $(16,12)$ & $\code{384,16}$ & $8$ & Exact & -- & $2.67$ & $1+x^{6}y^{7}+x^{10}y^{11}$ & $1+x^{6}y^{3}$ & M & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-454c87bc/C228} & $(16,12)$ & $\code{384,16}$ & $8$ & Exact & -- & $2.67$ & $1+x^{8}y^{2}+x^{14}y^{7}$ & $1+x^{6}y^{3}$ & M & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-9fc416af/C242} & $(16,12)$ & $\code{384,16}$ & $7$ & Exact & -- & $2.04$ & $1+x$ & $1+y^{4}+x^{3}y^{8}$ & M & 2 & G & $4\times\code{96,4}$\\
+\texttt{CL-0ffd9a2d/C225} & $(16,12)$ & $\code{384,16}$ & $7$ & Exact & -- & $2.04$ & $1+x^{2}y^{10}+x^{15}y^{11}$ & $1+xy^{9}$ & M & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-52dcc64d/C226} & $(16,12)$ & $\code{384,16}$ & $6$ & Exact & -- & $1.50$ & $1+x^{2}y^{9}$ & $1+x^{2}y^{11}+x^{14}y$ & M & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-9daeb04b/C235} & $(16,12)$ & $\code{384,16}$ & $6$ & Exact & -- & $1.50$ & $1+x^{10}y^{6}$ & $1+y^{4}+x^{5}y^{5}$ & M & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-52dc7734/C239} & $(16,12)$ & $\code{384,16}$ & $4$ & Exact & -- & $0.67$ & $1+y^{4}+x^{4}y^{2}$ & $1+x^{4}y^{3}$ & Exh. & 1 & O & $4\times\code{96,4}$\\
+\texttt{CL-7aa28e28/C224} & $(16,12)$ & $\code{384,16}$ & $4$ & Exact & -- & $0.67$ & $1+x^{2}$ & $1+y^{2}+y^{4}$ & Exh. & 6 & G/O/N & $4\times\code{96,4}$\\
+\texttt{CL-ff17aa92/C237} & $(16,12)$ & $\code{384,16}$ & $4$ & Exact & -- & $0.67$ & $1+x^{4}$ & $1+y+y^{2}$ & Exh. & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-f1c90545/C222} & $(16,12)$ & $\code{384,16}$ & $4$ & Exact & -- & $0.67$ & $1+x^{4}$ & $1+x^{2}y+x^{15}y^{5}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-47fcea25/C236} & $(16,12)$ & $\code{384,16}$ & $4$ & Exact & -- & $0.67$ & $1+x^{4}y^{6}$ & $1+x^{6}y^{8}+x^{8}y^{10}$ & Exh. & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-da717524/C231} & $(16,12)$ & $\code{384,16}$ & $4$ & Exact & -- & $0.67$ & $1+x^{4}y^{11}+x^{8}y$ & $1+y^{3}$ & Exh. & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-0fcae59b/C234} & $(16,12)$ & $\code{384,16}$ & $4$ & Exact & -- & $0.67$ & $1+x^{5}y^{6}$ & $1+x^{8}y^{4}+x^{8}y^{8}$ & Exh. & 1 & O & $4\times\code{96,4}$\\
+\texttt{CL-9e72e18f/C230} & $(16,12)$ & $\code{384,16}$ & $4$ & Exact & -- & $0.67$ & $1+x^{5}y^{9}$ & $1+y^{4}+x^{5}y^{5}$ & Exh. & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-326e2b7f/C224} & $(16,12)$ & $\code{384,16}$ & $4$ & Exact & -- & $0.67$ & $1+x^{6}y^{6}$ & $1+y^{2}+y^{10}$ & Exh. & 1 & O & $4\times\code{96,4}$\\
+\texttt{CL-64686929/C240} & $(16,12)$ & $\code{384,16}$ & $3$ & Exact & -- & $0.38$ & $1+x^{5}y^{4}+x^{11}y^{8}$ & $1+x$ & Exh. & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-bda4c4b2/C238} & $(16,12)$ & $\code{384,16}$ & $[5,6]$ & Interval & Tighter & $[1.04,1.50]$ & $1+x^{5}y^{9}$ & $1+x^{10}y^{2}+x^{10}y^{10}$ & L4+B & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-a26ff6ea/C226} & $(16,12)$ & $\code{384,16}$ & $6$ & Interval & Exact & $1.50$ & $1+x^{2}y^{3}$ & $1+x^{2}y+x^{14}y^{11}$ & L4+B & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-a24fe148/C227} & $(16,12)$ & $\code{384,16}$ & $[5,7]$ & Interval & -- & $[1.04,2.04]$ & $1+x^{2}y^{2}+x^{11}y^{7}$ & $1+x^{3}y^{3}$ & L4+B & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-5bf06ff4/C241} & $(16,12)$ & $\code{384,16}$ & $[5,6]$ & Interval & -- & $[1.04,1.50]$ & $1+x^{15}y^{3}$ & $1+xy^{5}+x^{15}y^{7}$ & L4+B & 1 & G & $4\times\code{96,4}$\\
+\texttt{CL-cbea6bcb/C210} & $(16,12)$ & $\code{384,8}$ & $10$ & Exact & -- & $2.08$ & $1+xy^{3}$ & $1+x^{4}y^{10}+x^{11}y^{5}$ & M & 1 & O & $2\times\code{192,4}$\\
+\texttt{CL-bea18d22/C207} & $(16,12)$ & $\code{384,8}$ & $4$ & Exact & -- & $0.33$ & $1+x$ & $1+y^{2}+y^{4}$ & Exh. & 2 & G/N & $2\times\code{192,4}$\\
+\texttt{CL-526b1ee0/C207} & $(16,12)$ & $\code{384,8}$ & $4$ & Exact & -- & $0.33$ & $1+x^{3}$ & $1+y^{2}+y^{4}$ & Exh. & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-e473f2e1/C212} & $(16,12)$ & $\code{384,8}$ & $4$ & Exact & -- & $0.33$ & $1+x^{4}y^{3}$ & $1+x^{6}y^{10}+x^{12}y^{8}$ & Exh. & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-537533d8/C204} & $(16,12)$ & $\code{384,8}$ & $4$ & Exact & -- & $0.33$ & $1+x^{4}y^{9}$ & $1+y^{5}+x^{10}y^{7}$ & Exh. & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-7929daca/C212} & $(16,12)$ & $\code{384,8}$ & $4$ & Exact & -- & $0.33$ & $1+x^{8}y^{3}$ & $1+x^{12}y^{8}+x^{14}y^{10}$ & Exh. & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-cca60bc4/C218} & $(16,12)$ & $\code{384,8}$ & $[5,15]$ & Interval & -- & $[0.52,4.69]$ & $1+x^{5}y^{3}$ & $1+x^{8}y^{10}+x^{15}y^{5}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-13a07207/C209} & $(16,12)$ & $\code{384,8}$ & $[5,13]$ & Interval & Tighter & $[0.52,3.52]$ & $1+xy^{11}+x^{3}y^{7}$ & $1+x^{5}y^{9}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-59b650fb/C216} & $(16,12)$ & $\code{384,8}$ & $[5,14]$ & Interval & -- & $[0.52,4.08]$ & $1+x^{3}y^{6}$ & $1+xy^{4}+x^{8}y^{8}$ & L4+B & 5 & G/O & $2\times\code{192,4}$\\
+\texttt{CL-4e8f3f5e/C220} & $(16,12)$ & $\code{384,8}$ & $[5,14]$ & Interval & -- & $[0.52,4.08]$ & $1+x^{7}y^{10}+x^{12}y^{2}$ & $1+x^{3}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-b06bdc8c/C210} & $(16,12)$ & $\code{384,8}$ & $10$ & Interval & Exact & $2.08$ & $1+x^{3}$ & $1+x^{4}y^{2}+x^{5}y^{10}$ & L4+B & 1 & O & $2\times\code{192,4}$\\
+\texttt{CL-0462d4da/C201} & $(16,12)$ & $\code{384,8}$ & $[5,12]$ & Interval & -- & $[0.52,3.00]$ & $1+x^{5}$ & $1+x^{2}y^{10}+x^{10}y^{8}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-ff471113/C219} & $(16,12)$ & $\code{384,8}$ & $[5,12]$ & Interval & -- & $[0.52,3.00]$ & $1+x^{5}$ & $1+x^{5}y^{2}+x^{15}y^{4}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-c35bf5e5/C203} & $(16,12)$ & $\code{384,8}$ & $[5,12]$ & Interval & -- & $[0.52,3.00]$ & $1+x^{5}y^{4}+x^{10}y^{2}$ & $1+x^{5}y^{6}$ & L4+B & 2 & G & $2\times\code{192,4}$\\
+\texttt{CL-c034f0c7/C213} & $(16,12)$ & $\code{384,8}$ & $[5,12]$ & Interval & -- & $[0.52,3.00]$ & $1+x^{12}y^{10}+x^{12}y^{11}$ & $1+x^{6}y^{6}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-ef3d7a2a/C210} & $(16,12)$ & $\code{384,8}$ & $10$ & Interval & Exact & $2.08$ & $1+xy^{3}$ & $1+xy^{5}+x^{12}y^{10}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-03df4877/C206} & $(16,12)$ & $\code{384,8}$ & $[5,11]$ & Interval & -- & $[0.52,2.52]$ & $1+xy^{3}$ & $1+x^{12}y^{8}+x^{13}y$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-e3bbf85c/C214} & $(16,12)$ & $\code{384,8}$ & $[5,8]$ & Interval & Tighter & $[0.52,1.33]$ & $1+x^{5}$ & $1+y^{8}+x^{5}y^{10}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-262ec76e/C202} & $(16,12)$ & $\code{384,8}$ & $[5,8]$ & Interval & Tighter & $[0.52,1.33]$ & $1+x^{5}y^{6}$ & $1+x^{3}y^{4}+x^{8}y^{2}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-b1d747a7/C208} & $(16,12)$ & $\code{384,8}$ & $[5,8]$ & Interval & -- & $[0.52,1.33]$ & $1+y^{2}+x^{15}y$ & $1+x^{6}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-61cad729/C211} & $(16,12)$ & $\code{384,8}$ & $[5,8]$ & Interval & -- & $[0.52,1.33]$ & $1+x^{2}$ & $1+y+y^{2}$ & L4+B & 2 & G/N & $2\times\code{192,4}$\\
+\texttt{CL-d410d5a1/C221} & $(16,12)$ & $\code{384,8}$ & $[5,8]$ & Interval & -- & $[0.52,1.33]$ & $1+x^{2}y^{5}+x^{4}y^{10}$ & $1+x^{2}y^{6}$ & L4+B & 2 & G & $2\times\code{192,4}$\\
+\texttt{CL-2f9daa68/C200} & $(16,12)$ & $\code{384,8}$ & $[5,8]$ & Interval & -- & $[0.52,1.33]$ & $1+x^{2}y^{6}$ & $1+x^{5}y^{11}+x^{11}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-157539a4/C217} & $(16,12)$ & $\code{384,8}$ & $[5,8]$ & Interval & -- & $[0.52,1.33]$ & $1+x^{4}y+x^{14}y^{11}$ & $1+x^{2}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-1ed36a91/C205} & $(16,12)$ & $\code{384,8}$ & $[5,8]$ & Interval & -- & $[0.52,1.33]$ & $1+x^{6}y^{5}+x^{8}y^{10}$ & $1+x^{2}y^{6}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-f1196537/C199} & $(16,12)$ & $\code{384,8}$ & $[5,8]$ & Interval & -- & $[0.52,1.33]$ & $1+x^{6}y^{6}$ & $1+x^{3}y^{2}+x^{3}y^{4}$ & L4+B & 1 & G & $2\times\code{192,4}$\\
+\texttt{CL-3edcdab9/C215} & $(16,12)$ & $\code{384,8}$ & $[5,6]$ & Interval & -- & $[0.52,0.75]$ & $1+x$ & $1+x^{5}y^{2}+x^{10}y^{10}$ & L4+B & 2 & G/O & $2\times\code{192,4}$\\
+\texttt{CL-6e950816/C189} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+y^{3}$ & $1+x^{3}y^{10}+x^{13}y^{5}$ & Exh. & 1 & O & conn.\\
+\texttt{CL-3a2ea8c7/C176} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+xy^{7}+x^{10}y^{8}$ & $1+x^{4}y^{3}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-c63d3c22/C189} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+x^{2}y+x^{15}y^{11}$ & $1+x^{4}y^{3}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-604a1049/C189} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+x^{4}y^{3}$ & $1+xy+x^{11}y^{8}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-3db67857/C192} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+x^{4}y^{3}$ & $1+xy+x^{15}y^{11}$ & Exh. & 6 & G/O & conn.\\
+\texttt{CL-96f673ac/C196} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+x^{4}y^{3}$ & $1+x^{2}y+x^{3}y^{11}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-dbf2f6a0/C179} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+x^{4}y^{3}$ & $1+x^{3}y+x^{5}y^{11}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-3bdd5f4a/C197} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+x^{4}y^{3}$ & $1+x^{3}y^{4}+x^{4}y^{8}$ & Exh. & 1 & O & conn.\\
+\texttt{CL-eca6b561/C189} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+x^{4}y^{3}$ & $1+x^{3}y^{8}+x^{10}y^{7}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-387ff10e/C189} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+x^{4}y^{3}$ & $1+x^{5}y^{4}+x^{14}y^{11}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-8d3eab41/C189} & $(16,12)$ & $\code{384,4}$ & $4$ & Exact & -- & $0.17$ & $1+x^{4}y^{3}$ & $1+x^{5}y^{4}+x^{15}y^{11}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-c4b43b09/C195} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & Tighter & $[0.26,2.67]$ & $1+x^{2}y^{5}+x^{15}y^{7}$ & $1+x^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-c8819726/C178} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+y+x^{4}y^{2}$ & $1+xy^{6}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-4b2eb5d5/C171} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+y+x^{6}y^{2}$ & $1+xy^{6}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-7e7edaed/C186} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+y+x^{15}y^{5}$ & $1+xy^{9}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-84dbe6c0/C198} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+y^{2}+x^{2}y$ & $1+x^{3}y^{3}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-9b6ebfad/C184} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x$ & $1+xy^{11}+x^{14}y^{7}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-015c0d4f/C183} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+xy^{2}+x^{6}y^{4}$ & $1+xy^{9}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-762872ac/C170} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+xy^{6}$ & $1+x^{3}y^{2}+x^{11}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-5623f517/C191} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+xy^{6}$ & $1+x^{11}y^{2}+x^{12}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-0823cb54/C190} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{2}y^{2}+x^{2}y^{7}$ & $1+xy^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-47fe1ca1/C166} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{3}$ & $1+xy^{5}+x^{14}y$ & L4+B & 1 & O & conn.\\
+\texttt{CL-2e330ac5/C187} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{3}y^{2}+x^{8}y^{10}$ & $1+xy^{3}$ & L4+B & 3 & G/O & conn.\\
+\texttt{CL-6f55f40d/C173} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{3}y^{6}$ & $1+xy^{7}+x^{5}y^{11}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-43a4f306/C193} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{5}$ & $1+x^{3}y^{5}+x^{12}y^{10}$ & L4+B & 3 & G & conn.\\
+\texttt{CL-a8aab347/C165} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{5}y^{3}$ & $1+x^{14}y+x^{15}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-764bc1ba/C168} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{5}y^{6}$ & $1+y+x^{6}y^{5}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-90020de8/C182} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{5}y^{6}$ & $1+xy^{7}+x^{6}y^{11}$ & L4+B & 2 & G & conn.\\
+\texttt{CL-78232732/C172} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{5}y^{6}$ & $1+x^{12}y^{11}+x^{15}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-4735294a/C188} & $(16,12)$ & $\code{384,4}$ & $[5,16]$ & Interval & -- & $[0.26,2.67]$ & $1+x^{13}y^{3}$ & $1+x^{2}y^{5}+x^{14}y^{7}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-8fe6ec97/C194} & $(16,12)$ & $\code{384,4}$ & $[5,14]$ & Interval & Tighter & $[0.26,2.04]$ & $1+x^{13}$ & $1+x^{2}y+x^{7}y^{2}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-518180e8/C167} & $(16,12)$ & $\code{384,4}$ & $[5,12]$ & Interval & Tighter & $[0.26,1.50]$ & $1+x^{15}y^{9}$ & $1+xy^{2}+x^{15}y^{10}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-4b75f13a/C174} & $(16,12)$ & $\code{384,4}$ & $[5,8]$ & Interval & Tighter & $[0.26,0.67]$ & $1+y^{7}+x^{9}y^{2}$ & $1+x^{2}y^{9}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-9b17db49/C181} & $(16,12)$ & $\code{384,4}$ & $[5,8]$ & Interval & -- & $[0.26,0.67]$ & $1+y^{4}+y^{5}$ & $1+x^{5}y^{3}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-02dbb137/C175} & $(16,12)$ & $\code{384,4}$ & $[5,8]$ & Interval & -- & $[0.26,0.67]$ & $1+x$ & $1+y+y^{2}$ & L4+B & 2 & G/N & conn.\\
+\texttt{CL-3230671f/C177} & $(16,12)$ & $\code{384,4}$ & $[5,8]$ & Interval & -- & $[0.26,0.67]$ & $1+x^{2}y^{3}$ & $1+xy^{8}+x^{14}y^{10}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-45c62c8a/C180} & $(16,12)$ & $\code{384,4}$ & $[5,8]$ & Interval & -- & $[0.26,0.67]$ & $1+x^{2}y^{9}$ & $1+x^{6}y^{2}+x^{15}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-2102bdcd/C185} & $(16,12)$ & $\code{384,4}$ & $[5,8]$ & Interval & -- & $[0.26,0.67]$ & $1+x^{5}y+x^{9}y^{2}$ & $1+x^{6}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-1b76c9a2/C169} & $(16,12)$ & $\code{384,4}$ & $[5,8]$ & Interval & -- & $[0.26,0.67]$ & $1+x^{7}y^{10}+x^{9}y^{2}$ & $1+x^{6}y^{9}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-4b943aa2/C423} & $(15,14)$ & $\code{420,60}$ & $3$ & Exact & -- & $1.29$ & $1+x^{5}y^{12}+x^{10}y^{8}$ & $1+x^{10}$ & H$_c$ & 1 & -- & $10\times\code{42,6}$\\
+\texttt{CL-437b6e5f/C422} & $(15,14)$ & $\code{420,40}$ & $5$ & Exact & -- & $2.38$ & $1+x^{5}y^{4}+x^{10}y^{6}$ & $1+y^{6}$ & H$_c$ & 7 & -- & $10\times\code{42,4}$\\
+\texttt{CL-abc3d2fe/C421} & $(15,14)$ & $\code{420,30}$ & $3$ & Exact & -- & $0.64$ & $1+x^{5}$ & $1+y^{2}+x^{5}y^{3}$ & Exh. & 1 & G & $5\times\code{84,6}$\\
+\texttt{CL-1830493f/C420} & $(15,14)$ & $\code{420,20}$ & $8$ & Exact & -- & $3.05$ & $1+x^{5}y^{2}+x^{10}y^{6}$ & $1+y^{3}$ & M & 3 & G/O & $5\times\code{84,4}$\\
+\texttt{CL-0eaa9430/C416} & $(15,14)$ & $\code{420,20}$ & $7$ & Exact & -- & $2.33$ & $1+y^{4}$ & $1+x^{5}y^{10}+x^{10}y^{5}$ & M & 1 & G & $5\times\code{84,4}$\\
+\texttt{CL-e2ab51c4/C418} & $(15,14)$ & $\code{420,20}$ & $6$ & Exact & -- & $1.71$ & $1+y^{2}$ & $1+x^{5}y^{3}+x^{10}y^{13}$ & M & 5 & G/O & $5\times\code{84,4}$\\
+\texttt{CL-e891e16d/C419} & $(15,14)$ & $\code{420,20}$ & $6$ & Exact & -- & $1.71$ & $1+x^{5}y^{4}+x^{10}y^{11}$ & $1+y$ & M & 1 & O & $5\times\code{84,4}$\\
+\texttt{CL-253c2c53/C417} & $(15,14)$ & $\code{420,20}$ & $5$ & Exact & -- & $1.19$ & $1+x^{6}$ & $1+x^{7}y^{2}+x^{14}y^{6}$ & M & 1 & O & $2\times\code{210,10}$\\
+\texttt{CL-f8ef7ae2/C414} & $(15,14)$ & $\code{420,18}$ & $10$ & Exact & -- & $4.29$ & $1+y^{13}+x^{12}y^{11}$ & $1+x^{3}y^{7}$ & M & 1 & G & $3\times\code{140,6}$\\
+\texttt{CL-0286b883/C415} & $(15,14)$ & $\code{420,18}$ & $9$ & Exact & -- & $3.47$ & $1+x^{3}y^{7}$ & $1+x^{6}y^{5}+x^{9}y$ & M & 2 & G & $3\times\code{140,6}$\\
+\texttt{CL-e6216eab/C413} & $(15,14)$ & $\code{420,16}$ & $7$ & Exact & -- & $1.87$ & $1+y^{2}$ & $1+x^{3}+x^{4}y^{4}$ & M & 1 & G & $2\times\code{210,8}$\\
+\texttt{CL-1553fac6/C410} & $(15,14)$ & $\code{420,16}$ & $7$ & Exact & -- & $1.87$ & $1+y^{4}$ & $1+xy^{4}+x^{4}y^{8}$ & M & 1 & G & $2\times\code{210,8}$\\
+\texttt{CL-10274ff6/C412} & $(15,14)$ & $\code{420,16}$ & $7$ & Exact & -- & $1.87$ & $1+y^{4}$ & $1+x^{3}y^{12}+x^{4}y^{8}$ & M & 1 & G & $2\times\code{210,8}$\\
+\texttt{CL-7e34d25c/C411} & $(15,14)$ & $\code{420,16}$ & $[5,8]$ & Interval & -- & $[0.95,2.44]$ & $1+y^{2}$ & $1+x^{3}+x^{4}$ & L4+B & 1 & G & $2\times\code{210,8}$\\
+\texttt{CL-97118c06/C406} & $(15,14)$ & $\code{420,12}$ & $10$ & Exact & -- & $2.86$ & $1+x^{4}$ & $1+y^{4}+x^{9}y^{6}$ & M & 1 & G & $2\times\code{210,6}$\\
+\texttt{CL-84c084df/C405} & $(15,14)$ & $\code{420,12}$ & $9$ & Exact & -- & $2.31$ & $1+x$ & $1+x^{2}y^{2}+x^{8}y^{6}$ & M & 1 & G & $2\times\code{210,6}$\\
+\texttt{CL-7a5b9b2b/C408} & $(15,14)$ & $\code{420,12}$ & $3$ & Exact & -- & $0.26$ & $1+x^{5}$ & $1+xy^{4}+x^{8}y^{12}$ & Exh. & 1 & G & $2\times\code{210,6}$\\
+\texttt{CL-28abb736/C407} & $(15,14)$ & $\code{420,12}$ & $[5,12]$ & Interval & -- & $[0.71,4.11]$ & $1+xy^{2}+xy^{10}$ & $1+x^{8}$ & L4+B & 1 & G & $2\times\code{210,6}$\\
+\texttt{CL-2075fcbc/C404} & $(15,14)$ & $\code{420,12}$ & $[5,10]$ & Interval & -- & $[0.71,2.86]$ & $1+x^{6}$ & $1+x^{3}y^{8}+x^{4}y^{10}$ & L4+B & 1 & G & $2\times\code{210,6}$\\
+\texttt{CL-4efbd3b7/C409} & $(15,14)$ & $\code{420,12}$ & $[5,9]$ & Interval & -- & $[0.71,2.31]$ & $1+x^{2}y^{8}+x^{2}y^{12}$ & $1+x^{2}$ & L4+B & 1 & G & $2\times\code{210,6}$\\
+\texttt{CL-94086b72/C403} & $(15,14)$ & $\code{420,10}$ & $5$ & Exact & -- & $0.60$ & $1+x^{2}y+x^{10}y^{5}$ & $1+x^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-18ce8ea0/C402} & $(15,14)$ & $\code{420,10}$ & $[5,10]$ & Interval & -- & $[0.60,2.38]$ & $1+x^{5}y^{2}+x^{13}y^{3}$ & $1+x^{3}y^{7}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-37987300/C395} & $(15,14)$ & $\code{420,8}$ & $5$ & Exact & -- & $0.48$ & $1+xy^{6}+x^{11}y^{2}$ & $1+x^{3}y^{6}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-ae04e166/C401} & $(15,14)$ & $\code{420,8}$ & $4$ & Exact & -- & $0.30$ & $1+xy^{2}+x^{2}y^{4}$ & $1+x^{6}y^{4}$ & Exh. & 3 & G/O & $2\times\code{210,4}$\\
+\texttt{CL-f1fe99b8/C391} & $(15,14)$ & $\code{420,8}$ & $[5,16]$ & Interval & -- & $[0.48,4.88]$ & $1+x^{3}y^{2}$ & $1+x^{5}y^{12}+x^{13}y^{10}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-86fa16fa/C396} & $(15,14)$ & $\code{420,8}$ & $[5,15]$ & Interval & -- & $[0.48,4.29]$ & $1+xy^{6}+x^{14}y^{8}$ & $1+x^{3}y^{2}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-53812e7c/C372} & $(15,14)$ & $\code{420,8}$ & $[5,15]$ & Interval & -- & $[0.48,4.29]$ & $1+x^{6}y^{4}$ & $1+x^{8}y^{10}+x^{10}y^{12}$ & L4+I+B & 2 & G & $2\times\code{210,4}$\\
+\texttt{CL-eb460c33/C380} & $(15,14)$ & $\code{420,8}$ & $[5,14]$ & Interval & -- & $[0.48,3.73]$ & $1+y$ & $1+xy^{5}+x^{12}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-e2918556/C384} & $(15,14)$ & $\code{420,8}$ & $[5,14]$ & Interval & -- & $[0.48,3.73]$ & $1+y$ & $1+x^{3}y^{4}+x^{4}y^{9}$ & L4+B & 3 & G/O & conn.\\
+\texttt{CL-4a95cc39/C389} & $(15,14)$ & $\code{420,8}$ & $[5,14]$ & Interval & -- & $[0.48,3.73]$ & $1+y^{3}$ & $1+xy^{3}+x^{4}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-576cc4f9/C385} & $(15,14)$ & $\code{420,8}$ & $[5,14]$ & Interval & -- & $[0.48,3.73]$ & $1+y^{3}$ & $1+xy^{3}+x^{4}y^{8}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-d192c3d1/C375} & $(15,14)$ & $\code{420,8}$ & $[5,14]$ & Interval & -- & $[0.48,3.73]$ & $1+y^{5}$ & $1+x^{6}+x^{8}y^{5}$ & L4+B & 3 & G/O & conn.\\
+\texttt{CL-5e7d0343/C373} & $(15,14)$ & $\code{420,8}$ & $[5,14]$ & Interval & -- & $[0.48,3.73]$ & $1+y^{11}$ & $1+x^{11}y^{11}+x^{14}y^{13}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-c822290f/C394} & $(15,14)$ & $\code{420,8}$ & $[5,13]$ & Interval & -- & $[0.48,3.22]$ & $1+x^{12}y^{2}$ & $1+x^{4}y^{12}+x^{14}y^{2}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-0e057d70/C386} & $(15,14)$ & $\code{420,8}$ & $[5,13]$ & Interval & -- & $[0.48,3.22]$ & $1+x^{12}y^{4}$ & $1+x^{4}+x^{5}y^{6}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-d377ce58/C399} & $(15,14)$ & $\code{420,8}$ & $[5,12]$ & Interval & -- & $[0.48,2.74]$ & $1+xy^{6}+x^{8}y^{2}$ & $1+x^{6}y^{6}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-0533da8a/C376} & $(15,14)$ & $\code{420,8}$ & $[5,12]$ & Interval & -- & $[0.48,2.74]$ & $1+x^{12}y^{4}$ & $1+x^{2}y^{2}+x^{4}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-f742ab37/C374} & $(15,14)$ & $\code{420,8}$ & $[5,11]$ & Interval & -- & $[0.48,2.30]$ & $1+x^{3}y^{10}$ & $1+x^{5}y^{6}+x^{13}y^{2}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-f7222fc1/C379} & $(15,14)$ & $\code{420,8}$ & $[5,10]$ & Interval & -- & $[0.48,1.90]$ & $1+x^{3}y^{4}$ & $1+x+x^{14}y^{10}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-84deda58/C383} & $(15,14)$ & $\code{420,8}$ & $[5,10]$ & Interval & -- & $[0.48,1.90]$ & $1+x^{6}y^{4}$ & $1+x^{2}+x^{4}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-9de7ed68/C378} & $(15,14)$ & $\code{420,8}$ & $[5,9]$ & Interval & -- & $[0.48,1.54]$ & $1+x^{3}y^{4}$ & $1+xy^{4}+x^{2}$ & L4+B & 1 & N & $2\times\code{210,4}$\\
+\texttt{CL-845845df/C397} & $(15,14)$ & $\code{420,8}$ & $[5,9]$ & Interval & -- & $[0.48,1.54]$ & $1+x^{4}y^{10}+x^{14}y^{12}$ & $1+x^{3}y^{12}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-568676b0/C400} & $(15,14)$ & $\code{420,8}$ & $[5,9]$ & Interval & -- & $[0.48,1.54]$ & $1+x^{6}y^{4}$ & $1+x+x^{2}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-19f71a7e/C377} & $(15,14)$ & $\code{420,8}$ & $[5,7]$ & Interval & -- & $[0.48,0.93]$ & $1+y^{4}$ & $1+x+x^{2}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-263c4ed6/C388} & $(15,14)$ & $\code{420,8}$ & $[5,7]$ & Interval & -- & $[0.48,0.93]$ & $1+y^{4}$ & $1+x^{2}y^{13}+x^{8}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-e437a721/C381} & $(15,14)$ & $\code{420,8}$ & $[5,7]$ & Interval & -- & $[0.48,0.93]$ & $1+y^{4}$ & $1+x^{4}y^{2}+x^{11}y^{8}$ & L4+B & 1 & O & $2\times\code{210,4}$\\
+\texttt{CL-ec5f2a26/C387} & $(15,14)$ & $\code{420,8}$ & $[5,7]$ & Interval & -- & $[0.48,0.93]$ & $1+y^{6}$ & $1+xy^{6}+x^{2}y^{2}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-9bb8225d/C390} & $(15,14)$ & $\code{420,8}$ & $[5,7]$ & Interval & -- & $[0.48,0.93]$ & $1+y^{6}$ & $1+x^{13}y^{10}+x^{14}y^{6}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-8311524f/C393} & $(15,14)$ & $\code{420,8}$ & $[5,7]$ & Interval & -- & $[0.48,0.93]$ & $1+x+x^{2}y^{2}$ & $1+x^{6}y^{6}$ & L4+B & 1 & O & $2\times\code{210,4}$\\
+\texttt{CL-f30dec8e/C392} & $(15,14)$ & $\code{420,8}$ & $[5,7]$ & Interval & -- & $[0.48,0.93]$ & $1+x^{2}y^{4}+x^{4}y^{10}$ & $1+y^{4}$ & L4+B & 1 & O & $2\times\code{210,4}$\\
+\texttt{CL-722d606c/C398} & $(15,14)$ & $\code{420,8}$ & $[5,7]$ & Interval & -- & $[0.48,0.93]$ & $1+x^{2}y^{12}+x^{10}y^{12}$ & $1+y^{6}$ & L4+B & 1 & O & $2\times\code{210,4}$\\
+\texttt{CL-373036fd/C382} & $(15,14)$ & $\code{420,8}$ & $[5,7]$ & Interval & -- & $[0.48,0.93]$ & $1+x^{4}+x^{8}y^{12}$ & $1+y^{2}$ & L4+B & 1 & G & $2\times\code{210,4}$\\
+\texttt{CL-32806d84/C395} & $(15,14)$ & $\code{420,8}$ & $5$ & Interval & Exact & $0.48$ & $1+xy^{10}+x^{5}y^{8}$ & $1+x^{3}y^{2}$ & L4+B & 3 & G/O & $2\times\code{210,4}$\\
+\texttt{CL-c065aeaf/C357} & $(15,14)$ & $\code{420,6}$ & $5$ & Exact & -- & $0.36$ & $1+xy^{7}$ & $1+x^{9}y^{9}+x^{13}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-01ad3134/C362} & $(15,14)$ & $\code{420,6}$ & $3$ & Exact & -- & $0.13$ & $1+x^{2}y^{2}+x^{3}y^{3}$ & $1+x^{5}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-54d0129e/C355} & $(15,14)$ & $\code{420,6}$ & $[5,18]$ & Interval & -- & $[0.36,4.63]$ & $1+x^{7}y^{7}$ & $1+x^{4}y+x^{14}y^{10}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-85245770/C356} & $(15,14)$ & $\code{420,6}$ & $[5,17]$ & Interval & -- & $[0.36,4.13]$ & $1+x^{4}y^{7}$ & $1+x^{5}y^{8}+x^{11}y^{3}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-dcca76b0/C364} & $(15,14)$ & $\code{420,6}$ & $[5,16]$ & Interval & -- & $[0.36,3.66]$ & $1+x^{4}y^{7}$ & $1+x^{14}y^{2}+x^{14}y^{6}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-acd29413/C353} & $(15,14)$ & $\code{420,6}$ & $[5,15]$ & Interval & -- & $[0.36,3.21]$ & $1+y^{5}+x^{2}y$ & $1+xy^{7}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-bc646161/C371} & $(15,14)$ & $\code{420,6}$ & $[5,15]$ & Interval & -- & $[0.36,3.21]$ & $1+x$ & $1+y^{2}+xy^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-2530c11b/C354} & $(15,14)$ & $\code{420,6}$ & $[5,15]$ & Interval & -- & $[0.36,3.21]$ & $1+x$ & $1+xy+x^{6}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-69bf71ea/C361} & $(15,14)$ & $\code{420,6}$ & $[5,15]$ & Interval & -- & $[0.36,3.21]$ & $1+x$ & $1+x^{5}y+x^{13}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-f7a6bc43/C363} & $(15,14)$ & $\code{420,6}$ & $[5,15]$ & Interval & -- & $[0.36,3.21]$ & $1+x^{2}$ & $1+x^{6}y^{12}+x^{11}y^{11}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-735d8776/C365} & $(15,14)$ & $\code{420,6}$ & $[5,15]$ & Interval & -- & $[0.36,3.21]$ & $1+x^{4}y+x^{5}y^{3}$ & $1+x$ & L4+B & 1 & G & conn.\\
+\texttt{CL-8ba9617f/C368} & $(15,14)$ & $\code{420,6}$ & $[5,13]$ & Interval & -- & $[0.36,2.41]$ & $1+x^{2}y^{11}+x^{12}y^{12}$ & $1+x^{4}y^{7}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-4f88e824/C366} & $(15,14)$ & $\code{420,6}$ & $[5,13]$ & Interval & -- & $[0.36,2.41]$ & $1+x^{4}y^{7}$ & $1+x^{3}y^{6}+x^{10}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-0ec9877d/C370} & $(15,14)$ & $\code{420,6}$ & $[5,10]$ & Interval & -- & $[0.36,1.43]$ & $1+x^{3}y^{7}$ & $1+xy^{4}+x^{12}y^{13}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-aa1f235d/C367} & $(15,14)$ & $\code{420,6}$ & $[5,10]$ & Interval & -- & $[0.36,1.43]$ & $1+x^{5}y^{2}+x^{12}y^{6}$ & $1+x^{6}y^{7}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-1c3813aa/C358} & $(15,14)$ & $\code{420,6}$ & $[5,8]$ & Interval & -- & $[0.36,0.91]$ & $1+y^{2}+y^{3}$ & $1+xy^{7}$ & L4+B & 3 & G & conn.\\
+\texttt{CL-21aeb4fa/C369} & $(15,14)$ & $\code{420,6}$ & $[5,8]$ & Interval & -- & $[0.36,0.91]$ & $1+x^{4}$ & $1+y+y^{3}$ & L4+B & 5 & G/N & conn.\\
+\texttt{CL-d42149ac/C360} & $(15,14)$ & $\code{420,6}$ & $[5,6]$ & Interval & -- & $[0.36,0.51]$ & $1+x^{5}y^{7}$ & $1+x^{2}y^{5}+x^{10}y^{11}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-1cc5db1e/C359} & $(15,14)$ & $\code{420,6}$ & $[5,6]$ & Interval & -- & $[0.36,0.51]$ & $1+x^{5}y^{7}$ & $1+x^{7}y^{2}+x^{8}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-89dd6c68/C321} & $(15,14)$ & $\code{420,4}$ & $5$ & Exact & -- & $0.24$ & $1+x^{2}y^{10}+x^{10}y^{5}$ & $1+x^{6}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-e72cc9d8/C334} & $(15,14)$ & $\code{420,4}$ & $5$ & Exact & -- & $0.24$ & $1+x^{6}$ & $1+x^{7}y+x^{11}y^{2}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-03413624/C328} & $(15,14)$ & $\code{420,4}$ & $5$ & Exact & -- & $0.24$ & $1+x^{6}y^{4}$ & $1+xy^{3}+x^{2}y^{6}$ & L4+B & 3 & G/O & conn.\\
+\texttt{CL-daf9d6b0/C277} & $(15,14)$ & $\code{420,4}$ & $[5,22]$ & Interval & -- & $[0.24,4.61]$ & $1+xy^{3}+x^{5}y^{2}$ & $1+x^{12}y^{10}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-9fbce668/C290} & $(15,14)$ & $\code{420,4}$ & $[5,22]$ & Interval & -- & $[0.24,4.61]$ & $1+x^{3}y$ & $1+x^{10}y^{6}+x^{11}y^{2}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-1a333605/C349} & $(15,14)$ & $\code{420,4}$ & $[5,22]$ & Interval & -- & $[0.24,4.61]$ & $1+x^{3}y^{4}$ & $1+xy^{2}+x^{2}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-23177205/C341} & $(15,14)$ & $\code{420,4}$ & $[5,22]$ & Interval & -- & $[0.24,4.61]$ & $1+x^{4}y^{2}+x^{11}y^{12}$ & $1+x^{3}y^{3}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-c271b632/C279} & $(15,14)$ & $\code{420,4}$ & $[5,22]$ & Interval & -- & $[0.24,4.61]$ & $1+x^{4}y^{3}+x^{8}y^{11}$ & $1+x^{3}y^{3}$ & L4+I+B & 1 & O & conn.\\
+\texttt{CL-f1e29899/C298} & $(15,14)$ & $\code{420,4}$ & $[5,21]$ & Interval & -- & $[0.24,4.20]$ & $1+x+x^{2}y$ & $1+x^{6}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-3e5c8799/C313} & $(15,14)$ & $\code{420,4}$ & $[5,21]$ & Interval & -- & $[0.24,4.20]$ & $1+x^{2}y+x^{10}y^{11}$ & $1+x^{3}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-bdfa840a/C327} & $(15,14)$ & $\code{420,4}$ & $[5,21]$ & Interval & -- & $[0.24,4.20]$ & $1+x^{3}y$ & $1+xy^{3}+x^{2}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-170eab7b/C340} & $(15,14)$ & $\code{420,4}$ & $[5,21]$ & Interval & -- & $[0.24,4.20]$ & $1+x^{3}y^{3}$ & $1+x^{2}+x^{13}y^{13}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-35afb936/C278} & $(15,14)$ & $\code{420,4}$ & $[5,21]$ & Interval & -- & $[0.24,4.20]$ & $1+x^{3}y^{6}$ & $1+x^{4}y^{2}+x^{5}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-de17c9d3/C303} & $(15,14)$ & $\code{420,4}$ & $[5,21]$ & Interval & -- & $[0.24,4.20]$ & $1+x^{6}y^{8}$ & $1+x^{8}y^{7}+x^{13}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-bbe854ab/C286} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+xy^{4}+x^{8}y^{11}$ & $1+x^{12}y^{12}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-34564918/C293} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{3}y$ & $1+xy^{11}+x^{14}y^{7}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-035a9186/C306} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{3}y$ & $1+x^{4}y^{5}+x^{14}y^{10}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-921146b8/C273} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{3}y^{2}$ & $1+xy+x^{2}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-47b94d92/C308} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{4}y^{13}+x^{14}y^{3}$ & $1+x^{6}y^{5}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-84e4fd49/C263} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{5}y+x^{10}y^{12}$ & $1+x^{12}y^{13}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-d0e1c43e/C339} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{6}y^{3}$ & $1+xy+x^{5}$ & L4+B & 1 & N & conn.\\
+\texttt{CL-a72299e5/C312} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & Tighter & $[0.24,3.09]$ & $1+x^{6}y^{3}$ & $1+x^{2}y^{13}+x^{4}y^{4}$ & L4+B & 6 & G/O & conn.\\
+\texttt{CL-dc41e42a/C288} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{6}y^{3}$ & $1+x^{5}y^{11}+x^{10}y^{13}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-b30c14d0/C287} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{6}y^{5}$ & $1+x^{2}y^{8}+x^{10}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-fb0e1722/C259} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{6}y^{5}$ & $1+x^{4}+x^{5}y^{2}$ & L4+I+B & 1 & N & conn.\\
+\texttt{CL-68eefaad/C302} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{6}y^{5}$ & $1+x^{8}y^{7}+x^{10}y^{2}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-cfe9c60e/C342} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{6}y^{9}$ & $1+xy^{6}+x^{5}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-3ba7a33d/C268} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{6}y^{9}$ & $1+x^{2}+x^{7}y^{9}$ & L4+I+B & 2 & G & conn.\\
+\texttt{CL-859e9a93/C322} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{6}y^{13}$ & $1+x^{2}y^{2}+x^{7}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-959df55a/C315} & $(15,14)$ & $\code{420,4}$ & $[5,20]$ & Interval & -- & $[0.24,3.81]$ & $1+x^{7}+x^{11}y^{7}$ & $1+x^{6}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-3dc9e172/C260} & $(15,14)$ & $\code{420,4}$ & $[5,19]$ & Interval & -- & $[0.24,3.44]$ & $1+xy^{3}+x^{5}y$ & $1+x^{3}y$ & L4+B & 1 & O & conn.\\
+\texttt{CL-79baf488/C305} & $(15,14)$ & $\code{420,4}$ & $[5,19]$ & Interval & -- & $[0.24,3.44]$ & $1+x^{2}y^{3}+x^{7}y^{11}$ & $1+x^{3}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-58bc09e7/C284} & $(15,14)$ & $\code{420,4}$ & $[5,19]$ & Interval & -- & $[0.24,3.44]$ & $1+x^{2}y^{13}+x^{10}y^{11}$ & $1+x^{6}y^{4}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-efd28323/C329} & $(15,14)$ & $\code{420,4}$ & $[5,19]$ & Interval & -- & $[0.24,3.44]$ & $1+x^{3}y^{3}$ & $1+x^{2}y^{12}+x^{4}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-56365497/C350} & $(15,14)$ & $\code{420,4}$ & $[5,19]$ & Interval & -- & $[0.24,3.44]$ & $1+x^{3}y^{4}$ & $1+x^{5}y+x^{13}y^{2}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-aabd155e/C299} & $(15,14)$ & $\code{420,4}$ & $[5,19]$ & Interval & -- & $[0.24,3.44]$ & $1+x^{3}y^{5}$ & $1+xy^{2}+x^{14}y^{3}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-d18d0097/C291} & $(15,14)$ & $\code{420,4}$ & $[5,19]$ & Interval & -- & $[0.24,3.44]$ & $1+x^{3}y^{5}$ & $1+x^{2}y^{5}+x^{4}y^{12}$ & L4+I+B & 1 & O & conn.\\
+\texttt{CL-16ddab0d/C285} & $(15,14)$ & $\code{420,4}$ & $[5,16]$ & Interval & Tighter & $[0.24,2.44]$ & $1+x^{4}+x^{5}y^{5}$ & $1+x^{3}y^{9}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-6f3c91dc/C352} & $(15,14)$ & $\code{420,4}$ & $[5,19]$ & Interval & -- & $[0.24,3.44]$ & $1+x^{6}y^{5}$ & $1+x^{4}y^{5}+x^{5}y^{6}$ & L4+I+B & 2 & G & conn.\\
+\texttt{CL-92173649/C269} & $(15,14)$ & $\code{420,4}$ & $[5,19]$ & Interval & -- & $[0.24,3.44]$ & $1+x^{6}y^{5}$ & $1+x^{8}y^{9}+x^{13}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-d75eef3d/C330} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+xy+x^{2}$ & $1+x^{3}y^{4}$ & L4+I+B & 1 & O & conn.\\
+\texttt{CL-3517f047/C307} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+xy+x^{14}$ & $1+x^{3}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-1c01f1af/C326} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{2}y^{3}+x^{10}y$ & $1+x^{6}y^{5}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-0f0f7823/C300} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{2}y^{10}+x^{7}y^{11}$ & $1+x^{6}y^{13}$ & L4+B & 2 & G & conn.\\
+\texttt{CL-a68b54eb/C295} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{3}y$ & $1+x^{2}y^{10}+x^{7}y^{6}$ & L4+I+B & 1 & O & conn.\\
+\texttt{CL-cd1a95aa/C280} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{3}y^{5}$ & $1+x^{5}y^{6}+x^{13}y^{13}$ & L4+B & 4 & G/O & conn.\\
+\texttt{CL-243c1ce8/C276} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{3}y^{6}$ & $1+xy^{8}+x^{5}y^{7}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-a01dbf6f/C346} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{4}y+x^{11}y^{5}$ & $1+x^{6}y^{3}$ & L4+I+B & 1 & O & conn.\\
+\texttt{CL-52ea7c29/C320} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{6}y^{4}$ & $1+x+x^{5}y^{3}$ & L4+I+B & 1 & N & conn.\\
+\texttt{CL-97ce5a71/C274} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{6}y^{6}$ & $1+xy^{5}+x^{5}y$ & L4+B & 4 & G/O & conn.\\
+\texttt{CL-f4f0dd58/C348} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{7}y^{9}+x^{14}y^{7}$ & $1+x^{6}y^{2}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-39516f7a/C311} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{8}y^{10}+x^{10}y^{13}$ & $1+x^{3}y^{12}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-faab937c/C264} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{9}y^{5}$ & $1+x^{2}y^{11}+x^{13}y$ & L4+B & 1 & O & conn.\\
+\texttt{CL-0ab4461f/C257} & $(15,14)$ & $\code{420,4}$ & $[5,18]$ & Interval & -- & $[0.24,3.09]$ & $1+x^{11}y+x^{13}y^{9}$ & $1+x^{6}y^{5}$ & L4+I+B & 1 & O & conn.\\
+\texttt{CL-51b2d3f0/C316} & $(15,14)$ & $\code{420,4}$ & $[5,17]$ & Interval & -- & $[0.24,2.75]$ & $1+x^{2}y^{3}+x^{4}$ & $1+x^{6}y^{4}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-e3f164be/C344} & $(15,14)$ & $\code{420,4}$ & $[5,17]$ & Interval & -- & $[0.24,2.75]$ & $1+x^{3}y^{5}$ & $1+xy^{3}+x^{8}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-b5b7cea8/C266} & $(15,14)$ & $\code{420,4}$ & $[5,17]$ & Interval & -- & $[0.24,2.75]$ & $1+x^{3}y^{5}$ & $1+x^{4}y^{6}+x^{5}$ & L4+B & 1 & N & conn.\\
+\texttt{CL-18b5ba8d/C323} & $(15,14)$ & $\code{420,4}$ & $[5,17]$ & Interval & -- & $[0.24,2.75]$ & $1+x^{3}y^{10}$ & $1+x^{7}y+x^{8}y^{13}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-8f641549/C325} & $(15,14)$ & $\code{420,4}$ & $[5,16]$ & Interval & -- & $[0.24,2.44]$ & $1+x+x^{5}y$ & $1+x^{12}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-8eeddbcf/C253} & $(15,14)$ & $\code{420,4}$ & $[5,16]$ & Interval & -- & $[0.24,2.44]$ & $1+x^{3}y$ & $1+x+x^{5}y^{6}$ & L4+B & 1 & N & conn.\\
+\texttt{CL-7c9e0d51/C338} & $(15,14)$ & $\code{420,4}$ & $[5,16]$ & Interval & -- & $[0.24,2.44]$ & $1+x^{3}y$ & $1+x^{4}y+x^{14}y^{4}$ & L4+B & 7 & G/O & conn.\\
+\texttt{CL-3c4df4e6/C251} & $(15,14)$ & $\code{420,4}$ & $[5,12]$ & Interval & Tighter & $[0.24,1.37]$ & $1+x^{6}y$ & $1+x^{4}+x^{5}y^{4}$ & L4+B & 1 & N & conn.\\
+\texttt{CL-059adaf7/C337} & $(15,14)$ & $\code{420,4}$ & $[5,16]$ & Interval & -- & $[0.24,2.44]$ & $1+x^{6}y^{2}$ & $1+x^{4}y^{7}+x^{5}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-012b5093/C261} & $(15,14)$ & $\code{420,4}$ & $[5,16]$ & Interval & -- & $[0.24,2.44]$ & $1+x^{9}y^{13}$ & $1+x^{7}y^{13}+x^{8}y$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-18c67b02/C317} & $(15,14)$ & $\code{420,4}$ & $[5,16]$ & Interval & -- & $[0.24,2.44]$ & $1+x^{10}y^{2}+x^{14}y^{11}$ & $1+x^{3}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-45dbbd81/C301} & $(15,14)$ & $\code{420,4}$ & $[5,15]$ & Interval & -- & $[0.24,2.14]$ & $1+x^{2}y^{7}+x^{13}y^{11}$ & $1+x^{3}y^{13}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-00f55eb4/C347} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+y$ & $1+x^{4}y+x^{11}y$ & L4+B & 3 & G/O & conn.\\
+\texttt{CL-ee1a67cc/C331} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+y$ & $1+x^{13}y^{4}+x^{14}y$ & L4+B & 2 & G & conn.\\
+\texttt{CL-1d74ed97/C255} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+y^{3}$ & $1+x^{2}y+x^{13}y^{7}$ & L4+B & 3 & G/O & conn.\\
+\texttt{CL-4218c470/C297} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+y^{5}$ & $1+xy^{4}+x^{14}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-20a74088/C332} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+y^{5}$ & $1+x^{4}y^{5}+x^{8}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-63d37244/C252} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+y^{5}$ & $1+x^{4}y^{6}+x^{8}y^{8}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-39202e68/C343} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+xy+x^{14}$ & $1+y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-e0159989/C296} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+x^{2}+x^{13}y$ & $1+y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-96e74570/C282} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+x^{3}y^{5}$ & $1+x^{2}+x^{13}y^{4}$ & L4+I+B & 2 & G & conn.\\
+\texttt{CL-a517ace2/C281} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+x^{3}y^{13}$ & $1+x^{5}y^{2}+x^{10}y^{12}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-0bcba2cf/C265} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+x^{6}y^{5}$ & $1+x^{5}y^{8}+x^{10}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-d0bba1bf/C351} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+x^{6}y^{5}$ & $1+x^{10}y^{3}+x^{14}y^{8}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-bd9385b1/C262} & $(15,14)$ & $\code{420,4}$ & $[5,14]$ & Interval & -- & $[0.24,1.87]$ & $1+x^{7}y+x^{14}y^{4}$ & $1+y^{2}$ & L4+B & 2 & G & conn.\\
+\texttt{CL-cabac8af/C283} & $(15,14)$ & $\code{420,4}$ & $[5,13]$ & Interval & -- & $[0.24,1.61]$ & $1+x^{4}y+x^{5}y^{7}$ & $1+x^{3}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-6245f632/C270} & $(15,14)$ & $\code{420,4}$ & $[5,13]$ & Interval & -- & $[0.24,1.61]$ & $1+x^{12}y^{12}$ & $1+x^{7}+x^{14}y^{11}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-27163520/C294} & $(15,14)$ & $\code{420,4}$ & $[5,12]$ & Interval & -- & $[0.24,1.37]$ & $1+x^{3}y^{3}$ & $1+x^{4}y^{2}+x^{5}$ & L4+I+B & 1 & N & conn.\\
+\texttt{CL-7f05804a/C335} & $(15,14)$ & $\code{420,4}$ & $[5,10]$ & Interval & Tighter & $[0.24,0.95]$ & $1+x^{4}y^{5}+x^{8}y^{10}$ & $1+x^{6}y^{5}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-3e07faef/C250} & $(15,14)$ & $\code{420,4}$ & $[5,12]$ & Interval & -- & $[0.24,1.37]$ & $1+x^{9}y^{13}$ & $1+xy^{7}+x^{2}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-013659b7/C292} & $(15,14)$ & $\code{420,4}$ & $[5,11]$ & Interval & -- & $[0.24,1.15]$ & $1+y^{3}$ & $1+x^{4}y^{3}+x^{8}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-c5751133/C267} & $(15,14)$ & $\code{420,4}$ & $[5,11]$ & Interval & -- & $[0.24,1.15]$ & $1+x^{2}y^{6}+x^{7}y^{5}$ & $1+x^{6}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-0892ddc0/C324} & $(15,14)$ & $\code{420,4}$ & $[5,11]$ & Interval & -- & $[0.24,1.15]$ & $1+x^{3}y^{5}$ & $1+xy^{2}+x^{14}y^{12}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-22178d24/C289} & $(15,14)$ & $\code{420,4}$ & $[5,11]$ & Interval & -- & $[0.24,1.15]$ & $1+x^{4}y^{12}+x^{14}y$ & $1+x^{3}y^{13}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-52590f51/C304} & $(15,14)$ & $\code{420,4}$ & $[5,10]$ & Interval & -- & $[0.24,0.95]$ & $1+y$ & $1+x+x^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-30f2d7e8/C318} & $(15,14)$ & $\code{420,4}$ & $[5,10]$ & Interval & -- & $[0.24,0.95]$ & $1+xy^{3}+x^{5}y$ & $1+x^{6}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-c1097279/C249} & $(15,14)$ & $\code{420,4}$ & $[5,10]$ & Interval & -- & $[0.24,0.95]$ & $1+x^{3}y$ & $1+x+x^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-969d5906/C333} & $(15,14)$ & $\code{420,4}$ & $[5,10]$ & Interval & -- & $[0.24,0.95]$ & $1+x^{3}y^{3}$ & $1+x^{8}y^{2}+x^{13}y^{2}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-7e2d38ae/C336} & $(15,14)$ & $\code{420,4}$ & $[5,10]$ & Interval & -- & $[0.24,0.95]$ & $1+x^{6}y^{3}$ & $1+x+x^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-c087367c/C254} & $(15,14)$ & $\code{420,4}$ & $[5,9]$ & Interval & -- & $[0.24,0.77]$ & $1+x^{3}y^{2}$ & $1+xy+x^{14}y^{13}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-64c71487/C309} & $(15,14)$ & $\code{420,4}$ & $[5,9]$ & Interval & -- & $[0.24,0.77]$ & $1+x^{3}y^{4}$ & $1+x^{2}y^{3}+x^{7}y^{10}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-3cadff79/C314} & $(15,14)$ & $\code{420,4}$ & $[5,9]$ & Interval & -- & $[0.24,0.77]$ & $1+x^{6}y$ & $1+xy^{8}+x^{11}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-224f3680/C310} & $(15,14)$ & $\code{420,4}$ & $[5,9]$ & Interval & -- & $[0.24,0.77]$ & $1+x^{6}y^{13}$ & $1+x^{7}y^{3}+x^{11}y^{13}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-b18bd481/C271} & $(15,14)$ & $\code{420,4}$ & $[5,8]$ & Interval & -- & $[0.24,0.61]$ & $1+x^{6}y^{13}$ & $1+xy^{3}+x^{14}y^{11}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-a467cd49/C272} & $(15,14)$ & $\code{420,4}$ & $[5,7]$ & Interval & -- & $[0.24,0.47]$ & $1+xy+x^{2}y^{8}$ & $1+y^{2}$ & L4+B & 4 & G/O & conn.\\
+\texttt{CL-e8dd03a4/C319} & $(15,14)$ & $\code{420,4}$ & $[5,7]$ & Interval & -- & $[0.24,0.47]$ & $1+xy^{3}+x^{14}y^{11}$ & $1+y^{2}$ & L4+B & 5 & G/O & conn.\\
+\texttt{CL-71175309/C345} & $(15,14)$ & $\code{420,4}$ & $[5,7]$ & Interval & -- & $[0.24,0.47]$ & $1+x^{3}y$ & $1+x^{4}y^{2}+x^{11}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-229ff68f/C256} & $(15,14)$ & $\code{420,4}$ & $[5,7]$ & Interval & -- & $[0.24,0.47]$ & $1+x^{4}y^{3}+x^{11}y$ & $1+y^{2}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-da88d8de/C275} & $(15,14)$ & $\code{420,4}$ & $[5,6]$ & Interval & -- & $[0.24,0.34]$ & $1+x^{3}y^{5}$ & $1+xy^{12}+x^{2}y^{10}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-a8b29562/C258} & $(15,14)$ & $\code{420,4}$ & $[5,6]$ & Interval & -- & $[0.24,0.34]$ & $1+x^{4}y^{2}+x^{14}y^{2}$ & $1+x^{12}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-b9275593/C535} & $(18,12)$ & $\code{432,48}$ & $3$ & Exact & -- & $1.00$ & $1+y^{4}$ & $1+x^{6}y^{2}+x^{12}y^{4}$ & H$_c$ & 1 & -- & $12\times\code{36,4}$\\
+\texttt{CL-21ad24a2/C533} & $(18,12)$ & $\code{432,32}$ & $6$ & Exact & -- & $2.67$ & $1+x^{4}+x^{12}y^{4}$ & $1+x^{4}y^{4}$ & M & 2 & G & $8\times\code{54,4}$\\
+\texttt{CL-5e6f356a/C534} & $(18,12)$ & $\code{432,32}$ & $3$ & Exact & -- & $0.67$ & $1+y^{4}$ & $1+x^{2}+x^{4}$ & Exh. & 1 & G & $8\times\code{54,4}$\\
+\texttt{CL-f93732aa/C527} & $(18,12)$ & $\code{432,24}$ & $7$ & Exact & -- & $2.72$ & $1+x^{3}y^{3}$ & $1+y^{10}+x^{3}y^{5}$ & M & 3 & G/O & $6\times\code{72,4}$\\
+\texttt{CL-63ba351e/C529} & $(18,12)$ & $\code{432,24}$ & $6$ & Exact & -- & $2.00$ & $1+y+x^{12}y^{11}$ & $1+x^{6}y^{6}$ & M & 2 & G/O & $6\times\code{72,4}$\\
+\texttt{CL-7827219c/C526} & $(18,12)$ & $\code{432,24}$ & $5$ & Exact & -- & $1.39$ & $1+x^{6}y^{6}$ & $1+xy+x^{2}y^{2}$ & M & 1 & G & $6\times\code{72,4}$\\
+\texttt{CL-2c508b86/C530} & $(18,12)$ & $\code{432,24}$ & $4$ & Exact & -- & $0.89$ & $1+y^{3}$ & $1+x^{2}+x^{4}$ & Exh. & 5 & G/O & $6\times\code{72,4}$\\
+\texttt{CL-86e25310/C528} & $(18,12)$ & $\code{432,24}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}$ & $1+y^{2}+y^{4}$ & Exh. & 1 & G & $6\times\code{72,4}$\\
+\texttt{CL-18750838/C532} & $(18,12)$ & $\code{432,24}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{9}$ & $1+y^{4}+x^{3}y^{5}$ & Exh.+I & 2 & G & $6\times\code{72,4}$\\
+\texttt{CL-fedc4d95/C531} & $(18,12)$ & $\code{432,24}$ & $3$ & Exact & -- & $0.50$ & $1+x^{3}y^{11}+x^{12}y$ & $1+x^{6}$ & Exh.+I & 1 & G & $3\times\code{144,8}$\\
+\texttt{CL-8fe7fff8/C523} & $(18,12)$ & $\code{432,16}$ & $9$ & Exact & -- & $3.00$ & $1+x^{5}y^{4}$ & $1+x^{5}+x^{17}y^{8}$ & M & 1 & O & $4\times\code{108,4}$\\
+\texttt{CL-c5ca6b9a/C525} & $(18,12)$ & $\code{432,16}$ & $8$ & Exact & -- & $2.37$ & $1+xy^{6}$ & $1+x^{11}y^{10}+x^{15}y^{2}$ & M & 1 & G & $4\times\code{108,4}$\\
+\texttt{CL-a1a678e0/C519} & $(18,12)$ & $\code{432,16}$ & $8$ & Exact & -- & $2.37$ & $1+x^{16}y^{4}$ & $1+x^{3}y^{4}+x^{5}y^{4}$ & M & 1 & G & $4\times\code{108,4}$\\
+\texttt{CL-d72254a8/C517} & $(18,12)$ & $\code{432,16}$ & $7$ & Exact & -- & $1.81$ & $1+x^{2}+x^{3}y^{8}$ & $1+xy^{4}$ & M & 4 & G/O & $4\times\code{108,4}$\\
+\texttt{CL-8e614a5f/C517} & $(18,12)$ & $\code{432,16}$ & $7$ & Exact & -- & $1.81$ & $1+x^{2}y^{4}+x^{17}y^{2}$ & $1+xy^{6}$ & M & 1 & G & $4\times\code{108,4}$\\
+\texttt{CL-c9d42fcb/C518} & $(18,12)$ & $\code{432,16}$ & $6$ & Exact & -- & $1.33$ & $1+y^{2}$ & $1+x^{2}+x^{4}$ & M & 1 & G & $4\times\code{108,4}$\\
+\texttt{CL-dca40892/C521} & $(18,12)$ & $\code{432,16}$ & $6$ & Exact & -- & $1.33$ & $1+x^{3}y^{10}$ & $1+x^{4}+x^{17}y^{10}$ & M & 1 & G & $4\times\code{108,4}$\\
+\texttt{CL-8157fe5b/C522} & $(18,12)$ & $\code{432,16}$ & $4$ & Exact & -- & $0.59$ & $1+x^{4}$ & $1+y^{2}+y^{4}$ & Exh. & 1 & G & $4\times\code{108,4}$\\
+\texttt{CL-207f9524/C524} & $(18,12)$ & $\code{432,16}$ & $4$ & Exact & -- & $0.59$ & $1+x^{4}y^{6}$ & $1+x^{6}y^{8}+x^{8}y^{10}$ & Exh. & 1 & G & $4\times\code{108,4}$\\
+\texttt{CL-5c6fb0dc/C524} & $(18,12)$ & $\code{432,16}$ & $4$ & Exact & -- & $0.59$ & $1+x^{5}$ & $1+y^{8}+x^{5}y^{4}$ & Exh. & 2 & G & $4\times\code{108,4}$\\
+\texttt{CL-aa2abeb9/C520} & $(18,12)$ & $\code{432,16}$ & $3$ & Exact & -- & $0.33$ & $1+x^{12}y^{8}$ & $1+xy^{4}+x^{5}$ & Exh. & 1 & G & $4\times\code{108,4}$\\
+\texttt{CL-f85559a3/C513} & $(18,12)$ & $\code{432,12}$ & $10$ & Exact & -- & $2.78$ & $1+x^{3}y^{3}$ & $1+x^{5}y^{7}+x^{16}y^{11}$ & M & 2 & G & $3\times\code{144,4}$\\
+\texttt{CL-db6df8c9/C516} & $(18,12)$ & $\code{432,12}$ & $4$ & Exact & -- & $0.44$ & $1+y^{3}$ & $1+x+x^{2}$ & Exh. & 1 & G & $3\times\code{144,4}$\\
+\texttt{CL-3f55460c/C512} & $(18,12)$ & $\code{432,12}$ & $[5,12]$ & Interval & -- & $[0.69,4.00]$ & $1+x^{2}+x^{4}y^{9}$ & $1+x^{3}y^{3}$ & L4+B & 1 & G & $3\times\code{144,4}$\\
+\texttt{CL-771b1149/C515} & $(18,12)$ & $\code{432,12}$ & $[5,6]$ & Interval & -- & $[0.69,1.00]$ & $1+x^{3}$ & $1+y+y^{2}$ & L4+B & 1 & G & $3\times\code{144,4}$\\
+\texttt{CL-800f5ab6/C514} & $(18,12)$ & $\code{432,12}$ & $[5,6]$ & Interval & -- & $[0.69,1.00]$ & $1+x^{3}$ & $1+x^{4}y^{11}+x^{5}y^{10}$ & L4+B & 1 & G & $3\times\code{144,4}$\\
+\texttt{CL-7ae78520/C497} & $(18,12)$ & $\code{432,8}$ & $4$ & Exact & -- & $0.30$ & $1+x$ & $1+y^{2}+y^{4}$ & Exh. & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-24835ac8/C511} & $(18,12)$ & $\code{432,8}$ & $[5,14]$ & Interval & Tighter & $[0.46,3.63]$ & $1+x^{3}y^{5}+x^{8}y^{4}$ & $1+xy^{3}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-793d3a34/C503} & $(18,12)$ & $\code{432,8}$ & $[5,13]$ & Interval & Tighter & $[0.46,3.13]$ & $1+xy^{9}$ & $1+xy^{11}+x^{17}y$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-ab07a1d1/C495} & $(18,12)$ & $\code{432,8}$ & $[5,15]$ & Interval & -- & $[0.46,4.17]$ & $1+x^{4}y^{6}$ & $1+xy^{5}+x^{5}y^{10}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-74327c2b/C486} & $(18,12)$ & $\code{432,8}$ & $[5,14]$ & Interval & -- & $[0.46,3.63]$ & $1+x^{2}y^{2}$ & $1+x^{2}y^{9}+x^{6}y^{11}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-a4b8c21d/C474} & $(18,12)$ & $\code{432,8}$ & $[5,14]$ & Interval & -- & $[0.46,3.63]$ & $1+x^{2}y^{2}$ & $1+x^{3}y+x^{7}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-1056d548/C487} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & Tighter & $[0.46,2.67]$ & $1+x^{4}y^{2}$ & $1+x^{5}+x^{5}y^{2}$ & L4+B & 2 & O/N & $2\times\code{216,4}$\\
+\texttt{CL-a845ee15/C472} & $(18,12)$ & $\code{432,8}$ & $[5,14]$ & Interval & -- & $[0.46,3.63]$ & $1+x^{4}y^{6}+x^{5}$ & $1+xy^{2}$ & L4+B & 1 & O & $2\times\code{216,4}$\\
+\texttt{CL-09a77c34/C473} & $(18,12)$ & $\code{432,8}$ & $[5,14]$ & Interval & -- & $[0.46,3.63]$ & $1+x^{5}y^{7}$ & $1+x^{9}y^{5}+x^{16}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-a1456a39/C485} & $(18,12)$ & $\code{432,8}$ & $[5,13]$ & Interval & -- & $[0.46,3.13]$ & $1+xy^{3}+x^{14}$ & $1+xy^{5}$ & L4+B & 1 & O & $2\times\code{216,4}$\\
+\texttt{CL-60b043d7/C477} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & Tighter & $[0.46,2.67]$ & $1+x^{2}y^{2}$ & $1+x+x^{5}y^{6}$ & L4+B & 1 & N & $2\times\code{216,4}$\\
+\texttt{CL-9adf9c82/C492} & $(18,12)$ & $\code{432,8}$ & $[5,13]$ & Interval & -- & $[0.46,3.13]$ & $1+x^{2}y^{2}$ & $1+x^{11}y^{7}+x^{14}y^{9}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-6b338767/C484} & $(18,12)$ & $\code{432,8}$ & $[5,13]$ & Interval & -- & $[0.46,3.13]$ & $1+x^{2}y^{3}$ & $1+x^{4}y^{11}+x^{16}y^{7}$ & L4+B & 2 & O & $2\times\code{216,4}$\\
+\texttt{CL-e9ccd5a7/C493} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & Tighter & $[0.46,2.67]$ & $1+x^{2}y^{6}$ & $1+x^{2}y^{8}+x^{17}y^{4}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-4ec75a5c/C488} & $(18,12)$ & $\code{432,8}$ & $[5,13]$ & Interval & -- & $[0.46,3.13]$ & $1+x^{10}y^{8}+x^{16}y^{3}$ & $1+x^{4}y$ & L4+B & 2 & G/O & $2\times\code{216,4}$\\
+\texttt{CL-d3cd6d5d/C505} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{2}y^{6}$ & $1+xy^{5}+x^{15}y$ & L4+B & 2 & G & $2\times\code{216,4}$\\
+\texttt{CL-802642c3/C483} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{2}y^{6}+x^{4}y^{9}$ & $1+y^{5}$ & L4+B & 1 & O & $2\times\code{216,4}$\\
+\texttt{CL-47f1818f/C501} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{4}y+x^{14}y^{4}$ & $1+y^{5}$ & L4+B & 1 & O & $2\times\code{216,4}$\\
+\texttt{CL-05d7189f/C506} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{4}y^{3}$ & $1+y^{4}+x^{8}y^{2}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-2329ffcc/C489} & $(18,12)$ & $\code{432,8}$ & $[5,10]$ & Interval & Tighter & $[0.46,1.85]$ & $1+x^{5}$ & $1+xy^{2}+x^{17}y^{10}$ & L4+B & 5 & G/O & $2\times\code{216,4}$\\
+\texttt{CL-6109dbbe/C478} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{5}y^{2}$ & $1+x+x^{3}y^{4}$ & L4+B & 2 & O/N & $2\times\code{216,4}$\\
+\texttt{CL-401c648e/C475} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{5}y^{3}$ & $1+x^{2}y^{10}+x^{6}y^{2}$ & L4+I+B & 3 & G & $2\times\code{216,4}$\\
+\texttt{CL-eb4e5df6/C482} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{5}y^{5}$ & $1+x^{11}y^{7}+x^{16}y^{8}$ & L4+B & 3 & G/O & $2\times\code{216,4}$\\
+\texttt{CL-deb9e5a7/C500} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{6}y$ & $1+x^{14}y^{6}+x^{16}y^{9}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-cde49a87/C471} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{6}y^{5}$ & $1+x^{2}y^{8}+x^{4}y$ & L4+B & 1 & O & $2\times\code{216,4}$\\
+\texttt{CL-53bfe094/C490} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{6}y^{7}$ & $1+x^{2}y^{5}+x^{10}y^{8}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-56e2dbbb/C507} & $(18,12)$ & $\code{432,8}$ & $[5,8]$ & Interval & Tighter & $[0.46,1.19]$ & $1+x^{10}y^{8}+x^{14}y^{10}$ & $1+x^{5}y^{5}$ & L4+B & 1 & O & $2\times\code{216,4}$\\
+\texttt{CL-070a0e56/C481} & $(18,12)$ & $\code{432,8}$ & $[5,12]$ & Interval & -- & $[0.46,2.67]$ & $1+x^{11}y^{9}+x^{15}y^{11}$ & $1+x^{5}y^{11}$ & L4+B & 2 & G & $2\times\code{216,4}$\\
+\texttt{CL-a110e8aa/C502} & $(18,12)$ & $\code{432,8}$ & $[5,9]$ & Interval & Tighter & $[0.46,1.50]$ & $1+x^{3}y$ & $1+x^{4}y^{6}+x^{5}y^{11}$ & L4+B & 2 & G/O & $2\times\code{216,4}$\\
+\texttt{CL-07986a64/C479} & $(18,12)$ & $\code{432,8}$ & $[5,10]$ & Interval & -- & $[0.46,1.85]$ & $1+x^{2}y^{8}+x^{4}y^{4}$ & $1+x^{3}y$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-2e6fe66f/C499} & $(18,12)$ & $\code{432,8}$ & $[5,9]$ & Interval & -- & $[0.46,1.50]$ & $1+x^{2}$ & $1+y^{10}+x^{2}y^{5}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-1aaa038c/C476} & $(18,12)$ & $\code{432,8}$ & $[5,9]$ & Interval & -- & $[0.46,1.50]$ & $1+x^{2}y^{3}+x^{3}y^{5}$ & $1+x^{10}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-2af009b4/C496} & $(18,12)$ & $\code{432,8}$ & $[5,9]$ & Interval & -- & $[0.46,1.50]$ & $1+x^{2}y^{5}$ & $1+x^{6}y^{10}+x^{14}y$ & L4+B & 2 & G/O & $2\times\code{216,4}$\\
+\texttt{CL-0f7f26a5/C504} & $(18,12)$ & $\code{432,8}$ & $[5,9]$ & Interval & -- & $[0.46,1.50]$ & $1+x^{4}y^{4}$ & $1+xy^{3}+x^{3}y$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-93e856dd/C498} & $(18,12)$ & $\code{432,8}$ & $[5,9]$ & Interval & -- & $[0.46,1.50]$ & $1+x^{4}y^{4}$ & $1+x^{3}y^{7}+x^{14}y^{10}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-58125eba/C480} & $(18,12)$ & $\code{432,8}$ & $[5,8]$ & Interval & -- & $[0.46,1.19]$ & $1+x^{2}y^{4}$ & $1+y+y^{2}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-f9fcbea8/C509} & $(18,12)$ & $\code{432,8}$ & $[5,8]$ & Interval & -- & $[0.46,1.19]$ & $1+x^{4}y^{2}+x^{11}y^{7}$ & $1+x^{17}y^{11}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-303631c7/C510} & $(18,12)$ & $\code{432,8}$ & $[5,6]$ & Interval & -- & $[0.46,0.67]$ & $1+x^{2}+x^{4}$ & $1+xy$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-3901c61d/C494} & $(18,12)$ & $\code{432,8}$ & $[5,6]$ & Interval & -- & $[0.46,0.67]$ & $1+x^{2}y^{6}$ & $1+x^{4}y^{5}+x^{16}y$ & L4+B & 2 & G & $2\times\code{216,4}$\\
+\texttt{CL-2925a0eb/C491} & $(18,12)$ & $\code{432,8}$ & $[5,6]$ & Interval & -- & $[0.46,0.67]$ & $1+x^{3}y^{2}$ & $1+x+x^{17}y^{10}$ & L4+B & 2 & G & $2\times\code{216,4}$\\
+\texttt{CL-fd352b42/C508} & $(18,12)$ & $\code{432,8}$ & $[5,6]$ & Interval & -- & $[0.46,0.67]$ & $1+x^{6}y^{2}$ & $1+x^{10}y^{4}+x^{17}y^{6}$ & L4+B & 1 & G & $2\times\code{216,4}$\\
+\texttt{CL-afd67a34/C434} & $(18,12)$ & $\code{432,4}$ & $10$ & Exact & -- & $0.93$ & $1+x^{14}y^{5}$ & $1+xy^{9}+x^{17}y^{3}$ & M & 1 & O & conn.\\
+\texttt{CL-2de98d42/C438} & $(18,12)$ & $\code{432,4}$ & $4$ & Exact & -- & $0.15$ & $1+x^{4}y^{3}$ & $1+x^{3}y^{4}+x^{6}y^{8}$ & Exh. & 1 & G & conn.\\
+\texttt{CL-f5754da6/C453} & $(18,12)$ & $\code{432,4}$ & $[5,24]$ & Interval & -- & $[0.23,5.33]$ & $1+x^{4}y^{3}$ & $1+x^{5}y^{11}+x^{10}y$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-ac793cd4/C426} & $(18,12)$ & $\code{432,4}$ & $[5,22]$ & Interval & Tighter & $[0.23,4.48]$ & $1+xy^{3}+x^{8}y^{4}$ & $1+x^{6}y$ & L4+B & 3 & G & conn.\\
+\texttt{CL-5be73e9c/C434} & $(18,12)$ & $\code{432,4}$ & $10$ & Interval & Exact & $0.93$ & $1+x^{4}y^{3}$ & $1+xy^{11}+x^{2}y^{10}$ & L4+B & 2 & G & conn.\\
+\texttt{CL-b58f52c9/C459} & $(18,12)$ & $\code{432,4}$ & $[5,22]$ & Interval & -- & $[0.23,4.48]$ & $1+xy^{9}$ & $1+x^{6}y^{2}+x^{13}y^{10}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-2cf3ba31/C437} & $(18,12)$ & $\code{432,4}$ & $[5,22]$ & Interval & -- & $[0.23,4.48]$ & $1+xy^{9}+x^{17}y^{6}$ & $1+x^{17}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-a78749f2/C434} & $(18,12)$ & $\code{432,4}$ & $10$ & Interval & Exact & $0.93$ & $1+xy^{11}$ & $1+x^{4}y^{9}+x^{14}y^{3}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-960fac4a/C444} & $(18,12)$ & $\code{432,4}$ & $[5,22]$ & Interval & -- & $[0.23,4.48]$ & $1+x^{4}y^{5}$ & $1+x^{17}y^{3}+x^{17}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-2c48572e/C467} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & Tighter & $[0.23,3.00]$ & $1+x^{5}y^{11}+x^{12}y^{10}$ & $1+x^{17}y^{6}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-99b02885/C434} & $(18,12)$ & $\code{432,4}$ & $10$ & Interval & Exact & $0.93$ & $1+x^{5}y^{5}$ & $1+x^{2}y+x^{16}y^{11}$ & L4+B & 3 & G/O & conn.\\
+\texttt{CL-9b2cfe69/C458} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & Tighter & $[0.23,3.00]$ & $1+xy^{3}$ & $1+y+xy^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-50ab00d1/C466} & $(18,12)$ & $\code{432,4}$ & $[5,14]$ & Interval & Tighter & $[0.23,1.81]$ & $1+xy+x^{3}y^{4}$ & $1+xy^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-2e0cf084/C469} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+xy^{2}$ & $1+x^{3}y^{8}+x^{4}y^{9}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-c562025d/C461} & $(18,12)$ & $\code{432,4}$ & $[5,16]$ & Interval & Tighter & $[0.23,2.37]$ & $1+xy^{2}+x^{3}y^{11}$ & $1+x^{5}y^{8}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-7b37e7a6/C445} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+xy^{4}$ & $1+x^{4}+x^{6}y$ & L4+B & 1 & N & conn.\\
+\texttt{CL-888cfcaa/C462} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+xy^{4}$ & $1+x^{4}y^{11}+x^{16}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-0f1284f8/C464} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+xy^{4}$ & $1+x^{13}y^{9}+x^{14}y^{3}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-70597c08/C446} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+xy^{11}+x^{17}y^{4}$ & $1+xy^{10}$ & L4+B & 2 & G & conn.\\
+\texttt{CL-e206740e/C465} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+x^{2}y^{3}$ & $1+xy^{5}+x^{11}y^{10}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-935f70e2/C452} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+x^{3}y^{10}+x^{4}y$ & $1+xy^{2}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-754eef8b/C449} & $(18,12)$ & $\code{432,4}$ & $[5,16]$ & Interval & Tighter & $[0.23,2.37]$ & $1+x^{5}$ & $1+x^{2}y^{7}+x^{4}y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-4961ba0d/C440} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+x^{5}$ & $1+x^{4}y^{5}+x^{6}y$ & L4+B & 1 & O & conn.\\
+\texttt{CL-582ece9e/C428} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+x^{5}y^{3}$ & $1+x^{11}y^{4}+x^{12}y^{8}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-64d76631/C432} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+x^{5}y^{4}$ & $1+y^{5}+x^{17}y^{11}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-c459a3a7/C457} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+x^{7}y^{5}+x^{16}y^{3}$ & $1+x^{5}y^{2}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-9687b770/C455} & $(18,12)$ & $\code{432,4}$ & $[5,18]$ & Interval & -- & $[0.23,3.00]$ & $1+x^{8}y^{6}+x^{14}y$ & $1+xy^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-d78337f6/C436} & $(18,12)$ & $\code{432,4}$ & $[5,16]$ & Interval & -- & $[0.23,2.37]$ & $1+y^{4}+xy^{10}$ & $1+x^{4}y^{5}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-7a6583b3/C447} & $(18,12)$ & $\code{432,4}$ & $[5,15]$ & Interval & Tighter & $[0.23,2.08]$ & $1+xy^{6}+x^{3}y^{5}$ & $1+xy^{5}$ & L4+B & 3 & G & conn.\\
+\texttt{CL-5e1d4e3b/C450} & $(18,12)$ & $\code{432,4}$ & $[5,16]$ & Interval & -- & $[0.23,2.37]$ & $1+x^{5}y^{9}$ & $1+x^{11}y^{8}+x^{15}y^{7}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-7d5cd2d4/C454} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+y$ & $1+x+x^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-ba633f94/C442} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{2}y^{5}$ & $1+xy^{2}+x^{2}y^{4}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-4065bf35/C435} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{3}y^{3}$ & $1+x+x^{3}y^{4}$ & L4+B & 3 & O/N & conn.\\
+\texttt{CL-28f3c8be/C441} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{3}y^{3}$ & $1+x^{4}y^{4}+x^{5}$ & L4+B & 1 & N & conn.\\
+\texttt{CL-2c380f36/C425} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{3}y^{5}$ & $1+xy^{10}+x^{17}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-89827bd2/C429} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{4}y^{11}$ & $1+x^{2}y^{2}+x^{5}$ & L4+I+B & 1 & G & conn.\\
+\texttt{CL-05950d9c/C430} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{4}y^{11}+x^{11}y^{11}$ & $1+y^{11}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-6c6932a1/C456} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{6}y$ & $1+xy^{4}+x^{2}$ & L4+B & 2 & O/N & conn.\\
+\texttt{CL-495ff19e/C460} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{6}y^{5}$ & $1+x^{4}y^{11}+x^{5}y^{5}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-2faf8b1a/C433} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{6}y^{7}$ & $1+x^{5}y^{11}+x^{10}y^{7}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-373c7ffa/C470} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{10}y^{2}+x^{11}y^{2}$ & $1+x^{6}y$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-f334fecb/C434} & $(18,12)$ & $\code{432,4}$ & $10$ & Interval & Exact & $0.93$ & $1+xy^{11}+x^{2}y^{10}$ & $1+x^{16}y^{9}$ & L4+B & 2 & G & conn.\\
+\texttt{CL-4dc3dd1c/C448} & $(18,12)$ & $\code{432,4}$ & $[5,6]$ & Interval & Tighter & $[0.23,0.33]$ & $1+x^{5}+x^{16}y^{3}$ & $1+x^{3}y^{2}$ & L4+B & 2 & G/O & conn.\\
+\texttt{CL-ed2078cc/C451} & $(18,12)$ & $\code{432,4}$ & $[5,9]$ & Interval & -- & $[0.23,0.75]$ & $1+x^{2}y^{5}$ & $1+xy^{3}+x^{13}y^{11}$ & L4+B & 3 & G/O & conn.\\
+\texttt{CL-11f56764/C439} & $(18,12)$ & $\code{432,4}$ & $[5,8]$ & Interval & Tighter & $[0.23,0.59]$ & $1+x^{3}y^{2}+x^{16}y^{11}$ & $1+xy$ & L4+B & 1 & G & conn.\\
+\texttt{CL-0ad5b376/C463} & $(18,12)$ & $\code{432,4}$ & $[5,8]$ & Interval & -- & $[0.23,0.59]$ & $1+x$ & $1+y+y^{2}$ & L4+B & 1 & G & conn.\\
+\texttt{CL-3bee8f1a/C424} & $(18,12)$ & $\code{432,4}$ & $[5,8]$ & Interval & -- & $[0.23,0.59]$ & $1+x^{4}y^{5}$ & $1+x^{9}y+x^{9}y^{11}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-5a1f8e7d/C431} & $(18,12)$ & $\code{432,4}$ & $[5,6]$ & Interval & -- & $[0.23,0.33]$ & $1+xy^{4}+x^{5}y^{3}$ & $1+x^{3}y^{4}$ & L4+B & 1 & O & conn.\\
+\texttt{CL-0266a837/C443} & $(18,12)$ & $\code{432,4}$ & $[5,6]$ & Interval & -- & $[0.23,0.33]$ & $1+x^{3}y^{2}$ & $1+x^{7}y^{3}+x^{17}y$ & L4+B & 1 & G & conn.\\
+\texttt{CL-9074474c/C427} & $(18,12)$ & $\code{432,4}$ & $[5,6]$ & Interval & -- & $[0.23,0.33]$ & $1+x^{3}y^{4}$ & $1+x+x^{2}y^{3}$ & L4+B & 2 & O/N & conn.\\
+\texttt{CL-481d459f/C468} & $(18,12)$ & $\code{432,4}$ & $[5,6]$ & Interval & -- & $[0.23,0.33]$ & $1+x^{15}y^{4}$ & $1+x^{2}y^{11}+x^{13}y^{5}$ & L4+B & 1 & G & conn.\\
+\end{longtable}
+\endgroup
+
+\begingroup
+\setlength{\tabcolsep}{0.84pt}
+\renewcommand{\arraystretch}{0.96}
+\begin{longtable}{@{}TTTTTTTT@{\kern.5pt\vrule\kern.5pt}T@{\kern.5pt\vrule\kern.5pt}T@{\kern.5pt\vrule\kern.5pt}TTTTT@{}}
+\caption{PBB-small compact catalogue (151 displayed of 151 retained proposals; 39 presentation classes).  The table includes every proposal in an exact class and one deterministic representative of every interval class.  Own evidence and Evid. describe the proposal before class merging; Class effect reports when merging makes the displayed $d$ and FOM exact or tighter.  Column abbreviations, filtering, and evidence conventions are defined above.}\label{tab:w5-supp-pbb-small}\\
+\toprule
+ID/class & $(\ell,m)$ & $\code{n,k}$ & $d$ & Own evidence & Class effect & FOM & $A$ & $B$ & $C$ & $D$ & Evid. & Obs. & Attr. & Decomp.\\
+\midrule
+\endfirsthead
+\multicolumn{15}{c}{\tablename\ \thetable\ (continued)}\\
+\toprule
+ID/class & $(\ell,m)$ & $\code{n,k}$ & $d$ & Own evidence & Class effect & FOM & $A$ & $B$ & $C$ & $D$ & Evid. & Obs. & Attr. & Decomp.\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
+\texttt{PS-5feb6ebb/P013} & $(6,6)$ & $\code{72,12}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{3}$ & $1+xy^{3}+x^{2}$ & $0$ & $1+x^{2}$ & Exh. & 1 & G & $6\times\code{12,2}$\\
+\texttt{PS-64d64fd9/P012} & $(6,6)$ & $\code{72,12}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{3}$ & $1+xy^{3}+x^{2}$ & $0$ & $xy^{3}$ & Exh. & 8 & G/O & $6\times\code{12,2}$\\
+\texttt{PS-106b8669/P014} & $(6,6)$ & $\code{72,12}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{3}$ & $1+xy^{3}+x^{2}$ & $1+x^{3}y^{3}$ & $1+x^{2}$ & Exh. & 2 & G/N & $6\times\code{12,2}$\\
+\texttt{PS-f4956d3c/P011} & $(6,6)$ & $\code{72,12}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{3}$ & $1+xy^{3}+x^{2}$ & $1+x^{3}y^{3}$ & $xy^{3}$ & Exh. & 1 & G & $6\times\code{12,2}$\\
+\texttt{PS-edb2da66/P013} & $(6,6)$ & $\code{72,12}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{3}$ & $1+x^{4}+x^{5}y^{3}$ & $0$ & $1+x^{4}$ & Exh. & 1 & G & $6\times\code{12,2}$\\
+\texttt{PS-1a20f6c1/P012} & $(6,6)$ & $\code{72,12}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{3}$ & $1+x^{4}+x^{5}y^{3}$ & $0$ & $x^{5}y^{3}$ & Exh. & 3 & G & $6\times\code{12,2}$\\
+\texttt{PS-686df635/P014} & $(6,6)$ & $\code{72,12}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{3}$ & $1+x^{4}+x^{5}y^{3}$ & $1+x^{3}y^{3}$ & $1+x^{4}$ & Exh. & 1 & G & $6\times\code{12,2}$\\
+\texttt{PS-66471642/P011} & $(6,6)$ & $\code{72,12}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{3}$ & $1+x^{4}+x^{5}y^{3}$ & $1+x^{3}y^{3}$ & $x^{5}y^{3}$ & Exh. & 1 & G & $6\times\code{12,2}$\\
+\texttt{PS-bb41fc22/P004} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+y$ & $1+x+x^{2}$ & $1+y$ & $x$ & Exh. & 49 & G/O/F & conn.\\
+\texttt{PS-dd65d6ed/P004} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & Exh. & 37 & G/O/F & conn.\\
+\texttt{PS-08fe6a9e/P001} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy$ & $1+xy^{3}+x^{2}$ & $0$ & $xy^{3}$ & Exh. & 14 & G/O/N & $2\times\code{36,2}$\\
+\texttt{PS-db456c42/P003} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy$ & $1+x^{2}+x^{4}y^{3}$ & $0$ & $1+x^{2}$ & Exh. & 1 & G & conn.\\
+\texttt{PS-327fdbe9/P003} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy$ & $1+x^{2}y^{3}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 16 & G & conn.\\
+\texttt{PS-a18803a6/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy$ & $1+x^{2}y^{3}+x^{4}$ & $0$ & $x^{2}y^{3}$ & Exh. & 1 & G & conn.\\
+\texttt{PS-ceb60d35/P003} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{2}$ & $1+xy^{3}+x^{2}$ & $0$ & $1+x^{2}$ & Exh. & 1 & G & conn.\\
+\texttt{PS-6d4940be/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{2}$ & $1+xy^{3}+x^{2}$ & $0$ & $xy^{3}$ & Exh. & 5 & G & conn.\\
+\texttt{PS-a72ff06a/P004} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{2}$ & $1+xy^{3}+x^{2}$ & $1+xy^{2}$ & $xy^{3}$ & Exh. & 17 & G & conn.\\
+\texttt{PS-44aa1f41/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{2}$ & $1+x^{2}+x^{4}y^{3}$ & $0$ & $x^{4}y^{3}$ & Exh. & 1 & G & conn.\\
+\texttt{PS-34d654cf/P003} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{2}$ & $1+x^{2}y^{3}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 4 & G & conn.\\
+\texttt{PS-34a1c7a7/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{2}$ & $1+x^{2}y^{3}+x^{4}$ & $0$ & $x^{2}y^{3}$ & Exh. & 9 & G & conn.\\
+\texttt{PS-5132ad68/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{2}$ & $1+x^{4}+x^{5}y^{3}$ & $0$ & $x^{5}y^{3}$ & Exh. & 27 & G/O & conn.\\
+\texttt{PS-0d465075/P004} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{4}$ & $1+x^{2}+x^{4}y^{3}$ & $1+xy^{4}$ & $x^{4}y^{3}$ & Exh. & 11 & G & conn.\\
+\texttt{PS-6612b0d7/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{4}$ & $1+x^{2}y^{3}+x^{4}$ & $0$ & $x^{2}y^{3}$ & Exh. & 4 & G & conn.\\
+\texttt{PS-1db1d8fa/P002} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{4}$ & $1+x^{4}+x^{5}y^{3}$ & $1+xy^{4}$ & $1+x^{4}$ & Exh. & 71 & G/O & conn.\\
+\texttt{PS-231b48e4/P004} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{4}$ & $1+x^{4}+x^{5}y^{3}$ & $1+xy^{4}$ & $x^{5}y^{3}$ & Exh. & 12 & G & conn.\\
+\texttt{PS-264133e8/P003} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{2}y$ & $1+xy^{3}+x^{2}$ & $0$ & $1+x^{2}$ & Exh. & 1 & G & conn.\\
+\texttt{PS-d9bb8009/P001} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{2}y$ & $1+x^{2}y^{3}+x^{4}$ & $0$ & $x^{2}y^{3}$ & Exh. & 47 & G/O & $2\times\code{36,2}$\\
+\texttt{PS-8095943f/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{2}y$ & $1+x^{4}+x^{5}y^{3}$ & $0$ & $x^{5}y^{3}$ & Exh. & 5 & G & conn.\\
+\texttt{PS-ab75ae2d/P009} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{2}y^{5}$ & $1+x^{2}+x^{4}y^{3}$ & $1+x^{2}y^{5}$ & $1+x^{2}$ & Exh. & 2 & G & $2\times\code{36,2}$\\
+\texttt{PS-9b4e5941/P001} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y$ & $1+xy^{3}+x^{2}$ & $0$ & $xy^{3}$ & Exh. & 11 & G/O & $2\times\code{36,2}$\\
+\texttt{PS-e3c4d761/P003} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y$ & $1+x^{2}+x^{4}y^{3}$ & $0$ & $1+x^{2}$ & Exh. & 1 & G & conn.\\
+\texttt{PS-99d2a217/P002} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y$ & $1+x^{2}+x^{4}y^{3}$ & $1+x^{3}y$ & $1+x^{2}$ & Exh. & 31 & G & conn.\\
+\texttt{PS-3a934cc1/P003} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{2}$ & $1+xy^{3}+x^{2}$ & $0$ & $1+x^{2}$ & Exh. & 78 & G/O & conn.\\
+\texttt{PS-a39ab3d8/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{2}$ & $1+xy^{3}+x^{2}$ & $0$ & $xy^{3}$ & Exh. & 98 & G/O & conn.\\
+\texttt{PS-9d8b733c/P004} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{2}$ & $1+x^{2}y^{3}+x^{4}$ & $1+x^{3}y^{2}$ & $x^{2}y^{3}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-e70df808/P003} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{4}$ & $1+x^{2}+x^{4}y^{3}$ & $0$ & $1+x^{2}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-09833b6a/P002} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{4}$ & $1+x^{2}+x^{4}y^{3}$ & $1+x^{3}y^{4}$ & $1+x^{2}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-350fe455/P002} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{4}$ & $1+x^{2}y^{3}+x^{4}$ & $1+x^{3}y^{4}$ & $1+x^{4}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-29b7edf5/P001} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{5}$ & $1+xy^{3}+x^{2}$ & $0$ & $xy^{3}$ & Exh. & 1 & G & $2\times\code{36,2}$\\
+\texttt{PS-9bf6af1e/P009} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{5}$ & $1+xy^{3}+x^{2}$ & $1+x^{3}y^{5}$ & $1+x^{2}$ & Exh. & 33 & G & $2\times\code{36,2}$\\
+\texttt{PS-e53b0829/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{4}y$ & $1+xy^{3}+x^{2}$ & $0$ & $xy^{3}$ & Exh. & 3 & G/O & conn.\\
+\texttt{PS-ecc218b0/P002} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{4}y$ & $1+xy^{3}+x^{2}$ & $1+x^{4}y$ & $1+x^{2}$ & Exh. & 14 & G & conn.\\
+\texttt{PS-a149b558/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{4}y^{5}$ & $1+xy^{3}+x^{2}$ & $0$ & $xy^{3}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-d181cf11/P005} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{5}y$ & $1+xy^{3}+x^{2}$ & $0$ & $1+x^{2}$ & Exh. & 3 & G & $2\times\code{36,2}$\\
+\texttt{PS-f2f4d5a2/P001} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{5}y$ & $1+x^{4}+x^{5}y^{3}$ & $0$ & $x^{5}y^{3}$ & Exh. & 3 & G & $2\times\code{36,2}$\\
+\texttt{PS-a1dab64c/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{5}y^{2}$ & $1+x^{2}+x^{4}y^{3}$ & $0$ & $x^{4}y^{3}$ & Exh. & 5 & G & conn.\\
+\texttt{PS-337b23a8/P002} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{5}y^{2}$ & $1+x^{2}+x^{4}y^{3}$ & $1+x^{5}y^{2}$ & $1+x^{2}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-c4a4cc2d/P004} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{5}y^{2}$ & $1+x^{2}+x^{4}y^{3}$ & $1+x^{5}y^{2}$ & $x^{4}y^{3}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-1434d4e7/P006} & $(6,6)$ & $\code{72,4}$ & $4$ & Exact & -- & $0.89$ & $1+x^{5}y^{2}$ & $1+x^{4}+x^{5}y^{3}$ & $0$ & $x^{5}y^{3}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-46a007cb/P007} & $(6,6)$ & $\code{72,4}$ & $3$ & Exact & -- & $0.50$ & $1+x^{2}y^{2}$ & $1+xy^{3}+x^{2}$ & $1+x^{2}y^{2}$ & $1+x^{2}$ & Exh. & 26 & G/O & $2\times\code{36,2}$\\
+\texttt{PS-9703d323/P010} & $(6,6)$ & $\code{72,4}$ & $3$ & Exact & -- & $0.50$ & $1+x^{2}y^{2}$ & $1+x^{2}+x^{4}y^{3}$ & $0$ & $x^{4}y^{3}$ & Exh. & 17 & G/O & $2\times\code{36,2}$\\
+\texttt{PS-ec4998ee/P008} & $(6,6)$ & $\code{72,4}$ & $3$ & Exact & -- & $0.50$ & $1+x^{2}y^{2}$ & $1+x^{2}y^{3}+x^{4}$ & $1+x^{2}y^{2}$ & $x^{2}y^{3}$ & Exh. & 23 & G/O & $2\times\code{36,2}$\\
+\texttt{PS-f872aa5b/P010} & $(6,6)$ & $\code{72,4}$ & $3$ & Exact & -- & $0.50$ & $1+x^{2}y^{4}$ & $1+xy^{3}+x^{2}$ & $0$ & $xy^{3}$ & Exh. & 1 & G & $2\times\code{36,2}$\\
+\texttt{PS-3db41c4a/P007} & $(6,6)$ & $\code{72,4}$ & $3$ & Exact & -- & $0.50$ & $1+x^{2}y^{4}$ & $1+x^{2}y^{3}+x^{4}$ & $1+x^{2}y^{4}$ & $1+x^{4}$ & Exh. & 1 & G & $2\times\code{36,2}$\\
+\texttt{PS-25a74b10/P010} & $(6,6)$ & $\code{72,4}$ & $3$ & Exact & -- & $0.50$ & $1+x^{4}y^{4}$ & $1+x^{2}y^{3}+x^{4}$ & $0$ & $x^{2}y^{3}$ & Exh. & 11 & G & $2\times\code{36,2}$\\
+\texttt{PS-01443595/P008} & $(6,6)$ & $\code{72,4}$ & $3$ & Exact & -- & $0.50$ & $1+x^{4}y^{4}$ & $1+x^{2}y^{3}+x^{4}$ & $1+x^{4}y^{4}$ & $x^{2}y^{3}$ & Exh. & 5 & G & $2\times\code{36,2}$\\
+\texttt{PS-dcbd4997/P015} & $(6,9)$ & $\code{108,2}$ & $4$ & Exact & -- & $0.30$ & $1+y$ & $1+x+x^{2}$ & $1+y$ & $x$ & Exh. & 162 & G/O/N/F & conn.\\
+\texttt{PS-02124a53/P015} & $(6,9)$ & $\code{108,2}$ & $4$ & Exact & -- & $0.30$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & Exh. & 162 & G/O/N/F & conn.\\
+\texttt{PS-194f5d29/P024} & $(6,10)$ & $\code{120,20}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{5}$ & $1+xy^{5}+x^{2}$ & $0$ & $1+x^{2}$ & Exh. & 1 & G & $10\times\code{12,2}$\\
+\texttt{PS-3f8d6ded/P026} & $(6,10)$ & $\code{120,20}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{5}$ & $1+xy^{5}+x^{2}$ & $0$ & $xy^{5}$ & Exh. & 11 & G/O & $10\times\code{12,2}$\\
+\texttt{PS-5259dec3/P025} & $(6,10)$ & $\code{120,20}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{5}$ & $1+xy^{5}+x^{2}$ & $1+x^{3}y^{5}$ & $1+x^{2}$ & Exh. & 7 & G/O & $10\times\code{12,2}$\\
+\texttt{PS-78481db9/P023} & $(6,10)$ & $\code{120,20}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{5}$ & $1+xy^{5}+x^{2}$ & $1+x^{3}y^{5}$ & $xy^{5}$ & Exh. & 1 & G & $10\times\code{12,2}$\\
+\texttt{PS-2e83cd7f/P024} & $(6,10)$ & $\code{120,20}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{5}$ & $1+x^{4}+x^{5}y^{5}$ & $0$ & $1+x^{4}$ & Exh. & 1 & G & $10\times\code{12,2}$\\
+\texttt{PS-4ab34380/P026} & $(6,10)$ & $\code{120,20}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{5}$ & $1+x^{4}+x^{5}y^{5}$ & $0$ & $x^{5}y^{5}$ & Exh. & 79 & G/O & $10\times\code{12,2}$\\
+\texttt{PS-94315715/P025} & $(6,10)$ & $\code{120,20}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{5}$ & $1+x^{4}+x^{5}y^{5}$ & $1+x^{3}y^{5}$ & $1+x^{4}$ & Exh. & 1 & G & $10\times\code{12,2}$\\
+\texttt{PS-5ff69f0e/P023} & $(6,10)$ & $\code{120,20}$ & $3$ & Exact & -- & $1.50$ & $1+x^{3}y^{5}$ & $1+x^{4}+x^{5}y^{5}$ & $1+x^{3}y^{5}$ & $x^{5}y^{5}$ & Exh. & 1 & G & $10\times\code{12,2}$\\
+\texttt{PS-9828cd17/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+y$ & $1+x+x^{2}$ & $1+y$ & $x$ & Exh. & 37 & G/N/F & conn.\\
+\texttt{PS-af58ae1f/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & Exh. & 70 & G/O/N/F & conn.\\
+\texttt{PS-240fa602/P019} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y$ & $1+xy^{5}+x^{2}$ & $0$ & $xy^{5}$ & Exh. & 59 & G/O & $2\times\code{60,2}$\\
+\texttt{PS-0c54bc34/P017} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y$ & $1+x^{2}+x^{4}y^{5}$ & $0$ & $x^{4}y^{5}$ & Exh. & 6 & G & conn.\\
+\texttt{PS-0279cf6d/P020} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y$ & $1+x^{2}+x^{4}y^{5}$ & $1+x^{3}y$ & $1+x^{2}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-935a9444/P017} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y$ & $1+x^{2}y^{5}+x^{4}$ & $0$ & $x^{2}y^{5}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-1eac6e27/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y$ & $1+x^{2}y^{5}+x^{4}$ & $1+x^{3}y$ & $x^{2}y^{5}$ & Exh. & 65 & G/O & conn.\\
+\texttt{PS-d3184db2/P019} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y$ & $1+x^{4}+x^{5}y^{5}$ & $0$ & $x^{5}y^{5}$ & Exh. & 12 & G & $2\times\code{60,2}$\\
+\texttt{PS-6d57d019/P021} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+xy^{5}+x^{2}$ & $0$ & $1+x^{2}$ & Exh. & 3 & G & conn.\\
+\texttt{PS-3700f610/P017} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+xy^{5}+x^{2}$ & $0$ & $xy^{5}$ & Exh. & 6 & G & conn.\\
+\texttt{PS-bfe0e15d/P020} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+xy^{5}+x^{2}$ & $1+x^{3}y^{2}$ & $1+x^{2}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-5bb63551/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+xy^{5}+x^{2}$ & $1+x^{3}y^{2}$ & $xy^{5}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-50d05cf8/P017} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+x^{2}+x^{4}y^{5}$ & $0$ & $x^{4}y^{5}$ & Exh. & 5 & G & conn.\\
+\texttt{PS-76c46f14/P020} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+x^{2}+x^{4}y^{5}$ & $1+x^{3}y^{2}$ & $1+x^{2}$ & Exh. & 5 & G & conn.\\
+\texttt{PS-4d498276/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+x^{2}+x^{4}y^{5}$ & $1+x^{3}y^{2}$ & $x^{4}y^{5}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-2ba743ef/P021} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+x^{2}y^{5}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 21 & G & conn.\\
+\texttt{PS-a695189e/P020} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+x^{2}y^{5}+x^{4}$ & $1+x^{3}y^{2}$ & $1+x^{4}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-08b59088/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+x^{2}y^{5}+x^{4}$ & $1+x^{3}y^{2}$ & $x^{2}y^{5}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-c9a7824f/P021} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+x^{4}+x^{5}y^{5}$ & $0$ & $1+x^{4}$ & Exh. & 1 & G & conn.\\
+\texttt{PS-d288ab92/P017} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+x^{4}+x^{5}y^{5}$ & $0$ & $x^{5}y^{5}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-4592e602/P020} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{2}$ & $1+x^{4}+x^{5}y^{5}$ & $1+x^{3}y^{2}$ & $1+x^{4}$ & Exh. & 15 & G & conn.\\
+\texttt{PS-030a6803/P019} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{3}$ & $1+xy^{5}+x^{2}$ & $0$ & $xy^{5}$ & Exh. & 73 & G/O & $2\times\code{60,2}$\\
+\texttt{PS-a4a03513/P018} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{3}$ & $1+xy^{5}+x^{2}$ & $1+x^{3}y^{3}$ & $xy^{5}$ & Exh. & 27 & G & $2\times\code{60,2}$\\
+\texttt{PS-06e1c26a/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{3}$ & $1+x^{2}+x^{4}y^{5}$ & $1+x^{3}y^{3}$ & $x^{4}y^{5}$ & Exh. & 9 & G & conn.\\
+\texttt{PS-0149b587/P021} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{3}$ & $1+x^{2}y^{5}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 14 & G & conn.\\
+\texttt{PS-a5976097/P017} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{3}$ & $1+x^{2}y^{5}+x^{4}$ & $0$ & $x^{2}y^{5}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-c64d05e8/P016} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{3}$ & $1+x^{4}+x^{5}y^{5}$ & $0$ & $1+x^{4}$ & Exh. & 2 & G & $2\times\code{60,2}$\\
+\texttt{PS-27a10a50/P017} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{4}$ & $1+xy^{5}+x^{2}$ & $0$ & $xy^{5}$ & Exh. & 4 & G/O & conn.\\
+\texttt{PS-965d4a57/P017} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{4}$ & $1+x^{2}y^{5}+x^{4}$ & $0$ & $x^{2}y^{5}$ & Exh. & 82 & G/O & conn.\\
+\texttt{PS-5f4ec5c0/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{4}$ & $1+x^{2}y^{5}+x^{4}$ & $1+x^{3}y^{4}$ & $x^{2}y^{5}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-2f58d2c0/P017} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{4}$ & $1+x^{4}+x^{5}y^{5}$ & $0$ & $x^{5}y^{5}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-5898a489/P020} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{4}$ & $1+x^{4}+x^{5}y^{5}$ & $1+x^{3}y^{4}$ & $1+x^{4}$ & Exh. & 10 & G & conn.\\
+\texttt{PS-2ab9e3da/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{4}$ & $1+x^{4}+x^{5}y^{5}$ & $1+x^{3}y^{4}$ & $x^{5}y^{5}$ & Exh. & 16 & G & conn.\\
+\texttt{PS-1d83fe20/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{6}$ & $1+x^{2}+x^{4}y^{5}$ & $1+x^{3}y^{6}$ & $x^{4}y^{5}$ & Exh. & 44 & G/O & conn.\\
+\texttt{PS-49bdead8/P020} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{6}$ & $1+x^{2}y^{5}+x^{4}$ & $1+x^{3}y^{6}$ & $1+x^{4}$ & Exh. & 11 & G & conn.\\
+\texttt{PS-c1a685eb/P022} & $(6,10)$ & $\code{120,4}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{6}$ & $1+x^{2}y^{5}+x^{4}$ & $1+x^{3}y^{6}$ & $x^{2}y^{5}$ & Exh. & 2 & G & conn.\\
+\texttt{PS-85429f03/P038} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{2}$ & $1+x+x^{5}y^{4}$ & $0$ & $1+x$ & Exh. & 3 & G/O & $2\times\code{72,4}$\\
+\texttt{PS-0b761a73/P032} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{2}$ & $1+x+x^{5}y^{4}$ & $0$ & $x^{5}y^{4}$ & Exh. & 33 & G/O & $2\times\code{72,4}$\\
+\texttt{PS-c079dc58/P032} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{2}$ & $1+xy^{4}+x^{2}$ & $0$ & $xy^{4}$ & Exh. & 16 & G/O & $2\times\code{72,4}$\\
+\texttt{PS-ffe93fd8/P034} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{2}$ & $1+xy^{4}+x^{2}$ & $1+x^{3}y^{2}$ & $1+x^{2}$ & Exh. & 2 & G/O & $2\times\code{72,4}$\\
+\texttt{PS-86a549d8/P032} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{2}$ & $1+x^{2}y^{4}+x^{4}$ & $0$ & $x^{2}y^{4}$ & Exh. & 7 & G & $2\times\code{72,4}$\\
+\texttt{PS-24559419/P038} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{6}$ & $1+x+x^{5}y^{4}$ & $0$ & $1+x$ & Exh. & 71 & G/O & $2\times\code{72,4}$\\
+\texttt{PS-ad4a6ab8/P034} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{6}$ & $1+xy^{4}+x^{2}$ & $1+x^{3}y^{6}$ & $1+x^{2}$ & Exh. & 2 & G & $2\times\code{72,4}$\\
+\texttt{PS-01bb5ce1/P033} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{6}$ & $1+xy^{4}+x^{2}$ & $1+x^{3}y^{6}$ & $xy^{4}$ & Exh. & 5 & G & $2\times\code{72,4}$\\
+\texttt{PS-b23256e8/P032} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{6}y^{2}$ & $1+x+x^{5}y^{4}$ & $0$ & $x^{5}y^{4}$ & Exh. & 3 & G & $2\times\code{72,4}$\\
+\texttt{PS-ec306f78/P032} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{6}y^{2}$ & $1+xy^{4}+x^{2}$ & $0$ & $xy^{4}$ & Exh. & 78 & G/O & $2\times\code{72,4}$\\
+\texttt{PS-db11ff5e/P032} & $(9,8)$ & $\code{144,8}$ & $4$ & Exact & -- & $0.89$ & $1+x^{6}y^{6}$ & $1+x+x^{5}y^{4}$ & $0$ & $x^{5}y^{4}$ & Exh. & 83 & G/O & $2\times\code{72,4}$\\
+\texttt{PS-c2455d37/P037} & $(9,8)$ & $\code{144,8}$ & $3$ & Exact & -- & $0.50$ & $1+x^{3}y^{4}$ & $1+x+x^{5}y^{4}$ & $0$ & $1+x$ & Exh. & 3 & G/O & $4\times\code{36,2}$\\
+\texttt{PS-c94e786d/P036} & $(9,8)$ & $\code{144,8}$ & $3$ & Exact & -- & $0.50$ & $1+x^{3}y^{4}$ & $1+x+x^{5}y^{4}$ & $0$ & $x^{5}y^{4}$ & Exh. & 13 & G/O & $4\times\code{36,2}$\\
+\texttt{PS-88f1815a/P036} & $(9,8)$ & $\code{144,8}$ & $3$ & Exact & -- & $0.50$ & $1+x^{3}y^{4}$ & $1+xy^{4}+x^{2}$ & $0$ & $xy^{4}$ & Exh. & 13 & G/O & $4\times\code{36,2}$\\
+\texttt{PS-ad3f6b0a/P035} & $(9,8)$ & $\code{144,8}$ & $3$ & Exact & -- & $0.50$ & $1+x^{3}y^{4}$ & $1+xy^{4}+x^{2}$ & $1+x^{3}y^{4}$ & $1+x^{2}$ & Exh. & 66 & G/O & $4\times\code{36,2}$\\
+\texttt{PS-986012bb/P036} & $(9,8)$ & $\code{144,8}$ & $3$ & Exact & -- & $0.50$ & $1+x^{3}y^{4}$ & $1+x^{2}y^{4}+x^{4}$ & $0$ & $x^{2}y^{4}$ & Exh. & 1 & G & $4\times\code{36,2}$\\
+\texttt{PS-9a14d4a6/P036} & $(9,8)$ & $\code{144,8}$ & $3$ & Exact & -- & $0.50$ & $1+x^{6}y^{4}$ & $1+xy^{4}+x^{2}$ & $0$ & $xy^{4}$ & Exh. & 9 & G & $4\times\code{36,2}$\\
+\texttt{PS-24a01f0d/P037} & $(9,8)$ & $\code{144,8}$ & $3$ & Exact & -- & $0.50$ & $1+x^{6}y^{4}$ & $1+x^{2}y^{4}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 64 & G/O & $4\times\code{36,2}$\\
+\texttt{PS-7bbacb3f/P035} & $(9,8)$ & $\code{144,8}$ & $3$ & Exact & -- & $0.50$ & $1+x^{6}y^{4}$ & $1+x^{2}y^{4}+x^{4}$ & $1+x^{6}y^{4}$ & $1+x^{4}$ & Exh. & 4 & G & $4\times\code{36,2}$\\
+\texttt{PS-b9bd7fa4/P027} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+y$ & $1+x+x^{2}$ & $1+y$ & $x$ & Exh.+M & 30 & G/O/N/F & conn.\\
+\texttt{PS-22083bd2/P027} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & Exh.+M & 31 & G/O/N/F & conn.\\
+\texttt{PS-383aa96d/P028} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+x+x^{5}y^{4}$ & $0$ & $1+x$ & Exh.+I & 6 & G & conn.\\
+\texttt{PS-b3421fc2/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+x+x^{5}y^{4}$ & $0$ & $x^{5}y^{4}$ & Exh.+M & 33 & G/O & conn.\\
+\texttt{PS-83570021/P029} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+x+x^{5}y^{4}$ & $1+x^{3}y$ & $1+x$ & Exh.+M & 6 & G & conn.\\
+\texttt{PS-3e908b54/P031} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+x+x^{5}y^{4}$ & $1+x^{3}y$ & $x^{5}y^{4}$ & Exh.+M & 8 & G/O & conn.\\
+\texttt{PS-7e09500e/P028} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+xy^{4}+x^{2}$ & $0$ & $1+x^{2}$ & Exh.+M & 9 & G/O & conn.\\
+\texttt{PS-0d3127d2/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+xy^{4}+x^{2}$ & $0$ & $xy^{4}$ & Exh.+M & 24 & G/O & conn.\\
+\texttt{PS-171308ed/P029} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+xy^{4}+x^{2}$ & $1+x^{3}y$ & $1+x^{2}$ & Exh.+M & 6 & G & conn.\\
+\texttt{PS-7d33c1ec/P031} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+xy^{4}+x^{2}$ & $1+x^{3}y$ & $xy^{4}$ & Exh.+M & 8 & G/O & conn.\\
+\texttt{PS-9d4543d4/P028} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+x^{2}y^{4}+x^{4}$ & $0$ & $1+x^{4}$ & Exh.+M & 39 & G & conn.\\
+\texttt{PS-7a0360a4/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y$ & $1+x^{2}y^{4}+x^{4}$ & $0$ & $x^{2}y^{4}$ & Exh.+M & 53 & G/O & conn.\\
+\texttt{PS-aa99a4dc/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y^{3}$ & $1+xy^{4}+x^{2}$ & $0$ & $xy^{4}$ & Exh.+M & 15 & G/O & conn.\\
+\texttt{PS-9b58aa22/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y^{3}$ & $1+x^{2}y^{4}+x^{4}$ & $0$ & $x^{2}y^{4}$ & Exh.+M & 6 & G/O & conn.\\
+\texttt{PS-beff910c/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y^{5}$ & $1+xy^{4}+x^{2}$ & $0$ & $xy^{4}$ & Exh.+M & 129 & G/O & conn.\\
+\texttt{PS-f320ede8/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{3}y^{5}$ & $1+x^{2}y^{4}+x^{4}$ & $0$ & $x^{2}y^{4}$ & Exh.+M & 123 & G/O & conn.\\
+\texttt{PS-325fa0b8/P028} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y$ & $1+x+x^{5}y^{4}$ & $0$ & $1+x$ & Exh.+M & 54 & G/O & conn.\\
+\texttt{PS-c0d3be0c/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y$ & $1+x+x^{5}y^{4}$ & $0$ & $x^{5}y^{4}$ & Exh.+M & 6 & G/O & conn.\\
+\texttt{PS-8679612c/P029} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y$ & $1+x+x^{5}y^{4}$ & $1+x^{6}y$ & $1+x$ & Exh.+M & 1 & G & conn.\\
+\texttt{PS-05b1316c/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y$ & $1+x^{2}y^{4}+x^{4}$ & $0$ & $x^{2}y^{4}$ & Exh.+M & 128 & G/O & conn.\\
+\texttt{PS-d8d3a477/P029} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y$ & $1+x^{2}y^{4}+x^{4}$ & $1+x^{6}y$ & $1+x^{4}$ & Exh.+M & 1 & G & conn.\\
+\texttt{PS-d7d8567d/P029} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y^{3}$ & $1+x+x^{5}y^{4}$ & $1+x^{6}y^{3}$ & $1+x$ & Exh.+M & 115 & G/O & conn.\\
+\texttt{PS-2db30326/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y^{3}$ & $1+xy^{4}+x^{2}$ & $0$ & $xy^{4}$ & Exh.+M & 8 & G/O & conn.\\
+\texttt{PS-9d2c2f66/P029} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y^{3}$ & $1+x^{2}y^{4}+x^{4}$ & $1+x^{6}y^{3}$ & $1+x^{4}$ & Exh.+M & 1 & G & conn.\\
+\texttt{PS-a475dd05/P028} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y^{5}$ & $1+x+x^{5}y^{4}$ & $0$ & $1+x$ & Exh.+M & 115 & G/O & conn.\\
+\texttt{PS-3717b4f6/P030} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y^{5}$ & $1+x+x^{5}y^{4}$ & $0$ & $x^{5}y^{4}$ & Exh.+M & 7 & G/O & conn.\\
+\texttt{PS-3031a34f/P028} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y^{5}$ & $1+xy^{4}+x^{2}$ & $0$ & $1+x^{2}$ & Exh.+M & 39 & G & conn.\\
+\texttt{PS-de6ef659/P028} & $(9,8)$ & $\code{144,4}$ & $6$ & Exact & -- & $1.00$ & $1+x^{6}y^{5}$ & $1+x^{2}y^{4}+x^{4}$ & $0$ & $1+x^{4}$ & Exh.+M & 43 & G & conn.\\
+\texttt{PS-aacbee20/P039} & $(9,9)$ & $\code{162,2}$ & $6$ & Exact & -- & $0.44$ & $1+y$ & $1+x+x^{2}$ & $1+y$ & $x$ & Exh.+M & 162 & G/O/N/F & conn.\\
+\texttt{PS-514d488f/P039} & $(9,9)$ & $\code{162,2}$ & $6$ & Exact & -- & $0.44$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & Exh.+M & 162 & G/O/N/F & conn.\\
+\end{longtable}
+\endgroup
+
+\begingroup
+\setlength{\tabcolsep}{0.84pt}
+\renewcommand{\arraystretch}{0.96}
+\begin{longtable}{@{}TTTTTTTT@{\kern.5pt\vrule\kern.5pt}T@{\kern.5pt\vrule\kern.5pt}T@{\kern.5pt\vrule\kern.5pt}TTTTT@{}}
+\caption{PBB-large compact catalogue (73 displayed of 79 retained proposals; 56 presentation classes).  The table includes every proposal in an exact class and one deterministic representative of every interval class.  Own evidence and Evid. describe the proposal before class merging; Class effect reports when merging makes the displayed $d$ and FOM exact or tighter.  Column abbreviations, filtering, and evidence conventions are defined above.}\label{tab:w5-supp-pbb-large}\\
+\toprule
+ID/class & $(\ell,m)$ & $\code{n,k}$ & $d$ & Own evidence & Class effect & FOM & $A$ & $B$ & $C$ & $D$ & Evid. & Obs. & Attr. & Decomp.\\
+\midrule
+\endfirsthead
+\multicolumn{15}{c}{\tablename\ \thetable\ (continued)}\\
+\toprule
+ID/class & $(\ell,m)$ & $\code{n,k}$ & $d$ & Own evidence & Class effect & FOM & $A$ & $B$ & $C$ & $D$ & Evid. & Obs. & Attr. & Decomp.\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
+\texttt{PL-ba29a9df/P040} & $(12,9)$ & $\code{216,2}$ & $8$ & Exact & -- & $0.59$ & $1+y$ & $1+x+x^{2}$ & $1+y$ & $x$ & M & 126 & G/O/N/F & conn.\\
+\texttt{PL-39082ddc/P040} & $(12,9)$ & $\code{216,2}$ & $8$ & Exact & -- & $0.59$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & M & 126 & G/O/N/F & conn.\\
+\texttt{PL-9b97a02b/P053} & $(12,12)$ & $\code{288,48}$ & $3$ & Exact & -- & $1.50$ & $1+x^{6}y^{6}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{6}y^{6}$ & $1+x^{4}$ & Exh. & 20 & G/O & $24\times\code{12,2}$\\
+\texttt{PL-78c3e7bf/P052} & $(12,12)$ & $\code{288,24}$ & $4$ & Exact & -- & $1.33$ & $1+x^{3}y^{6}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 3 & G/O & $6\times\code{48,4}$\\
+\texttt{PL-ad1cc828/P049} & $(12,12)$ & $\code{288,16}$ & $4$ & Exact & -- & $0.89$ & $1+xy$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 28 & G/O & $4\times\code{72,4}$\\
+\texttt{PL-0bbae5c3/P048} & $(12,12)$ & $\code{288,16}$ & $4$ & Exact & -- & $0.89$ & $1+xy^{5}$ & $1+x^{2}y^{6}+x^{4}$ & $1+xy^{5}$ & $x^{2}y^{6}$ & Exh. & 13 & G/O & $4\times\code{72,4}$\\
+\texttt{PL-d3deda3d/P048} & $(12,12)$ & $\code{288,16}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{3}y$ & $x^{2}y^{6}$ & Exh. & 15 & G/O & $4\times\code{72,4}$\\
+\texttt{PL-aecf3364/P050} & $(12,12)$ & $\code{288,16}$ & $4$ & Exact & -- & $0.89$ & $1+x^{4}y^{2}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{4}y^{2}$ & $x^{2}y^{6}$ & Exh. & 1 & G & $4\times\code{72,4}$\\
+\texttt{PL-a1c1ac59/P048} & $(12,12)$ & $\code{288,16}$ & $4$ & Exact & -- & $0.89$ & $1+x^{5}y^{5}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{5}y^{5}$ & $x^{2}y^{6}$ & Exh. & 1 & O & $4\times\code{72,4}$\\
+\texttt{PL-f2462ed9/P051} & $(12,12)$ & $\code{288,16}$ & $4$ & Exact & -- & $0.89$ & $1+x^{6}y^{2}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 1 & G & $8\times\code{36,2}$\\
+\texttt{PL-adcbb3fc/P045} & $(12,12)$ & $\code{288,8}$ & $6$ & Exact & -- & $1.00$ & $1+x^{4}y^{2}$ & $1+xy^{6}+x^{2}$ & $1+x^{4}y^{2}$ & $1+x^{2}$ & M & 27 & G/O & $2\times\code{144,4}$\\
+\texttt{PL-605688ff/P046} & $(12,12)$ & $\code{288,8}$ & $4$ & Exact & -- & $0.44$ & $1+x^{2}y$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 9 & G/O & $2\times\code{144,4}$\\
+\texttt{PL-592276b3/P047} & $(12,12)$ & $\code{288,8}$ & $4$ & Exact & -- & $0.44$ & $1+x^{2}y$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $x^{2}y^{6}$ & Exh. & 5 & G/O & $2\times\code{144,4}$\\
+\texttt{PL-b977d26c/P046} & $(12,12)$ & $\code{288,8}$ & $4$ & Exact & -- & $0.44$ & $1+x^{2}y^{5}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 1 & O & $2\times\code{144,4}$\\
+\texttt{PL-40e78b8c/P046} & $(12,12)$ & $\code{288,8}$ & $4$ & Exact & -- & $0.44$ & $1+x^{3}y^{2}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 26 & G/O & $2\times\code{144,4}$\\
+\texttt{PL-bff58260/P047} & $(12,12)$ & $\code{288,8}$ & $4$ & Exact & -- & $0.44$ & $1+x^{4}y$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $x^{2}y^{6}$ & Exh. & 27 & G/O & $2\times\code{144,4}$\\
+\texttt{PL-a608553f/P046} & $(12,12)$ & $\code{288,8}$ & $4$ & Exact & -- & $0.44$ & $1+x^{6}y^{5}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $1+x^{4}$ & Exh. & 24 & G/O & $2\times\code{144,4}$\\
+\texttt{PL-592409d9/P044} & $(12,12)$ & $\code{288,4}$ & $8$ & Exact & -- & $0.89$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & M & 100 & G/O/N/F & conn.\\
+\texttt{PL-3bed6781/P041} & $(12,12)$ & $\code{288,4}$ & $8$ & Exact & -- & $0.89$ & $1+x^{2}y$ & $1+xy^{6}+x^{2}$ & $0$ & $1+x^{2}$ & M & 16 & G/O & conn.\\
+\texttt{PL-80889114/P042} & $(12,12)$ & $\code{288,4}$ & $8$ & Exact & -- & $0.89$ & $1+x^{5}y$ & $1+xy^{6}+x^{2}$ & $0$ & $xy^{6}$ & M & 12 & G/O & conn.\\
+\texttt{PL-1df1bcda/P044} & $(12,12)$ & $\code{288,4}$ & $8$ & Interval & Exact & $0.89$ & $1+y$ & $1+x+x^{2}$ & $1+y$ & $x$ & L4+I+B & 98 & G/O/N/F & conn.\\
+\texttt{PL-3f25e19f/P043} & $(12,12)$ & $\code{288,4}$ & $[5,8]$ & Interval & -- & $[0.35,0.89]$ & $1+x^{3}y$ & $1+xy^{6}+x^{2}$ & $1+x^{3}y$ & $1+x^{2}$ & L4+I+B & 14 & G/O & conn.\\
+\texttt{PL-2da51468/P044} & $(12,12)$ & $\code{288,4}$ & $8$ & Interval & Exact & $0.89$ & $1+x^{4}y$ & $1+xy^{6}+x^{2}$ & $1+x^{4}y$ & $xy^{6}$ & L4+I+B & 28 & G/O & conn.\\
+\texttt{PL-2b75ed37/P044} & $(12,12)$ & $\code{288,4}$ & $8$ & Interval & Exact & $0.89$ & $1+x^{5}y$ & $1+xy^{6}+x^{2}$ & $1+x^{5}y$ & $xy^{6}$ & L4+I+B & 11 & G/O & conn.\\
+\texttt{PL-93be42eb/P068} & $(15,12)$ & $\code{360,12}$ & $4$ & Exact & -- & $0.53$ & $1+x^{3}y^{3}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{3}y^{3}$ & $x^{2}y^{6}$ & Exh. & 28 & G/O & $3\times\code{120,4}$\\
+\texttt{PL-f49f60d8/P069} & $(15,12)$ & $\code{360,12}$ & $4$ & Exact & -- & $0.53$ & $1+x^{6}y^{3}$ & $1+xy^{6}+x^{2}$ & $0$ & $1+x^{2}$ & Exh. & 12 & G/O & $3\times\code{120,4}$\\
+\texttt{PL-8ee754a5/P062} & $(15,12)$ & $\code{360,4}$ & $11$ & Exact & -- & $1.34$ & $1+x^{2}y^{4}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{2}y^{4}$ & $1+x^{4}$ & M & 23 & G/O & $2\times\code{180,2}$\\
+\texttt{PL-4602a8fa/P059} & $(15,12)$ & $\code{360,4}$ & $10$ & Exact & -- & $1.11$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & M & 101 & G/O/N/F & conn.\\
+\texttt{PL-93708752/P060} & $(15,12)$ & $\code{360,4}$ & $8$ & Exact & -- & $0.71$ & $1+xy$ & $1+x^{2}y^{6}+x^{4}$ & $1+xy$ & $1+x^{4}$ & M & 3 & G/O & conn.\\
+\texttt{PL-6eca49d3/P065} & $(15,12)$ & $\code{360,4}$ & $8$ & Exact & -- & $0.71$ & $1+x^{3}y$ & $1+xy^{6}+x^{2}$ & $0$ & $1+x^{2}$ & M & 14 & G/O & conn.\\
+\texttt{PL-689c272b/P060} & $(15,12)$ & $\code{360,4}$ & $8$ & Exact & -- & $0.71$ & $1+x^{3}y$ & $1+xy^{6}+x^{2}$ & $1+x^{3}y$ & $1+x^{2}$ & M & 14 & G/O & conn.\\
+\texttt{PL-48f3faa4/P058} & $(15,12)$ & $\code{360,4}$ & $7$ & Exact & -- & $0.54$ & $1+x^{3}y^{4}$ & $1+xy^{6}+x^{2}$ & $1+x^{3}y^{4}$ & $xy^{6}$ & M & 3 & G & $2\times\code{180,2}$\\
+\texttt{PL-6b21188d/P061} & $(15,12)$ & $\code{360,4}$ & $5$ & Exact & -- & $0.28$ & $1+x^{2}y^{2}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $x^{2}y^{6}$ & M & 30 & G/O & $2\times\code{180,2}$\\
+\texttt{PL-15407ac6/P057} & $(15,12)$ & $\code{360,4}$ & $5$ & Exact & -- & $0.28$ & $1+x^{2}y^{2}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{2}y^{2}$ & $1+x^{4}$ & M & 27 & G/O & $2\times\code{180,2}$\\
+\texttt{PL-2593a470/P061} & $(15,12)$ & $\code{360,4}$ & $5$ & Exact & -- & $0.28$ & $1+x^{3}y^{2}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $x^{2}y^{6}$ & M & 1 & G & $2\times\code{180,2}$\\
+\texttt{PL-d096de3f/P054} & $(15,12)$ & $\code{360,4}$ & $[5,12]$ & Interval & -- & $[0.28,1.60]$ & $1+xy^{5}$ & $1+xy^{6}+x^{2}$ & $0$ & $xy^{6}$ & L4+I+B & 23 & G/O & conn.\\
+\texttt{PL-28c4edd8/P055} & $(15,12)$ & $\code{360,4}$ & $[5,12]$ & Interval & -- & $[0.28,1.60]$ & $1+x^{4}y$ & $1+xy^{6}+x^{2}$ & $0$ & $1+x^{2}$ & L4+I+B & 4 & G/O & conn.\\
+\texttt{PL-58200d48/P066} & $(15,12)$ & $\code{360,4}$ & $[5,12]$ & Interval & -- & $[0.28,1.60]$ & $1+x^{6}y^{5}$ & $1+xy^{6}+x^{2}$ & $1+x^{6}y^{5}$ & $1+x^{2}$ & L4+I+B & 3 & G & conn.\\
+\texttt{PL-959e2913/P059} & $(15,12)$ & $\code{360,4}$ & $10$ & Interval & Exact & $1.11$ & $1+y$ & $1+x+x^{2}$ & $1+y$ & $x$ & L4+I+B & 126 & G/O/N/F & conn.\\
+\texttt{PL-b65c89f3/P067} & $(15,12)$ & $\code{360,4}$ & $[5,9]$ & Interval & -- & $[0.28,0.90]$ & $1+x^{5}y^{2}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{5}y^{2}$ & $1+x^{4}$ & L4+I+B & 3 & G/O & $2\times\code{180,2}$\\
+\texttt{PL-0b5dc15c/P065} & $(15,12)$ & $\code{360,4}$ & $8$ & Interval & Exact & $0.71$ & $1+x^{2}y$ & $1+xy^{6}+x^{2}$ & $0$ & $1+x^{2}$ & L4+I+B & 16 & G/O & conn.\\
+\texttt{PL-18401d67/P056} & $(15,12)$ & $\code{360,4}$ & $[5,8]$ & Interval & -- & $[0.28,0.71]$ & $1+x^{4}y^{5}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $x^{2}y^{6}$ & L4+I+B & 10 & G/O & conn.\\
+\texttt{PL-9a84c818/P064} & $(15,12)$ & $\code{360,4}$ & $[5,7]$ & Interval & -- & $[0.28,0.54]$ & $1+xy^{4}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $x^{2}y^{6}$ & L4+I+B & 20 & G/O & $2\times\code{180,2}$\\
+\texttt{PL-189e1cca/P063} & $(15,12)$ & $\code{360,4}$ & $[5,7]$ & Interval & -- & $[0.28,0.54]$ & $1+xy^{4}$ & $1+x^{2}y^{6}+x^{4}$ & $1+xy^{4}$ & $1+x^{4}$ & L4+I+B & 2 & G & $2\times\code{180,2}$\\
+\texttt{PL-ce4ae900/P070} & $(15,14)$ & $\code{420,4}$ & $10$ & Exact & -- & $0.95$ & $1+y$ & $1+x+x^{2}$ & $1+y$ & $x$ & M & 126 & G/O/N/F & conn.\\
+\texttt{PL-7c740754/P070} & $(15,14)$ & $\code{420,4}$ & $10$ & Exact & -- & $0.95$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & M & 126 & G/O/N/F & conn.\\
+\texttt{PL-5f3d871a/P089} & $(18,12)$ & $\code{432,24}$ & $4$ & Exact & -- & $0.89$ & $1+x^{3}y^{2}$ & $1+x^{3}y^{6}+x^{6}$ & $0$ & $x^{3}y^{6}$ & Exh. & 9 & G/O & $12\times\code{36,2}$\\
+\texttt{PL-78dcc188/P090} & $(18,12)$ & $\code{432,24}$ & $4$ & Exact & -- & $0.89$ & $1+x^{6}y^{3}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{6}y^{3}$ & $1+x^{4}$ & Exh. & 26 & G/O & $6\times\code{72,4}$\\
+\texttt{PL-3e07b603/P094} & $(18,12)$ & $\code{432,24}$ & $4$ & Exact & -- & $0.89$ & $1+x^{6}y^{3}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{6}y^{3}$ & $x^{2}y^{6}$ & Exh. & 26 & G/O & $6\times\code{72,4}$\\
+\texttt{PL-88c05b17/P092} & $(18,12)$ & $\code{432,24}$ & $3$ & Exact & -- & $0.50$ & $1+x^{3}y^{6}$ & $1+xy^{6}+x^{2}$ & $1+x^{3}y^{6}$ & $1+x^{2}$ & Exh. & 13 & G/O & $12\times\code{36,2}$\\
+\texttt{PL-38d2b569/P095} & $(18,12)$ & $\code{432,24}$ & $3$ & Exact & -- & $0.50$ & $1+x^{6}y^{4}$ & $1+x^{3}y^{6}+x^{6}$ & $0$ & $x^{3}y^{6}$ & Exh. & 23 & G/O & $12\times\code{36,2}$\\
+\texttt{PL-704d75b7/P091} & $(18,12)$ & $\code{432,24}$ & $3$ & Exact & -- & $0.50$ & $1+x^{6}y^{4}$ & $1+x^{3}y^{6}+x^{6}$ & $1+x^{6}y^{4}$ & $x^{3}y^{6}$ & Exh. & 14 & G/O & $12\times\code{36,2}$\\
+\texttt{PL-2dbeba05/P088} & $(18,12)$ & $\code{432,24}$ & $3$ & Exact & -- & $0.50$ & $1+x^{6}y^{6}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $x^{2}y^{6}$ & Exh. & 17 & G/O & $12\times\code{36,2}$\\
+\texttt{PL-aff57094/P093} & $(18,12)$ & $\code{432,24}$ & $3$ & Exact & -- & $0.50$ & $1+x^{6}y^{6}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{6}y^{6}$ & $x^{2}y^{6}$ & Exh. & 8 & G & $12\times\code{36,2}$\\
+\texttt{PL-aefa6773/P087} & $(18,12)$ & $\code{432,12}$ & $8$ & Exact & -- & $1.78$ & $1+x^{3}y^{3}$ & $1+xy^{6}+x^{2}$ & $1+x^{3}y^{3}$ & $xy^{6}$ & M & 14 & G/O & $3\times\code{144,4}$\\
+\texttt{PL-597f6b12/P086} & $(18,12)$ & $\code{432,12}$ & $4$ & Exact & -- & $0.44$ & $1+x^{3}y$ & $1+x^{3}y^{6}+x^{6}$ & $0$ & $x^{3}y^{6}$ & Exh. & 83 & G/O/N & $3\times\code{144,4}$\\
+\texttt{PL-cdea2b4a/P085} & $(18,12)$ & $\code{432,12}$ & $4$ & Exact & -- & $0.44$ & $1+x^{3}y$ & $1+x^{3}y^{6}+x^{6}$ & $1+x^{3}y$ & $1+x^{6}$ & Exh. & 5 & G/O & $3\times\code{144,4}$\\
+\texttt{PL-36c5ce3b/P079} & $(18,12)$ & $\code{432,8}$ & $10$ & Exact & -- & $1.85$ & $1+x^{2}y^{2}$ & $1+xy^{6}+x^{2}$ & $1+x^{2}y^{2}$ & $1+x^{2}$ & M & 15 & G/O & $2\times\code{216,4}$\\
+\texttt{PL-ae4cc6ad/P076} & $(18,12)$ & $\code{432,8}$ & $10$ & Exact & -- & $1.85$ & $1+x^{4}y^{2}$ & $1+xy^{6}+x^{2}$ & $0$ & $1+x^{2}$ & M & 12 & G/O & $2\times\code{216,4}$\\
+\texttt{PL-cdaa4f44/P084} & $(18,12)$ & $\code{432,8}$ & $8$ & Exact & -- & $1.19$ & $1+xy$ & $1+x^{2}y^{6}+x^{4}$ & $1+xy$ & $x^{2}y^{6}$ & M & 2 & G/O & $2\times\code{216,4}$\\
+\texttt{PL-9f24e6b3/P082} & $(18,12)$ & $\code{432,8}$ & $8$ & Exact & -- & $1.19$ & $1+x^{2}y^{5}$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{2}y^{5}$ & $1+x^{4}$ & M & 26 & G/O & $2\times\code{216,4}$\\
+\texttt{PL-8346d4c6/P084} & $(18,12)$ & $\code{432,8}$ & $8$ & Exact & -- & $1.19$ & $1+x^{4}y$ & $1+x^{2}y^{6}+x^{4}$ & $1+x^{4}y$ & $x^{2}y^{6}$ & M & 1 & O & $2\times\code{216,4}$\\
+\texttt{PL-2b5f2b8d/P083} & $(18,12)$ & $\code{432,8}$ & $7$ & Exact & -- & $0.91$ & $1+x^{2}y^{4}$ & $1+xy^{6}+x^{2}$ & $0$ & $1+x^{2}$ & M & 26 & G/O & $4\times\code{108,2}$\\
+\texttt{PL-c60edd0d/P081} & $(18,12)$ & $\code{432,8}$ & $7$ & Exact & -- & $0.91$ & $1+x^{2}y^{4}$ & $1+xy^{6}+x^{2}$ & $1+x^{2}y^{4}$ & $xy^{6}$ & M & 1 & O & $4\times\code{108,2}$\\
+\texttt{PL-55176200/P083} & $(18,12)$ & $\code{432,8}$ & $7$ & Exact & -- & $0.91$ & $1+x^{2}y^{4}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $1+x^{4}$ & M & 2 & G & $4\times\code{108,2}$\\
+\texttt{PL-9fc3055a/P077} & $(18,12)$ & $\code{432,8}$ & $7$ & Exact & -- & $0.91$ & $1+x^{2}y^{4}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $x^{2}y^{6}$ & M & 12 & G/O & $4\times\code{108,2}$\\
+\texttt{PL-232490ff/P080} & $(18,12)$ & $\code{432,8}$ & $3$ & Exact & -- & $0.17$ & $1+x^{6}y^{4}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $x^{2}y^{6}$ & Exh. & 8 & G/O & $4\times\code{108,2}$\\
+\texttt{PL-d8385899/P078} & $(18,12)$ & $\code{432,8}$ & $[5,8]$ & Interval & -- & $[0.46,1.19]$ & $1+x^{5}y^{5}$ & $1+x^{2}y^{6}+x^{4}$ & $0$ & $1+x^{4}$ & L4+I+B & 17 & G/O & $2\times\code{216,4}$\\
+\texttt{PL-71c11b15/P072} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x+x^{2}$ & $1+y$ & $x$ & $1+y$ & L4+I+B & 105 & G/O/N/F & conn.\\
+\texttt{PL-1820300c/P075} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+xy$ & $1+xy^{6}+x^{2}$ & $0$ & $xy^{6}$ & L4+I+B & 40 & G/O & conn.\\
+\texttt{PL-3a6796de/P074} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+xy$ & $1+xy^{6}+x^{2}$ & $1+xy$ & $1+x^{2}$ & L4+I+B & 85 & G/O & conn.\\
+\texttt{PL-8f03e9a5/P071} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{2}y$ & $1+xy^{6}+x^{2}$ & $1+x^{2}y$ & $xy^{6}$ & L4+I+B & 15 & G/O & conn.\\
+\texttt{PL-1713aed5/P073} & $(18,12)$ & $\code{432,4}$ & $[5,12]$ & Interval & -- & $[0.23,1.33]$ & $1+x^{2}y^{5}$ & $1+xy^{6}+x^{2}$ & $0$ & $1+x^{2}$ & L4+I+B & 21 & G/O & conn.\\
+\end{longtable}
+\endgroup
