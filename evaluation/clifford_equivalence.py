@@ -285,6 +285,228 @@ def _is_css_group(stab: np.ndarray) -> bool:
     return _gf2_rank(stab) == _gf2_rank(X) + _gf2_rank(Z)
 
 
+_SINGLE_QUBIT_CLIFFORD_COLUMNS = (
+    ("I", 0, 1),
+    ("S", 0, 2),
+    ("H", 1, 0),
+    ("HS", 2, 0),
+    ("SH", 1, 2),
+    ("HSH", 2, 1),
+)
+
+
+def _independent_gf2_rows(matrix: np.ndarray) -> np.ndarray:
+    """Return a deterministic independent basis for a binary row space."""
+    reduced = np.asarray(matrix, dtype=np.uint8).copy() % 2
+    row_count, column_count = reduced.shape
+    pivot_row = 0
+    for column in range(column_count):
+        if pivot_row == row_count:
+            break
+        candidates = np.flatnonzero(reduced[pivot_row:, column])
+        if candidates.size == 0:
+            continue
+        selected = pivot_row + int(candidates[0])
+        if selected != pivot_row:
+            reduced[[pivot_row, selected]] = reduced[[selected, pivot_row]]
+        mask = reduced[:, column].astype(bool)
+        mask[pivot_row] = False
+        reduced[mask] ^= reduced[pivot_row]
+        pivot_row += 1
+    return reduced[:pivot_row]
+
+
+def _binary_column_as_int(column: np.ndarray) -> int:
+    """Pack a short binary column into a Python integer."""
+    packed = 0
+    for bit, value in enumerate(column):
+        if int(value) & 1:
+            packed |= 1 << bit
+    return packed
+
+
+def _insert_xor_basis(basis: tuple[int, ...], vector: int) -> tuple[int, ...]:
+    """Insert ``vector`` into a canonical reduced XOR basis."""
+    reduced = vector
+    for row in basis:
+        reduced = min(reduced, reduced ^ row)
+    if reduced == 0:
+        return basis
+    updated = [min(row, row ^ reduced) for row in basis]
+    updated.append(reduced)
+    updated.sort(reverse=True)
+    return tuple(updated)
+
+
+def exact_local_clifford_css_search(stab: np.ndarray) -> dict:
+    """Decide full single-qubit-LC equivalence to CSS for a small code.
+
+    The input is any binary symplectic generator matrix ``[X | Z]``.  For
+    an independent rank-``r`` row basis, a transformed stabilizer group is
+    CSS exactly when
+
+    ``rank(X_transformed) + rank(Z_transformed) == r``.
+
+    On each qubit a Clifford modulo phase maps the ordered ``(X,Z)`` column
+    pair to one of the six ordered pairs of distinct vectors drawn from
+    ``X``, ``Z``, and ``X+Z``.  The search below exhausts those choices.  It
+    prunes a branch as soon as the two monotonically increasing column-space
+    ranks sum to more than ``r`` and memoizes every exhausted rank-state.
+    This is intended for the small component codes highlighted in the paper,
+    not for hundreds of qubits.
+
+    A negative result is exhaustive over all ``6**n`` local Clifford
+    assignments, including mixed macro-classes and arbitrary nonuniform
+    ``{SH,HSH}`` choices.  A positive result includes an explicit gate on
+    every qubit and is rechecked directly against the group-level CSS rank
+    criterion before return.
+    """
+    raw = np.asarray(stab)
+    if raw.ndim != 2 or raw.shape[1] % 2:
+        raise ValueError("stab must be a two-dimensional [X | Z] matrix")
+    if np.any((raw != 0) & (raw != 1)):
+        raise ValueError("stab must be binary")
+    matrix = raw.astype(np.uint8)
+
+    basis_matrix = _independent_gf2_rows(matrix)
+    rank = int(basis_matrix.shape[0])
+    num_qubits = matrix.shape[1] // 2
+    if rank == 0:
+        return {
+            "is_lc_css": True,
+            "complete": True,
+            "num_qubits": num_qubits,
+            "stabilizer_rank": 0,
+            "assignments_covered": f"6^{num_qubits}",
+            "gate_assignment": ["I"] * num_qubits,
+            "search_nodes": 1,
+            "memoized_unsat_states": 0,
+            "memo_hits": 0,
+            "rank_prunes": 0,
+        }
+
+    x_columns = [
+        _binary_column_as_int(basis_matrix[:, qubit])
+        for qubit in range(num_qubits)
+    ]
+    z_columns = [
+        _binary_column_as_int(basis_matrix[:, num_qubits + qubit])
+        for qubit in range(num_qubits)
+    ]
+
+    choices_by_qubit: list[list[tuple[int, int, str]]] = []
+    for x_column, z_column in zip(x_columns, z_columns):
+        axes = (x_column, z_column, x_column ^ z_column)
+        # Degenerate local projections can make different gates act
+        # identically.  Keeping one deterministic representative preserves
+        # exhaustive coverage while reducing the search tree.
+        unique: dict[tuple[int, int], str] = {}
+        for gate, x_axis, z_axis in _SINGLE_QUBIT_CLIFFORD_COLUMNS:
+            unique.setdefault((axes[x_axis], axes[z_axis]), gate)
+        choices_by_qubit.append(
+            [(new_x, new_z, gate) for (new_x, new_z), gate in unique.items()]
+        )
+
+    order = sorted(
+        range(num_qubits),
+        key=lambda qubit: (
+            len(choices_by_qubit[qubit]),
+            sum(
+                int(new_x != 0) + int(new_z != 0)
+                for new_x, new_z, _gate in choices_by_qubit[qubit]
+            ),
+            -qubit,
+        ),
+        reverse=True,
+    )
+    memoized_unsat: set[
+        tuple[int, tuple[int, ...], tuple[int, ...]]
+    ] = set()
+    stats = {"nodes": 0, "memo_hits": 0, "rank_prunes": 0}
+
+    def search(
+        depth: int,
+        x_basis: tuple[int, ...],
+        z_basis: tuple[int, ...],
+        partial_assignment: list[tuple[int, str]],
+    ) -> list[tuple[int, str]] | None:
+        stats["nodes"] += 1
+        if len(x_basis) + len(z_basis) > rank:
+            stats["rank_prunes"] += 1
+            return None
+        if depth == num_qubits:
+            if len(x_basis) + len(z_basis) == rank:
+                return partial_assignment
+            return None
+
+        state = (depth, x_basis, z_basis)
+        if state in memoized_unsat:
+            stats["memo_hits"] += 1
+            return None
+
+        qubit = order[depth]
+        next_states = []
+        for new_x, new_z, gate in choices_by_qubit[qubit]:
+            next_x_basis = _insert_xor_basis(x_basis, new_x)
+            next_z_basis = _insert_xor_basis(z_basis, new_z)
+            next_states.append(
+                (
+                    len(next_x_basis) + len(next_z_basis),
+                    gate,
+                    next_x_basis,
+                    next_z_basis,
+                )
+            )
+        # Trying the smallest partial rank first finds positive witnesses
+        # quickly without changing the exhaustive negative result.
+        for _rank_sum, gate, next_x_basis, next_z_basis in sorted(next_states):
+            witness = search(
+                depth + 1,
+                next_x_basis,
+                next_z_basis,
+                [*partial_assignment, (qubit, gate)],
+            )
+            if witness is not None:
+                return witness
+
+        memoized_unsat.add(state)
+        return None
+
+    witness = search(0, (), (), [])
+    gate_assignment = None
+    if witness is not None:
+        gate_assignment = ["I"] * num_qubits
+        for qubit, gate in witness:
+            gate_assignment[qubit] = gate
+
+        transformed = basis_matrix.copy()
+        transformed_x = transformed[:, :num_qubits]
+        transformed_z = transformed[:, num_qubits:]
+        for qubit, gate in enumerate(gate_assignment):
+            new_x, new_z = _apply_clifford_to_block(
+                transformed_x[:, qubit : qubit + 1],
+                transformed_z[:, qubit : qubit + 1],
+                gate,
+            )
+            transformed_x[:, qubit] = new_x[:, 0]
+            transformed_z[:, qubit] = new_z[:, 0]
+        if not _is_css_group(transformed):
+            raise AssertionError("internal LC witness failed direct CSS check")
+
+    return {
+        "is_lc_css": witness is not None,
+        "complete": True,
+        "num_qubits": num_qubits,
+        "stabilizer_rank": rank,
+        "assignments_covered": f"6^{num_qubits}",
+        "gate_assignment": gate_assignment,
+        "search_nodes": stats["nodes"],
+        "memoized_unsat_states": len(memoized_unsat),
+        "memo_hits": stats["memo_hits"],
+        "rank_prunes": stats["rank_prunes"],
+    }
+
+
 def is_lc_equivalent_css(
     A_terms: list[tuple[int, int]],
     B_terms: list[tuple[int, int]],

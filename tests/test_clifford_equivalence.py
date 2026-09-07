@@ -6,6 +6,7 @@ import pytest
 from qldpc.codes import QuditCode
 
 from evaluation.clifford_equivalence import (
+    exact_local_clifford_css_search,
     is_equivalently_css,
     is_lc_equivalent_css,
     is_lc_equivalent_css_group,
@@ -14,6 +15,7 @@ from evaluation.clifford_equivalence import (
     verify_uniform_reduction_exact,
     verify_not_lc_css,
     _apply_clifford_to_block,
+    _is_css_group,
 )
 from evaluation.bb_code import build_bb_code
 from evaluation.mirror_code import build_mirror_code
@@ -174,6 +176,74 @@ class TestCliffordTransformations:
         new_x, new_z = _apply_clifford_to_block(x, z, "HSH")
         assert np.array_equal(new_x, (x + z) % 2)
         assert np.array_equal(new_z, z)
+
+
+class TestExactLocalCliffordCssSearch:
+    """Check the complete small-code LC search against direct enumeration."""
+
+    @staticmethod
+    def _brute_force(stab):
+        from itertools import product
+
+        n = stab.shape[1] // 2
+        gates = ("I", "S", "H", "HS", "SH", "HSH")
+        for assignment in product(gates, repeat=n):
+            transformed = stab.copy() % 2
+            transformed_x = transformed[:, :n]
+            transformed_z = transformed[:, n:]
+            for qubit, gate in enumerate(assignment):
+                new_x, new_z = _apply_clifford_to_block(
+                    transformed_x[:, qubit : qubit + 1],
+                    transformed_z[:, qubit : qubit + 1],
+                    gate,
+                )
+                transformed_x[:, qubit] = new_x[:, 0]
+                transformed_z[:, qubit] = new_z[:, 0]
+            if _is_css_group(transformed):
+                return True
+        return False
+
+    def test_matches_direct_enumeration_on_small_matrices(self):
+        rng = np.random.default_rng(20260903)
+        for n in (2, 3, 4):
+            for _ in range(4):
+                stab = rng.integers(0, 2, size=(n, 2 * n), dtype=np.uint8)
+                expected = self._brute_force(stab)
+                result = exact_local_clifford_css_search(stab)
+                assert result["complete"]
+                assert result["is_lc_css"] is expected
+
+    def test_invariant_under_row_operations(self):
+        stab = np.array(
+            [
+                [1, 0, 1, 0, 1, 1],
+                [0, 1, 1, 1, 0, 1],
+                [1, 1, 0, 1, 1, 0],
+            ],
+            dtype=np.uint8,
+        )
+        changed_basis = stab.copy()
+        changed_basis[2] ^= changed_basis[0]
+        assert (
+            exact_local_clifford_css_search(stab)["is_lc_css"]
+            == exact_local_clifford_css_search(changed_basis)["is_lc_css"]
+        )
+
+    def test_five_qubit_code_is_not_lc_equivalent_to_css(self):
+        """Exercise a deterministic negative case against direct enumeration."""
+        stab = np.array(
+            [
+                [1, 0, 0, 1, 0, 0, 1, 1, 0, 0],
+                [0, 1, 0, 0, 1, 0, 0, 1, 1, 0],
+                [1, 0, 1, 0, 0, 0, 0, 0, 1, 1],
+                [0, 1, 0, 1, 0, 1, 0, 0, 0, 1],
+            ],
+            dtype=np.uint8,
+        )
+        assert self._brute_force(stab) is False
+        result = exact_local_clifford_css_search(stab)
+        assert result["complete"]
+        assert result["is_lc_css"] is False
 
 
 class TestLCAlgebraic:
