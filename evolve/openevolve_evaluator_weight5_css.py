@@ -23,6 +23,12 @@ evaluator) -- same two-stage cascade, same ``gates.*()``/
    is defined for ad hoc exploration but not wired into either stage by
    default.
 
+3. **Connectivity gate** -- direct-sum replications are rejected before
+   construction using the exact translation-subgroup test in
+   :mod:`evaluation.connectivity`.  The fail-closed default is ``reject``;
+   ``QCODE_WEIGHT5_CONNECTIVITY_POLICY=allow`` is reserved for deliberate
+   reproduction of campaigns that predated the connectivity audit.
+
 Two-stage cascade
 ------------------
 **Stage 1** -- Quick k-only screening on 3 small lattices per profile.
@@ -52,6 +58,7 @@ if _PROJECT_ROOT not in sys.path:
 
 from evaluation import candidate_selection, gates
 from evaluation.bb_code import validate_terms
+from evaluation.connectivity import bicycle_translation_is_connected
 from evaluation.distance_schema import build_v2_record
 from evaluation.evaluator import (
     evaluate_batch,
@@ -165,6 +172,28 @@ def _filter_weight5(ell: int, m: int, candidates: list) -> tuple[list, int]:
     return valid, rejected
 
 
+def _filter_connected(ell: int, m: int, candidates: list) -> tuple[list, int]:
+    """Apply the future-run direct-sum gate to validated CSS candidates.
+
+    The caller runs :func:`_filter_weight5` first, so malformed exponents
+    have already been rejected.  ``allow`` is an explicit legacy
+    reproduction escape hatch; the default ``reject`` policy is fail-closed.
+    """
+    if gates.weight5_connectivity_policy() == "allow":
+        return list(candidates), 0
+
+    connected = []
+    rejected = 0
+    for A_terms, B_terms in candidates:
+        if bicycle_translation_is_connected(
+            ell, m, A_terms, B_terms
+        ):
+            connected.append((A_terms, B_terms))
+        else:
+            rejected += 1
+    return connected, rejected
+
+
 def _is_credible(result: dict) -> bool:
     """Whether ``result`` is a real, non-rejected candidate: k > 0 AND not
     stage="k_low" (the cascade's rejected-but-k>0 stage; see
@@ -258,6 +287,7 @@ def _error_result(error: str) -> dict:
         "num_high_k": 0.0,
         "term_count": 0.0,
         "pattern_type": 0.0,
+        "connectivity_rejected": 0.0,
     }
 
 
@@ -347,8 +377,9 @@ def _run_evaluation(
     Mirrors the generic CSS evaluator's ``_run_evaluation``: quick=True
     does a single k-only pass; quick=False does a two-pass
     quick-screen-then-distance-on-top-candidates pass. The only addition
-    is the Phase A2 weight-5 filter applied to every lattice's raw
-    candidate list before the Phase A5 pre-build cap.
+    is the Phase A2 weight-5 filter and the translation-connectivity gate
+    applied to every lattice's raw candidate list before the Phase A5
+    pre-build cap.
 
     ``source_hash`` (Phase E1): passed through to :func:`_stamp_provenance`
     below so every result in ``all_results`` carries it -- see the generic
@@ -369,6 +400,7 @@ def _run_evaluation(
     all_results = []
     total_candidates = 0
     total_weight_rejected = 0
+    total_connectivity_rejected = 0
     errors = []
     selection_metrics: list[dict] = []
 
@@ -402,7 +434,17 @@ def _run_evaluation(
             # the evaluator itself (not merely trusted from the seed).
             candidates, weight_rejected = _filter_weight5(ell, m, candidates)
             total_weight_rejected += weight_rejected
-            deduped_count = len(candidates)
+            weight_ok_count = len(candidates)
+
+            # Reviewer-M1 guard for future runs: a disconnected translation
+            # presentation is a replicated direct sum, so it must not consume
+            # construction/distance budget or contribute fitness.  This runs
+            # before the cap because the subgroup test is construction-free.
+            candidates, connectivity_rejected = _filter_connected(
+                ell, m, candidates
+            )
+            total_connectivity_rejected += connectivity_rejected
+            gate_ok_count = len(candidates)
 
             # Phase A5: pre-build candidate cap via deterministic
             # hash-stratified selection instead of positional truncation.
@@ -411,9 +453,21 @@ def _run_evaluation(
             # doubles as the stratification key (same proxy the generic
             # CSS evaluator uses).
             max_build = gates.max_build_candidates_css()
-            safety_net = _css_safety_net_candidates(ell, m)
+            # The fixed historical safety net is subject to exactly the same
+            # policy; exempting it would reintroduce disconnected candidates
+            # through the post-cap reinsertion path below. Also run it
+            # through _filter_weight5 first, same as `candidates` above:
+            # _filter_connected here (unlike the PBB sibling's) does not
+            # validate exponents itself and trusts its caller to have done
+            # so, so an out-of-range or malformed safety-net entry would
+            # otherwise reach bicycle_translation_is_connected directly and
+            # raise instead of being rejected gracefully.
+            safety_net_valid, _ = _filter_weight5(
+                ell, m, _css_safety_net_candidates(ell, m)
+            )
+            safety_net, _ = _filter_connected(ell, m, safety_net_valid)
             sel_metrics = None
-            if deduped_count > max_build:
+            if gate_ok_count > max_build:
                 # Round-3 finding: reserve room for the safety net WITHIN
                 # max_build rather than appending it after selection, which
                 # could exceed the configured hard cap by up to
@@ -436,23 +490,27 @@ def _run_evaluation(
                 )
                 errors.append(
                     f"({ell},{m}): {raw_count} raw, {weight_rejected} rejected by "
-                    f"weight-5 enforcement, {deduped_count} weight-ok, capped to "
+                    f"weight-5 enforcement, {connectivity_rejected} rejected by "
+                    f"connectivity, {gate_ok_count} gate-passed, capped to "
                     f"{len(candidates)} via hash-stratified selection"
                 )
             else:
                 errors.append(
                     f"({ell},{m}): {raw_count} raw, {weight_rejected} rejected by "
-                    f"weight-5 enforcement, {deduped_count} passed through uncapped"
+                    f"weight-5 enforcement, {connectivity_rejected} rejected by "
+                    f"connectivity, {gate_ok_count}/{weight_ok_count} weight-ok "
+                    f"passed through uncapped"
                 )
 
             # Finding round-2 #3: the pre-build cap's per-strategy
-            # stratification has no dedicated bucket for the safety net
+            # stratification has no dedicated bucket for the eligible
+            # (connectivity-gate-passed) safety net
             # (it falls into whatever ordinary structural stratum
             # _classify_pattern assigns it), so it can be hash-sampled out
             # like any other candidate in a crowded stratum -- breaking
             # the "Stage 1 always has something to score" guarantee.
-            # Re-insert any of the seed's own safety-net candidates that
-            # didn't survive selection, rather than keeping a second,
+            # Re-insert any eligible seed safety-net candidates that didn't
+            # survive selection, rather than keeping a second,
             # duplicated notion of "what the safety net looks like" in
             # sync with the seed (that duplication is exactly what caused
             # the PBB sibling's analogous bug).
@@ -574,6 +632,7 @@ def _run_evaluation(
         "num_above_12": num_above_12,
         "total_candidates": total_candidates,
         "total_weight_rejected": total_weight_rejected,
+        "total_connectivity_rejected": total_connectivity_rejected,
         "best_encoding_rate": best_encoding_rate,
         "num_high_k": len(high_k_codes),
         "lattices_with_high_k": lattices_with_high_k,
@@ -611,6 +670,7 @@ def evaluate_stage1(program_path: str) -> dict:
             "num_high_k": 0.0,
             "term_count": 0.0,
             "pattern_type": 0.0,
+            "connectivity_rejected": 0.0,
         }
 
     valid = [r for r in metrics.get("all_results", []) if _is_credible(r)]
@@ -644,6 +704,7 @@ def evaluate_stage1(program_path: str) -> dict:
         "num_high_k": float(metrics["num_high_k"]),
         "term_count": best_tc,
         "pattern_type": best_pattern,
+        "connectivity_rejected": float(metrics["total_connectivity_rejected"]),
     }
 
 
@@ -722,13 +783,15 @@ def evaluate_stage2(program_path: str) -> dict:
 
     # Phase A2/A5 bookkeeping surfaced to the LLM/log, in addition to the
     # generic per-lattice build/distance errors.
-    weight_summary = (
+    gate_summary = (
         f"Weight-5 enforcement rejected {metrics['total_weight_rejected']} "
-        f"candidates across {len(stage2_lattices)} lattices (profile="
+        f"candidates and the connectivity gate rejected "
+        f"{metrics['total_connectivity_rejected']} across "
+        f"{len(stage2_lattices)} lattices (profile="
         f"{_lattice_profile()})."
     )
     if metrics["selection_metrics"]:
-        sel_lines = [weight_summary]
+        sel_lines = [gate_summary]
         for sm in metrics["selection_metrics"]:
             sel_lines.append(
                 f"  ({sm['ell']},{sm['m']}): raw={sm['raw_count']} "
@@ -738,7 +801,7 @@ def evaluate_stage2(program_path: str) -> dict:
         artifacts["selection_metrics"] = "\n".join(sel_lines)
     else:
         artifacts.setdefault("errors", "")
-        errors_combined = ([weight_summary] + metrics["errors"])[:6]
+        errors_combined = ([gate_summary] + metrics["errors"])[:6]
         artifacts["errors"] = "\n".join(errors_combined)
     if metrics["errors"] and "errors" not in artifacts:
         artifacts["errors"] = "\n".join(metrics["errors"][:5])
@@ -774,7 +837,8 @@ def evaluate_stage2(program_path: str) -> dict:
     artifacts["summary"] = (
         f"Weight-5 CSS campaign (lattice profile={_lattice_profile()}).\n"
         f"Evaluated {metrics['total_candidates']} raw candidates "
-        f"({metrics['total_weight_rejected']} rejected by weight-5 enforcement) "
+        f"({metrics['total_weight_rejected']} rejected by weight-5 enforcement; "
+        f"{metrics['total_connectivity_rejected']} rejected as disconnected) "
         f"across {len(stage2_lattices)} lattices.\n"
         f"Valid codes (k>0): {metrics['num_valid']}\n"
         f"High-k codes (k>=8): {metrics['num_high_k']}\n"
@@ -833,6 +897,7 @@ def evaluate_stage2(program_path: str) -> dict:
         "num_above_6": float(metrics["num_above_6"]),
         "num_above_12": float(metrics["num_above_12"]),
         "total_candidates": float(metrics["total_candidates"]),
+        "connectivity_rejected": float(metrics["total_connectivity_rejected"]),
         "term_count": s2_tc,
         "pattern_type": s2_pattern,
     }
@@ -883,6 +948,9 @@ def _write_metrics_jsonl(metrics: dict) -> None:
         "num_above_12": metrics.get("num_above_12", 0),
         "total_candidates": metrics.get("total_candidates", 0),
         "total_weight_rejected": metrics.get("total_weight_rejected", 0),
+        "total_connectivity_rejected": metrics.get(
+            "total_connectivity_rejected", 0
+        ),
         "lattice_profile": _lattice_profile(),
         "per_lattice_best_fom": {
             f"{k[0]}x{k[1]}": v for k, v in per_lattice.items()

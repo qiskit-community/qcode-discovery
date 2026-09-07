@@ -101,6 +101,13 @@ class TestValidation:
         with pytest.raises(ValueError, match="duplicate"):
             validate_terms(12, 6, [(3, 0), (3, 0), (0, 1)], "A")
 
+    def test_non_integer_exponent_rejected(self):
+        # A float exponent (e.g. from a buggy evolved generator) is in
+        # range and reduces fine under `%`, so it would otherwise pass
+        # silently instead of being caught here.
+        with pytest.raises(ValueError, match="must be integers"):
+            validate_terms(12, 6, [(3.0, 0), (1, 0), (0, 1)], "A")
+
 
 class TestBuildBBCode:
     def test_gross_code_construction(self):

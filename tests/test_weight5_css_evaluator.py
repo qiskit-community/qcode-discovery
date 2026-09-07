@@ -9,9 +9,14 @@ covered generically by ``tests/test_candidate_selection.py``'s
 
 from __future__ import annotations
 
+import pytest
+
 from evaluation import gates
 import evolve.openevolve_evaluator_weight5_css as css_eval
-from evolve.openevolve_evaluator_weight5_css import _filter_weight5
+from evolve.openevolve_evaluator_weight5_css import (
+    _filter_connected,
+    _filter_weight5,
+)
 from evolve.seed_solution_weight5_css import generate_candidates as css_generate
 
 
@@ -28,6 +33,81 @@ class TestFilterWeight5ArityGuard:
         assert valid == [valid_cand]
 
 
+class TestConnectivityGate:
+    CONNECTED = (
+        [(0, 0), (3, 1)],
+        [(0, 0), (1, 0), (2, 1)],
+    )
+    DISCONNECTED = (
+        [(0, 0), (0, 13), (12, 11)],
+        [(0, 0), (3, 7)],
+    )
+
+    def test_default_rejects_disconnected_candidate(self, monkeypatch):
+        monkeypatch.delenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", raising=False)
+        kept, rejected = _filter_connected(
+            15, 14, [self.CONNECTED, self.DISCONNECTED]
+        )
+        assert kept == [self.CONNECTED]
+        assert rejected == 1
+
+    def test_explicit_allow_admits_disconnected_candidate(self, monkeypatch):
+        monkeypatch.setenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", "allow")
+        candidates = [self.CONNECTED, self.DISCONNECTED]
+        kept, rejected = _filter_connected(15, 14, candidates)
+        assert kept == candidates
+        assert rejected == 0
+
+    def test_invalid_policy_is_observable_and_fail_closed(self, monkeypatch):
+        monkeypatch.setenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", "disabled")
+        with pytest.raises(ValueError, match="QCODE_WEIGHT5_CONNECTIVITY_POLICY"):
+            _filter_connected(15, 14, [self.CONNECTED])
+
+    def test_disconnected_safety_net_is_not_reinserted(self, monkeypatch):
+        # The real safety net is itself translation-connected (that's the
+        # whole point of the fix that made it so -- see
+        # seed_solution_weight5_css.py's _SAFETY_NET_RAW comment), so this
+        # exercises the reinsertion path with a synthetic disconnected
+        # stand-in patched in place of the real seed helper: if the
+        # generator regresses to producing exactly the (disconnected)
+        # "safety net" it's given, the reinsertion logic must not force
+        # those candidates back in past the gate.
+        #
+        # This must be weight-5-valid and in-range at (6, 6) -- unlike
+        # `self.DISCONNECTED` (only valid at (15, 14)) -- so it is rejected
+        # for being disconnected specifically, not merely out of range: it
+        # is exactly the old univariate safety net retired in favor of the
+        # current connected one (see _SAFETY_NET_RAW's comment), which is
+        # translation-disconnected (4 components) at every campaign lattice
+        # including (6, 6).
+        monkeypatch.delenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", raising=False)
+        ell, m = 6, 6
+        disconnected_safety_net = [
+            ([(0, 0), (0, 2)], [(0, 0), (2, 0), (4, 0)]),
+        ]
+        monkeypatch.setattr(
+            css_eval,
+            "_css_safety_net_candidates",
+            lambda _ell, _m: list(disconnected_safety_net),
+        )
+        captured = {}
+
+        def fake_evaluate_batch(ell, m, candidates, **kwargs):
+            captured["candidates"] = list(candidates)
+            return []
+
+        monkeypatch.setattr(css_eval, "evaluate_batch", fake_evaluate_batch)
+        metrics = css_eval._run_evaluation(
+            lambda _ell, _m: list(disconnected_safety_net),
+            [(ell, m)],
+            quick=True,
+        )
+
+        assert captured["candidates"] == []
+        assert metrics["total_connectivity_rejected"] == len(disconnected_safety_net)
+        assert any("rejected by connectivity" in msg for msg in metrics["errors"])
+
+
 class TestSafetyNetSurvivesPrebuildCap:
     """Round-2 finding #3: the pre-build cap's per-strategy stratification
     (keyed by ``_classify_pattern``) has no dedicated bucket for the
@@ -40,6 +120,9 @@ class TestSafetyNetSurvivesPrebuildCap:
     def test_both_safety_net_entries_present_in_all_results_despite_tiny_cap(
         self, monkeypatch
     ):
+        # This regression test intentionally exercises pre-audit legacy
+        # behavior; the default future-run policy rejects these direct sums.
+        monkeypatch.setenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", "allow")
         monkeypatch.setattr(gates, "max_build_candidates_css", lambda: 1)
         ell, m = 6, 6
         safety_net = css_eval._css_safety_net_candidates(ell, m)
@@ -70,6 +153,7 @@ class TestSafetyNetReservedWithinCap:
     count is exactly ``len(safety_net)``, not ``max_build + len(safety_net)``."""
 
     def test_build_count_not_inflated_beyond_safety_net_size(self, monkeypatch):
+        monkeypatch.setenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", "allow")
         monkeypatch.setattr(gates, "max_build_candidates_css", lambda: 1)
         ell, m = 6, 6
         safety_net = css_eval._css_safety_net_candidates(ell, m)

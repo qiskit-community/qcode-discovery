@@ -218,9 +218,9 @@ class TestExponentRangeValidation:
 class TestBuildAndCheckHappyPath:
     def test_valid_non_safety_net_candidate_builds_successfully(self):
         A_terms = [(0, 0), (1, 1)]
-        B_terms = [(0, 0), (2, 0), (1, 3)]
-        C_terms = [(0, 0), (1, 1)]
-        D_terms = [(1, 3)]
+        B_terms = [(0, 0), (1, 0), (1, 2)]
+        C_terms = []
+        D_terms = [(0, 0), (1, 0), (1, 2)]
         info, reason = _build_and_check(6, 6, A_terms, B_terms, C_terms, D_terms)
         assert reason is None
         assert info is not None
@@ -233,6 +233,88 @@ class TestBuildAndCheckHappyPath:
         info, reason = _build_and_check(6, 6, A_terms, B_terms, [], [])
         assert info is None
         assert reason == "css_calibration"
+
+
+class TestConnectivityGate:
+    # PS-106b8669: a valid [[72,12,*]] PBB presentation with two
+    # translation components.
+    A = [(0, 0), (3, 3)]
+    B = [(0, 0), (1, 3), (2, 0)]
+    C = [(0, 0), (3, 3)]
+    D = [(0, 0), (2, 0)]
+
+    def test_default_rejects_before_construction(self, monkeypatch):
+        monkeypatch.delenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", raising=False)
+
+        def must_not_build(*_args, **_kwargs):
+            raise AssertionError("disconnected candidate reached construction")
+
+        monkeypatch.setattr(pbb_eval, "build_pbb_code", must_not_build)
+        info, reason = _build_and_check(
+            6, 6, self.A, self.B, self.C, self.D
+        )
+        assert info is None
+        assert reason == "disconnected"
+
+    def test_explicit_allow_admits_disconnected_candidate(self, monkeypatch):
+        monkeypatch.setenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", "allow")
+        info, reason = _build_and_check(
+            6, 6, self.A, self.B, self.C, self.D
+        )
+        assert reason is None
+        assert info is not None
+        assert (info["n"], info["k"]) == (72, 12)
+
+    def test_invalid_policy_is_observable_and_fail_closed(self, monkeypatch):
+        monkeypatch.setenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", "disabled")
+
+        def must_not_build(*_args, **_kwargs):
+            raise AssertionError("invalid policy reached construction")
+
+        monkeypatch.setattr(pbb_eval, "build_pbb_code", must_not_build)
+        info, reason = _build_and_check(
+            6, 6, self.A, self.B, self.C, self.D
+        )
+        assert info is None
+        assert reason == "connectivity_policy_error"
+
+    def test_run_metrics_expose_disconnected_rejection(self, monkeypatch):
+        monkeypatch.delenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", raising=False)
+        monkeypatch.setattr(pbb_eval, "_pbb_safety_net_candidates", lambda *_: [])
+        monkeypatch.setattr(
+            pbb_eval.noncss_gate,
+            "passes_noncss_gate",
+            lambda *_args, **_kwargs: (_ for _ in ()).throw(
+                AssertionError("disconnected candidate reached non-CSS gate")
+            ),
+        )
+
+        candidate = (self.A, self.B, self.C, self.D)
+        metrics = pbb_eval._run_evaluation(
+            lambda _ell, _m: [candidate], [(6, 6)], quick=True
+        )
+        assert metrics["all_results"] == []
+        assert metrics["reject_counts"] == {"disconnected": 1}
+        assert metrics["total_connectivity_rejected"] == 1
+
+    def test_prefilter_preserves_more_specific_weight_rejection(
+        self, monkeypatch
+    ):
+        monkeypatch.delenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", raising=False)
+        invalid_weight = (
+            [(0, 0), (3, 0)],
+            [(0, 0), (0, 3)],
+            [(0, 0)],
+            [],
+        )
+        kept, rejected = pbb_eval._filter_connected(
+            6, 6, [invalid_weight]
+        )
+        assert kept == [invalid_weight]
+        assert rejected == 0
+        info, reason = _build_and_check(6, 6, *invalid_weight)
+        assert info is None
+        assert reason == "backbone_weight"
 
 
 class TestClassifyPbbStrategy:

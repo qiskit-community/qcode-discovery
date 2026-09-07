@@ -29,12 +29,17 @@ Three generation strategies (Phase B1):
    bounded sweep without recreating its combinatorics.
 
 ``_safety_net_candidates(ell, m)`` -- defined OUTSIDE the EVOLVE-BLOCK, so
-an LLM mutation cannot remove it.  Returns a univariate weight-5 (2+3)
-candidate verified (see module-level test invocations during Phase B
-development) to give k > 0 -- in fact k >= 4 -- at every Stage-1 lattice in
-both the "small" and "large" lattice profiles:  (6,6), (6,9), (9,8),
-(12,9), (12,12), (15,12).  This guarantees Stage 1 of the cascade always
-has something to score even if every evolved strategy above regresses to
+an LLM mutation cannot remove it.  Returns mixed-monomial weight-5 (2+3)
+candidates verified (see module-level test invocations during Phase B
+development) to give k >= 4 AND be translation-connected (see
+``evaluation.connectivity``) at every Stage-1 lattice in both the "small"
+and "large" lattice profiles:  (6,6), (6,9), (9,8), (12,9), (12,12),
+(15,12) -- the univariate candidates used here previously were all
+translation-disconnected direct sums at every one of those lattices, which
+the connectivity gate now added to the evaluator (Reviewer-M1) would strip
+from every candidate list, silently emptying the safety net.  This
+guarantees Stage 1 of the cascade always has something to score even if
+every evolved strategy above regresses to
 k=0.
 
 ``generate_candidates(ell, m)`` -- the evolved function, returning
@@ -52,16 +57,23 @@ import itertools
 # ---------------------------------------------------------------------------
 # Safety net -- OUTSIDE EVOLVE-BLOCK, non-removable by evolution.
 # ---------------------------------------------------------------------------
-# Univariate weight-5 (2+3) candidates.  Verified to give k > 0 at every
-# Stage-1 lattice in both lattice profiles (small: (6,6),(6,9),(9,8); large:
-# (12,9),(12,12),(15,12)) -- in fact k in {4, 8, 16, 32} at those six
-# lattices, comfortably above the default QCODE_MIN_K_THRESHOLD (4).  Small
-# fixed exponents (<=4) keep both candidates in range for every lattice
-# actually used by this campaign (all have ell>=6, m>=6); the range guard
-# below drops a candidate defensively if ever called with a smaller lattice.
+# Mixed-monomial weight-5 (2+3) candidates.  Verified via
+# evaluation.connectivity.bicycle_translation_is_connected to be
+# translation-CONNECTED, and to give k == 4, at every Stage-1 lattice in
+# both lattice profiles (small: (6,6),(6,9),(9,8); large:
+# (12,9),(12,12),(15,12)) -- comfortably above the default
+# QCODE_MIN_K_THRESHOLD (4).  The previous univariate safety net
+# ([(0,0),(0,2)]/[(0,0),(0,4)] against [(0,0),(2,0),(4,0)]) gave the same
+# k but was translation-DISCONNECTED (a replicated direct sum) at every one
+# of those six lattices, so the connectivity gate wired into the evaluator
+# (Reviewer-M1) rejected both entries unconditionally and left Stage 1 with
+# nothing to score under the default "reject" policy. Small fixed
+# exponents (<=2) keep both candidates in range for every lattice actually
+# used by this campaign (all have ell>=6, m>=6); the range guard below
+# drops a candidate defensively if ever called with a smaller lattice.
 _SAFETY_NET_RAW = [
-    ([(0, 0), (0, 2)], [(0, 0), (2, 0), (4, 0)]),
-    ([(0, 0), (0, 4)], [(0, 0), (2, 0), (4, 0)]),
+    ([(0, 0), (0, 1)], [(0, 0), (1, 0), (2, 0)]),
+    ([(0, 0), (0, 1)], [(0, 0), (1, 1), (2, 2)]),
 ]
 
 

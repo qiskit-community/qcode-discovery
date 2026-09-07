@@ -24,8 +24,12 @@ what the (possibly LLM-mutated) seed's ``generate_candidates`` produces:
    ``_poly_to_matrix``/bare-sympy-expression divergence bug class
    documented in ``CLAUDE.md`` -- a bug in the term-list bookkeeping could
    pass step (3) while the actual matrices qLDPC built disagree.
-6. **k-threshold filter** -- ``evaluation.gates.min_k_threshold_noncss()``.
-7. **Deferred non-CSS gate** -- ``evaluation.noncss_gate.
+6. **Connectivity gate** -- rejects translation-disconnected direct-sum
+   replications using :mod:`evaluation.connectivity`.  The fail-closed
+   default is ``reject``; ``QCODE_WEIGHT5_CONNECTIVITY_POLICY=allow`` is
+   reserved for deliberate legacy-run reproduction.
+7. **k-threshold filter** -- ``evaluation.gates.min_k_threshold_noncss()``.
+8. **Deferred non-CSS gate** -- ``evaluation.noncss_gate.
    passes_noncss_gate``, run ONLY on candidates that already passed every
    filter above (Phase A4: "defer full pair until after weight/
    commutativity/k filters"). ``passes_noncss_gate`` itself runs the
@@ -73,6 +77,7 @@ if _PROJECT_ROOT not in sys.path:
 
 from evaluation import candidate_selection, gates, noncss_gate, weight_enforcement
 from evaluation.bb_code import validate_terms
+from evaluation.connectivity import bicycle_translation_is_connected
 from evaluation.distance_schema import build_v2_record
 from evaluation.pareto_v2 import update_pareto_front_v2
 from evaluation.pbb_code import build_pbb_code, get_pbb_params_fast
@@ -182,6 +187,54 @@ def _classify_pbb_strategy(A_terms, B_terms, C_terms, D_terms) -> str:
     return "both"
 
 
+def _filter_connected(ell: int, m: int, candidates: list) -> tuple[list, int]:
+    """Remove provably translation-disconnected PBB candidates pre-cap.
+
+    Malformed candidates are preserved for :func:`_build_and_check` to assign
+    its established validation reason.  Well-formed direct sums are removed
+    before hash-stratified sampling so they cannot crowd connected candidates
+    out of the finite construction budget.
+    """
+    if gates.weight5_connectivity_policy() == "allow":
+        return list(candidates), 0
+
+    connected_or_unvalidated = []
+    rejected = 0
+    for cand in candidates:
+        if not candidate_selection.has_arity(cand, 4):
+            connected_or_unvalidated.append(cand)
+            continue
+        A_terms, B_terms, C_terms, D_terms = cand
+        try:
+            validate_terms(ell, m, A_terms, "A")
+            validate_terms(ell, m, B_terms, "B")
+            validate_terms(ell, m, C_terms, "C", min_terms=0)
+            validate_terms(ell, m, D_terms, "D", min_terms=0)
+        except (TypeError, ValueError):
+            # Preserve the downstream evaluator's more specific validation
+            # category for malformed candidates.
+            connected_or_unvalidated.append(cand)
+            continue
+        if (
+            not weight_enforcement.css_weight_ok(A_terms, B_terms)
+            or (not C_terms and not D_terms)
+            or not weight_enforcement.pbb_weight_ok(
+                A_terms, B_terms, C_terms, D_terms
+            )
+        ):
+            # Preserve backbone/containment/CSS-calibration reject reasons.
+            connected_or_unvalidated.append(cand)
+            continue
+        is_connected = bicycle_translation_is_connected(
+            ell, m, A_terms, B_terms, C_terms, D_terms
+        )
+        if is_connected:
+            connected_or_unvalidated.append(cand)
+        else:
+            rejected += 1
+    return connected_or_unvalidated, rejected
+
+
 def _trust_level_for_result(result: dict) -> str:
     """Return a publication-style trust level for a distance result."""
     if result.get("d_is_exact") or result.get("milp_exact"):
@@ -220,6 +273,7 @@ def _error_result(error: str) -> dict:
         "error": error,
         "lattices_with_high_k": 0.0,
         "num_high_k": 0.0,
+        "connectivity_rejected": 0.0,
     }
 
 
@@ -299,6 +353,22 @@ def _build_and_check(
 
     if not weight_enforcement.pbb_weight_ok(A_terms, B_terms, C_terms, D_terms):
         return None, "containment_symbolic"
+
+    # Reviewer-M1 guard for future runs.  The translation-subgroup test is
+    # exact for the supplied BB/PBB presentation and cheap enough to run
+    # before constructing a qLDPC object or computing its rank.
+    try:
+        connectivity_policy = gates.weight5_connectivity_policy()
+    except ValueError as exc:
+        logger.error("Invalid weight-five connectivity policy: %s", exc)
+        return None, "connectivity_policy_error"
+    if (
+        connectivity_policy == "reject"
+        and not bicycle_translation_is_connected(
+            ell, m, A_terms, B_terms, C_terms, D_terms
+        )
+    ):
+        return None, "disconnected"
 
     try:
         code = build_pbb_code(ell, m, A_terms, B_terms, C_terms, D_terms)
@@ -433,6 +503,9 @@ def _write_metrics_jsonl(metrics: dict) -> None:
         "lattices_with_high_k": metrics.get("lattices_with_high_k", 0),
         "best_encoding_rate": metrics.get("best_encoding_rate", 0),
         "total_candidates": metrics.get("total_candidates", 0),
+        "total_connectivity_rejected": metrics.get(
+            "total_connectivity_rejected", 0
+        ),
         "timestamp": time.time(),
     }
 
@@ -456,8 +529,9 @@ def _run_evaluation(
 ) -> dict:
     """Run evaluation across lattices and compute aggregate metrics.
 
-    Pipeline per lattice: generate -> pre-build hash-stratified cap
-    (Phase A5) -> full weight-5/containment/build/k filter
+    Pipeline per lattice: generate -> translation-connectivity gate ->
+    pre-build hash-stratified cap (Phase A5) -> full weight-5/containment/
+    connectivity/build/k filter
     (``_build_and_check``) -> deferred non-CSS gate (only on k-filtered
     survivors) -> post-build k-band-stratified distance selection (Phase
     A5) -> parallel distance estimation across all lattices.
@@ -498,10 +572,26 @@ def _run_evaluation(
             # internal dedup never runs in that case).
             candidates, _ = candidate_selection.dedup_candidates(candidates)
 
+            # Apply the O(w^2) translation-subgroup gate before the sampling
+            # cap.  Otherwise a large population of easy direct sums can
+            # crowd connected presentations out of the construction budget.
+            candidates, connectivity_rejected = _filter_connected(
+                ell, m, candidates
+            )
+            if connectivity_rejected:
+                reject_counts["disconnected"] = (
+                    reject_counts.get("disconnected", 0)
+                    + connectivity_rejected
+                )
+
             max_build = gates.max_build_candidates_noncss()
-            safety_net = _pbb_safety_net_candidates(ell, m)
-            raw_count = len(candidates)
-            if raw_count > max_build:
+            # Apply the same policy to injected fallback candidates so the
+            # post-cap reinsertion path cannot bypass the gate.
+            safety_net, _ = _filter_connected(
+                ell, m, _pbb_safety_net_candidates(ell, m)
+            )
+            gate_ok_count = len(candidates)
+            if gate_ok_count > max_build:
                 # Round-3 finding: reserve room for the safety net WITHIN
                 # max_build rather than appending it after selection, which
                 # could exceed the configured hard cap by up to
@@ -529,17 +619,19 @@ def _run_evaluation(
                     min_quota_per_strategy=2,
                 )
                 errors.append(
-                    f"({ell},{m}): {raw_count} candidates, capped to {max_build} "
-                    f"via hash-stratified selection"
+                    f"({ell},{m}): {gate_ok_count} connectivity-gate-passed "
+                    f"candidates, capped to {max_build} via hash-stratified "
+                    f"selection ({connectivity_rejected} disconnected rejected)"
                 )
 
             # Round-2 finding #2: the pre-build cap's stratification had
-            # no reliable way to detect the safety net's current (C, D)
+            # no reliable way to detect the eligible (connectivity-gate-
+            # passed) safety net's current (C, D)
             # shape (see _classify_pbb_strategy docstring), so it could be
             # hash-sampled out like any other candidate -- breaking the
             # "Stage 1 always has something to score" guarantee. Re-insert
-            # any of the seed's own safety-net candidates that didn't
-            # survive selection, independent of strategy classification.
+            # any eligible seed safety-net candidates that didn't survive
+            # selection, independent of strategy classification.
             if safety_net:
                 existing_keys = {
                     candidate_selection.canonical_candidate_key(c)
@@ -552,7 +644,7 @@ def _run_evaluation(
                         candidates.append(cand)
                         existing_keys.add(key)
 
-            # Build + full weight-5/containment/k filter.
+            # Build + defensive weight-5/containment/connectivity/k filter.
             built = []
             min_k = gates.min_k_threshold_noncss()
             for cand in candidates:
@@ -722,6 +814,7 @@ def _run_evaluation(
         "all_results": all_results,
         "errors": errors,
         "reject_counts": reject_counts,
+        "total_connectivity_rejected": reject_counts.get("disconnected", 0),
     }
 
 
@@ -755,6 +848,7 @@ def evaluate_stage1(program_path: str) -> dict:
             "total_candidates": 0.0,
             "lattices_with_high_k": 0.0,
             "num_high_k": 0.0,
+            "connectivity_rejected": 0.0,
         }
 
     valid = [r for r in metrics.get("all_results", []) if r.get("k", 0) > 0]
@@ -775,6 +869,9 @@ def evaluate_stage1(program_path: str) -> dict:
         "total_candidates": float(metrics["total_candidates"]),
         "lattices_with_high_k": float(metrics["lattices_with_high_k"]),
         "num_high_k": float(metrics["num_high_k"]),
+        "connectivity_rejected": float(
+            metrics["total_connectivity_rejected"]
+        ),
     }
 
 
@@ -879,6 +976,8 @@ def evaluate_stage2(program_path: str) -> dict:
     artifacts["summary"] = (
         f"Evaluated {metrics['total_candidates']} candidates across "
         f"{len(stage2_lattices)} lattices (profile={_lattice_profile()}).\n"
+        f"Connectivity gate rejected "
+        f"{metrics['total_connectivity_rejected']} disconnected candidates.\n"
         f"Valid non-CSS codes (k>0, gate-passed): {metrics['num_valid']}\n"
         f"High-k codes (k>=8): {metrics['num_high_k']}\n"
         f"Best FOM: {best_fom:.2f}\n"
@@ -923,6 +1022,9 @@ def evaluate_stage2(program_path: str) -> dict:
         "lattices_with_high_k": float(metrics["lattices_with_high_k"]),
         "best_encoding_rate": metrics["best_encoding_rate"],
         "total_candidates": float(metrics["total_candidates"]),
+        "connectivity_rejected": float(
+            metrics["total_connectivity_rejected"]
+        ),
     }
 
     try:

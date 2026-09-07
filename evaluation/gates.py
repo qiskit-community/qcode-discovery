@@ -40,6 +40,13 @@ _FLOAT_DEFAULTS = {
     "QCODE_SAVE_TRUST_RATIO_NONCSS": 2.5,
 }
 
+_STRING_DEFAULTS = {
+    # Future weight-five searches reject direct-sum replications by default.
+    # ``allow`` exists only for intentional legacy-run reproduction or a
+    # study whose objective explicitly includes disconnected presentations.
+    "QCODE_WEIGHT5_CONNECTIVITY_POLICY": "reject",
+}
+
 
 def _env_int(name: str) -> int:
     val = os.environ.get(name)
@@ -49,6 +56,14 @@ def _env_int(name: str) -> int:
 def _env_float(name: str) -> float:
     val = os.environ.get(name)
     return float(val) if val is not None else _FLOAT_DEFAULTS[name]
+
+
+def _env_choice(name: str, choices: set[str]) -> str:
+    value = os.environ.get(name, _STRING_DEFAULTS[name]).strip().lower()
+    if value not in choices:
+        allowed = ", ".join(sorted(choices))
+        raise ValueError(f"{name} must be one of {{{allowed}}}, got {value!r}")
+    return value
 
 
 def min_k_threshold() -> int:
@@ -130,3 +145,16 @@ def max_build_candidates_noncss() -> int:
     """PBB: pre-build candidate cap per lattice (replaces positional
     ``candidates[:3000]`` truncation with hash-stratified selection)."""
     return _env_int("QCODE_MAX_BUILD_CANDIDATES_NONCSS")
+
+
+def weight5_connectivity_policy() -> str:
+    """Policy for translation-disconnected weight-five candidates.
+
+    ``"reject"`` is the fail-closed default for new campaign evaluations.
+    Set ``QCODE_WEIGHT5_CONNECTIVITY_POLICY=allow`` only when deliberately
+    reproducing a historical run that predated the connectivity audit.
+    Invalid values raise rather than silently disabling the gate.
+    """
+    return _env_choice(
+        "QCODE_WEIGHT5_CONNECTIVITY_POLICY", {"allow", "reject"}
+    )

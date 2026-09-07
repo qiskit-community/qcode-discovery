@@ -27,6 +27,8 @@ Typical usage::
 
 from __future__ import annotations
 
+import operator
+
 import sympy
 from sympy.abc import x, y
 from qldpc import codes
@@ -55,6 +57,10 @@ def validate_terms(
 
     Raises ValueError if:
     - Term count outside [min_terms, max_terms]
+    - An exponent is not an integer (e.g. a float from a buggy generator) --
+      ``x_exp < ell``/``x_exp % ell`` below would otherwise accept it
+      silently, and a non-integer exponent cannot be a valid cyclic-group
+      element
     - Duplicate monomials (after reducing mod ell, m)
     - Exponents out of range
     """
@@ -65,6 +71,11 @@ def validate_terms(
 
     reduced = set()
     for x_exp, y_exp in terms:
+        try:
+            x_exp = operator.index(x_exp)
+            y_exp = operator.index(y_exp)
+        except TypeError as exc:
+            raise ValueError(f"{name} exponents must be integers") from exc
         if not (0 <= x_exp < ell):
             raise ValueError(
                 f"{name}: x-exponent {x_exp} out of range [0, {ell})"

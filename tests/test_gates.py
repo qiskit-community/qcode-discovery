@@ -45,6 +45,10 @@ class TestDefaultsMatchExistingBehavior:
         monkeypatch.delenv("QCODE_FOM_THRESHOLD_EXACT", raising=False)
         assert gates.fom_threshold_exact_or_disabled() == float("inf")
 
+    def test_weight5_connectivity_gate_defaults_to_reject(self, monkeypatch):
+        monkeypatch.delenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", raising=False)
+        assert gates.weight5_connectivity_policy() == "reject"
+
     def test_fom_threshold_exact_or_disabled_opt_in_via_env(self, monkeypatch):
         monkeypatch.setenv("QCODE_FOM_THRESHOLD_EXACT", "9.5")
         assert gates.fom_threshold_exact_or_disabled() == 9.5
@@ -73,3 +77,22 @@ class TestEnvOverridesReadFreshEachCall:
                 continue
             monkeypatch.delenv(name, raising=False)
             assert getter() == gates._INT_DEFAULTS[name]
+
+    def test_weight5_connectivity_policy_allow_is_explicit_and_live(
+        self, monkeypatch
+    ):
+        monkeypatch.setenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", "ALLOW")
+        assert gates.weight5_connectivity_policy() == "allow"
+        monkeypatch.setenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", "reject")
+        assert gates.weight5_connectivity_policy() == "reject"
+
+    def test_invalid_weight5_connectivity_policy_fails_closed(
+        self, monkeypatch
+    ):
+        monkeypatch.setenv("QCODE_WEIGHT5_CONNECTIVITY_POLICY", "off")
+        try:
+            gates.weight5_connectivity_policy()
+        except ValueError as exc:
+            assert "QCODE_WEIGHT5_CONNECTIVITY_POLICY" in str(exc)
+        else:
+            raise AssertionError("invalid connectivity policy was accepted")
