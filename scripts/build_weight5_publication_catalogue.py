@@ -5,8 +5,8 @@ The campaign JSONL files are append-only observation logs.  This script does
 not modify them.  It applies the same normalization and evidence rules used by
 ``generate_weight5_supplement.py``, adds exact distances transferred from the
 independently certified connected components, filters presentations whose
-best supported upper endpoint is at most two, merges the deterministic CSS
-weight-four exclusion audit, and emits:
+best reported upper endpoint is at most two, merges the deterministic CSS
+weight-four exclusion and explicit-witness audits, and emits:
 
 * one self-contained JSON object per retained presentation; and
 * a manifest that pins every input by SHA-256 and records audit totals.
@@ -39,14 +39,20 @@ sys.path.insert(0, str(ROOT))
 from scripts import generate_weight5_supplement as supplement  # noqa: E402
 
 
-SCHEMA_VERSION = 1
-CATALOGUE_SCHEMA = "weight5_publication_catalogue_v1"
-MANIFEST_SCHEMA = "weight5_publication_manifest_v1"
+SCHEMA_VERSION = 2
+CATALOGUE_SCHEMA = "weight5_publication_catalogue_v2"
+MANIFEST_SCHEMA = "weight5_publication_manifest_v2"
 DEFAULT_COMPONENT_CERTIFICATES = (
     ROOT / "results" / "weight5_component_certifications.jsonl"
 )
 DEFAULT_CSS_LOW_WEIGHT_AUDIT = (
     ROOT / "results" / "weight5_css_low_weight_audit.jsonl"
+)
+DEFAULT_CSS_WEIGHT5_WITNESSES = (
+    ROOT / "results" / "weight5_css_weight5_witnesses.jsonl"
+)
+DEFAULT_CSS_UPPER_BOUND_WITNESSES = (
+    ROOT / "results" / "weight5_css_upper_bound_witnesses.jsonl"
 )
 DEFAULT_CATALOGUE_OUTPUT = ROOT / "results" / "weight5_publication_catalogue.jsonl"
 DEFAULT_MANIFEST_OUTPUT = ROOT / "results" / "weight5_publication_manifest.json"
@@ -55,6 +61,14 @@ DEFAULT_MANIFEST_OUTPUT = ROOT / "results" / "weight5_publication_manifest.json"
 # expectations.  A source edit must be reviewed before these values change.
 EXPECTED_PRESENTATION_STATUS = {"E": 398, "C": 744}
 EXPECTED_CLASS_STATUS = {"E": 227, "C": 403}
+EXPECTED_NONEXACT_PRESENTATION_UPPER_SUPPORT = {
+    "estimated": 680,
+    "supported": 64,
+}
+EXPECTED_NONEXACT_CLASS_UPPER_SUPPORT = {
+    "estimated": 350,
+    "supported": 53,
+}
 EXPECTED_RETAINED_PRESENTATIONS = 1_142
 EXPECTED_RETAINED_CLASSES = 630
 EXPECTED_SOURCE_PRESENTATIONS = 1_297
@@ -70,7 +84,7 @@ EXPECTED_MISSING_CSS_ATTRIBUTION = {
 }
 
 EVIDENCE_METHODS = {
-    "B": "BP-OSD or another decoder witness (upper bound)",
+    "B": "BP-OSD or another decoder estimate (upper endpoint; operator not retained)",
     "H": "exhaustive low-weight hash search (exact)",
     "Hc": "exact component enumeration transferred to an isomorphic direct sum",
     "I": "MILP incumbent (upper bound)",
@@ -94,6 +108,10 @@ class PublicationBuild:
     explicit_component_matches: dict[str, tuple[dict[str, Any], ...]]
     css_low_weight_manifest: dict[str, Any]
     css_low_weight_records: dict[str, dict[str, Any]]
+    css_weight5_witness_manifest: dict[str, Any]
+    css_weight5_witness_records: dict[str, dict[str, Any]]
+    css_upper_bound_witness_manifest: dict[str, Any]
+    css_upper_bound_witness_records: dict[str, dict[str, Any]]
     raw_rows_by_campaign: dict[str, int]
     verification_rows_by_campaign: dict[str, int]
     verification_recorded_at_by_id: dict[str, tuple[str, ...]]
@@ -124,12 +142,16 @@ def _status(lower: int, upper: int, exact: bool) -> str:
     return "C" if lower > 0 else "U"
 
 
-def _status_name(code: str) -> str:
-    return {
-        "E": "exact",
-        "C": "certified_interval",
-        "U": "upper_bound_only",
-    }[code]
+def _status_name(code: str, upper_is_supported: bool) -> str:
+    if code == "E":
+        return "exact"
+    if code == "C":
+        return (
+            "certified_interval"
+            if upper_is_supported
+            else "certified_lower_with_estimated_upper"
+        )
+    return "supported_upper_only" if upper_is_supported else "estimated_upper_only"
 
 
 def _bound_evidence(items: Iterable[tuple[int, str]]) -> list[dict[str, Any]]:
@@ -153,24 +175,60 @@ def _distance_payload(
     """Serialize bounds without representing an absent lower proof as zero."""
     code = _status(lower, upper, exact)
     materialized_lower: int | None = lower if lower > 0 else None
+    lower_items = tuple(lower_evidence)
+    upper_items = tuple(upper_evidence)
+    exact_method_items = set(exact_methods)
+    upper_is_supported = supplement.upper_endpoint_is_rigorous(
+        upper_items, upper
+    )
+    if exact and not upper_is_supported:
+        raise ValueError("exact distance lacks rigorous upper-bound evidence")
+    if exact and not exact_method_items:
+        closing_lower_methods = {
+            method for bound, method in lower_items if bound == lower
+        }
+        closing_upper_methods = {
+            method
+            for bound, method in upper_items
+            if bound == upper and method in supplement.RIGOROUS_UPPER_METHODS
+        }
+        exact_method_items.update(
+            f"{lower_method}+{upper_method}"
+            for lower_method in closing_lower_methods
+            for upper_method in closing_upper_methods
+        )
+        if not exact_method_items:
+            raise ValueError("exact distance lacks an explicit evidence derivation")
     return {
-        "status": _status_name(code),
+        "status": _status_name(code, upper_is_supported),
         "status_code": code,
         "lower": materialized_lower,
         "upper": upper,
+        "estimated_upper": None if upper_is_supported else upper,
         "is_exact": exact,
         "lower_is_certified": lower > 0,
-        "upper_is_witnessed": True,
+        "upper_is_supported": upper_is_supported,
         "fom_lower": (
             k * lower * lower / n if materialized_lower is not None else None
         ),
-        "fom_upper": k * upper * upper / n,
+        "fom_upper": k * upper * upper / n if upper_is_supported else None,
+        "fom_estimate": (
+            None if upper_is_supported else k * upper * upper / n
+        ),
         "evidence": {
-            "exact_methods": sorted(set(exact_methods)),
-            "lower_bounds": _bound_evidence(lower_evidence),
-            "upper_bounds": _bound_evidence(upper_evidence),
+            "exact_methods": sorted(exact_method_items),
+            "lower_bounds": _bound_evidence(lower_items),
+            "upper_bounds": _bound_evidence(upper_items),
         },
     }
+
+
+def _class_distance_differs(
+    direct: dict[str, Any], class_distance: dict[str, Any]
+) -> bool:
+    """Report a numerical tightening or an upgrade to rigorous upper evidence."""
+    fields = ("lower", "upper", "is_exact", "upper_is_supported")
+    return any(direct[field] != class_distance[field] for field in fields)
 
 
 def _load_component_certificates(
@@ -530,6 +588,10 @@ def _verification_recorded_times(
 def build_publication_snapshot(
     component_path: Path,
     css_low_weight_path: Path = DEFAULT_CSS_LOW_WEIGHT_AUDIT,
+    css_weight5_witness_path: Path = DEFAULT_CSS_WEIGHT5_WITNESSES,
+    css_upper_bound_witness_path: Path = (
+        DEFAULT_CSS_UPPER_BOUND_WITNESSES
+    ),
 ) -> PublicationBuild:
     """Load raw observations and materialize the reviewed publication state."""
     (
@@ -595,6 +657,18 @@ def build_publication_snapshot(
             specs_by_id, css_low_weight_path
         )
     )
+    (
+        css_weight5_witness_manifest,
+        css_weight5_witness_records,
+    ) = supplement.load_and_merge_css_weight5_witnesses(
+        specs_by_id, css_weight5_witness_path
+    )
+    (
+        css_upper_bound_witness_manifest,
+        css_upper_bound_witness_records,
+    ) = supplement.load_and_merge_css_upper_bound_witnesses(
+        specs_by_id, css_upper_bound_witness_path
+    )
 
     all_specs.sort(key=supplement.sort_key)
     retained_specs = [
@@ -610,6 +684,14 @@ def build_publication_snapshot(
         explicit_component_matches=explicit_component_matches,
         css_low_weight_manifest=css_low_weight_manifest,
         css_low_weight_records=css_low_weight_records,
+        css_weight5_witness_manifest=css_weight5_witness_manifest,
+        css_weight5_witness_records=css_weight5_witness_records,
+        css_upper_bound_witness_manifest=(
+            css_upper_bound_witness_manifest
+        ),
+        css_upper_bound_witness_records=(
+            css_upper_bound_witness_records
+        ),
         raw_rows_by_campaign=raw_rows_by_campaign,
         verification_rows_by_campaign=verification_rows_by_campaign,
         verification_recorded_at_by_id=verification_recorded_at_by_id,
@@ -622,6 +704,22 @@ def _validate_snapshot_totals(build: PublicationBuild) -> None:
     direct = Counter(supplement.status_for(spec) for spec in build.retained_specs)
     class_status = Counter(
         supplement.presentation_class_status(group) for group in build.classes
+    )
+    direct_support = Counter(
+        (
+            "supported"
+            if supplement.upper_endpoint_is_rigorous(
+                spec.upper_evidence, spec.final_bounds()[1]
+            )
+            else "estimated"
+        )
+        for spec in build.retained_specs
+        if not spec.final_bounds()[2]
+    )
+    class_support = Counter(
+        "supported" if group.upper_is_supported else "estimated"
+        for group in build.classes
+        if not group.exact
     )
     if len(build.retained_specs) != EXPECTED_RETAINED_PRESENTATIONS:
         raise ValueError(
@@ -643,6 +741,16 @@ def _validate_snapshot_totals(build: PublicationBuild) -> None:
             f"unexpected class-distance totals: {dict(class_status)}; "
             f"expected {EXPECTED_CLASS_STATUS}"
         )
+    if dict(direct_support) != EXPECTED_NONEXACT_PRESENTATION_UPPER_SUPPORT:
+        raise ValueError(
+            f"unexpected direct upper-support totals: {dict(direct_support)}; "
+            f"expected {EXPECTED_NONEXACT_PRESENTATION_UPPER_SUPPORT}"
+        )
+    if dict(class_support) != EXPECTED_NONEXACT_CLASS_UPPER_SUPPORT:
+        raise ValueError(
+            f"unexpected class upper-support totals: {dict(class_support)}; "
+            f"expected {EXPECTED_NONEXACT_CLASS_UPPER_SUPPORT}"
+        )
     if any(spec.final_bounds()[1] <= 2 for spec in build.retained_specs):
         raise ValueError("publication catalogue retained a distance endpoint <= 2")
 
@@ -658,7 +766,12 @@ def _validate_snapshot_totals(build: PublicationBuild) -> None:
 
 
 def _source_paths(
-    component_path: Path, css_low_weight_path: Path
+    component_path: Path,
+    css_low_weight_path: Path,
+    css_weight5_witness_path: Path = DEFAULT_CSS_WEIGHT5_WITNESSES,
+    css_upper_bound_witness_path: Path = (
+        DEFAULT_CSS_UPPER_BOUND_WITNESSES
+    ),
 ) -> dict[str, Path]:
     paths: dict[str, Path] = {}
     for campaign in supplement.CAMPAIGNS:
@@ -670,6 +783,10 @@ def _source_paths(
         paths[f"{campaign.slug}:distance_verification"] = campaign.verification_path
     paths["all:component_certifications"] = component_path
     paths["all:css_low_weight_audit"] = css_low_weight_path
+    paths["all:css_weight5_witnesses"] = css_weight5_witness_path
+    paths["all:css_upper_bound_witnesses"] = (
+        css_upper_bound_witness_path
+    )
     return paths
 
 
@@ -682,6 +799,12 @@ def _software_paths() -> dict[str, Path]:
         ),
         "css_low_weight_audit_generator": (
             ROOT / "scripts" / "audit_weight5_css_low_weight.py"
+        ),
+        "css_weight5_witness_generator": (
+            ROOT / "scripts" / "audit_weight5_css_weight5_witnesses.py"
+        ),
+        "css_upper_bound_witness_generator": (
+            ROOT / "scripts" / "audit_weight5_css_upper_bound_witnesses.py"
         ),
         "dependency_manifest": ROOT / "pyproject.toml",
         "dependency_lock": ROOT / "uv.lock",
@@ -733,6 +856,8 @@ def _record_for_spec(
     component_certificates: dict[str, dict[str, Any]],
     explicit_component_matches: dict[str, tuple[dict[str, Any], ...]],
     css_low_weight_records: dict[str, dict[str, Any]],
+    css_weight5_witness_records: dict[str, dict[str, Any]],
+    css_upper_bound_witness_records: dict[str, dict[str, Any]],
     verification_recorded_at: tuple[str, ...],
 ) -> dict[str, Any]:
     direct_lower, direct_upper, direct_exact = spec.final_bounds()
@@ -746,15 +871,6 @@ def _record_for_spec(
         upper_evidence=spec.upper_evidence,
         exact_methods=spec.proof_sources,
     )
-    class_distance = _distance_payload(
-        n=spec.n,
-        k=spec.k,
-        lower=group.lower,
-        upper=group.upper,
-        exact=group.exact,
-    )
-    direct_tuple = (direct_lower, direct_upper, direct_exact)
-    class_tuple = (group.lower, group.upper, group.exact)
     exact_donors = [
         member.spec_id for member in group.members if member.final_bounds()[2]
     ]
@@ -774,18 +890,34 @@ def _record_for_spec(
             if bound == group.upper
         }
     )
+    class_distance = _distance_payload(
+        n=spec.n,
+        k=spec.k,
+        lower=group.lower,
+        upper=group.upper,
+        exact=group.exact,
+        lower_evidence=(
+            (bound, method)
+            for _, bound, method in decisive_lower_evidence
+        ),
+        upper_evidence=(
+            (bound, method)
+            for _, bound, method in decisive_upper_evidence
+        ),
+        exact_methods=(
+            method
+            for member in group.members
+            for method in member.proof_sources
+        ),
+    )
     class_distance.update(
         {
-            "inherited_or_tightened": direct_tuple != class_tuple,
+            "inherited_or_tightened": _class_distance_differs(
+                direct, class_distance
+            ),
             "exact_evidence_member_ids": exact_donors,
             "evidence": {
-                "exact_methods": sorted(
-                    {
-                        method
-                        for member in group.members
-                        for method in member.proof_sources
-                    }
-                ),
+                "exact_methods": class_distance["evidence"]["exact_methods"],
                 "decisive_lower_bounds": [
                     {
                         "presentation_id": presentation_id,
@@ -881,6 +1013,52 @@ def _record_for_spec(
     else:
         css_low_weight_audit = None
 
+    css_weight5_witness_record = css_weight5_witness_records.get(spec.spec_id)
+    if css_weight5_witness_record is not None:
+        record_sources["css_weight5_witnesses"] = source_descriptors[
+            "all:css_weight5_witnesses"
+        ]
+        css_weight5_witness_certification = {
+            "algorithm": css_weight5_witness_record["algorithm"],
+            "historical_upper_bound": css_weight5_witness_record[
+                "historical_upper_bound"
+            ],
+            "certified_exact_distance": 5,
+            "sector_weights": {
+                sector: css_weight5_witness_record[
+                    "replacement_explicit_witnesses"
+                ][sector]["weight"]
+                for sector in ("X", "Z")
+            },
+        }
+    else:
+        css_weight5_witness_certification = None
+
+    css_upper_bound_witness_record = (
+        css_upper_bound_witness_records.get(spec.spec_id)
+    )
+    if css_upper_bound_witness_record is not None:
+        record_sources["css_upper_bound_witnesses"] = source_descriptors[
+            "all:css_upper_bound_witnesses"
+        ]
+        css_upper_bound_witness_correction = {
+            "algorithm": css_upper_bound_witness_record["algorithm"],
+            "historical_upper_bound": css_upper_bound_witness_record[
+                "historical_upper_bound"
+            ],
+            "corrected_upper_bound": css_upper_bound_witness_record[
+                "corrected_upper_bound"
+            ],
+            "sector_weights": {
+                sector: css_upper_bound_witness_record[
+                    "replacement_explicit_witnesses"
+                ][sector]["weight"]
+                for sector in ("X", "Z")
+            },
+        }
+    else:
+        css_upper_bound_witness_correction = None
+
     component_certificate = component_certificates.get(spec.spec_id)
     return {
         "schema_version": SCHEMA_VERSION,
@@ -946,6 +1124,12 @@ def _record_for_spec(
         },
         "component_certification": component_certificate,
         "css_low_weight_audit": css_low_weight_audit,
+        "css_weight5_witness_certification": (
+            css_weight5_witness_certification
+        ),
+        "css_upper_bound_witness_correction": (
+            css_upper_bound_witness_correction
+        ),
         "explicit_bb_component_matches": list(
             explicit_component_matches.get(spec.spec_id, ())
         ),
@@ -969,6 +1153,8 @@ def render_catalogue(
             build.component_certificates,
             build.explicit_component_matches,
             build.css_low_weight_records,
+            build.css_weight5_witness_records,
+            build.css_upper_bound_witness_records,
             build.verification_recorded_at_by_id.get(spec.spec_id, ()),
         )
         for spec in build.retained_specs
@@ -1013,6 +1199,22 @@ def render_manifest(
     class_status = _counter_dict(
         supplement.presentation_class_status(group) for group in build.classes
     )
+    nonexact_direct_support = _counter_dict(
+        (
+            "supported"
+            if supplement.upper_endpoint_is_rigorous(
+                spec.upper_evidence, spec.final_bounds()[1]
+            )
+            else "estimated"
+        )
+        for spec in build.retained_specs
+        if not spec.final_bounds()[2]
+    )
+    nonexact_class_support = _counter_dict(
+        "supported" if group.upper_is_supported else "estimated"
+        for group in build.classes
+        if not group.exact
+    )
     excluded = [
         spec for spec in build.all_specs if not supplement.retain_for_catalogue(spec)
     ]
@@ -1034,6 +1236,18 @@ def render_manifest(
     retained_ids = {spec.spec_id for spec in build.retained_specs}
     low_weight_retained = sorted(set(build.css_low_weight_records) & retained_ids)
     low_weight_excluded = sorted(set(build.css_low_weight_records) - retained_ids)
+    weight5_witness_retained = sorted(
+        set(build.css_weight5_witness_records) & retained_ids
+    )
+    weight5_witness_excluded = sorted(
+        set(build.css_weight5_witness_records) - retained_ids
+    )
+    upper_bound_witness_retained = sorted(
+        set(build.css_upper_bound_witness_records) & retained_ids
+    )
+    upper_bound_witness_excluded = sorted(
+        set(build.css_upper_bound_witness_records) - retained_ids
+    )
     catalogue_bytes = catalogue_payload.encode("utf-8")
     recorded_times_by_campaign: dict[str, list[str]] = {}
     campaign_of = {spec.spec_id: spec.campaign.slug for spec in build.all_specs}
@@ -1065,7 +1279,7 @@ def render_manifest(
                 "version": supplement.distribution_version("igraph"),
             },
             "distance_filter": {
-                "rule": "retain iff best supported distance upper endpoint >= 3",
+                "rule": "retain iff best reported distance endpoint >= 3",
                 "warning": (
                     "For U records this rule does not certify d>=3; their true "
                     "distance may be one or two."
@@ -1075,12 +1289,54 @@ def render_manifest(
         },
         "distance_semantics": {
             "E": "exact distance",
-            "C": "certified positive lower bound and witnessed upper bound",
-            "U": "witnessed upper bound only; no positive lower bound is certified",
+            "C": (
+                "certified positive lower bound plus a reported endpoint; "
+                "upper_is_supported distinguishes rigorous upper evidence "
+                "from a decoder estimate"
+            ),
+            "U": (
+                "reported endpoint only; no positive lower bound is certified; "
+                "upper_is_supported distinguishes rigorous upper evidence "
+                "from a decoder estimate"
+            ),
+            "upper_is_supported": (
+                "true exactly when the decisive upper endpoint has H, Hc, I, "
+                "M, S, or W evidence; false for a B-only endpoint"
+            ),
+            "estimated_upper_and_fom": (
+                "For a B-only decisive endpoint, upper retains the reported "
+                "numeric estimate for compatibility, estimated_upper and "
+                "fom_estimate carry its explicit estimate semantics, and "
+                "fom_upper is null so it cannot be consumed as a certified "
+                "upper-bound FOM. For rigorous endpoints estimated_upper and "
+                "fom_estimate are null."
+            ),
+            "exact_methods": (
+                "direct exact certificates are named by method; exact distances "
+                "closed by matching endpoints use a composite lower+upper label "
+                "such as L4+W"
+            ),
+            "status_labels": {
+                "certified_interval": (
+                    "certified lower and rigorous upper endpoints"
+                ),
+                "certified_lower_with_estimated_upper": (
+                    "certified lower bound plus a B-only estimated endpoint"
+                ),
+                "supported_upper_only": (
+                    "rigorous upper endpoint without a certified positive lower"
+                ),
+                "estimated_upper_only": (
+                    "B-only estimated endpoint without a certified positive lower"
+                ),
+            },
             "evidence_methods": EVIDENCE_METHODS,
             "class_transfer": (
-                "Compatible distance evidence is intersected within each colored-"
-                "BLISS stored-generator Tanner-isomorphism class."
+                "Certified lower bounds are combined within each colored-BLISS "
+                "stored-generator Tanner-isomorphism class. The smallest "
+                "reported endpoint is retained separately, with "
+                "upper_is_supported distinguishing rigorous upper evidence "
+                "from a decoder estimate."
             ),
         },
         "counts": {
@@ -1103,6 +1359,8 @@ def render_manifest(
             ),
             "presentations_by_direct_status": direct_status,
             "classes_by_status": class_status,
+            "nonexact_presentations_by_upper_support": nonexact_direct_support,
+            "nonexact_classes_by_upper_support": nonexact_class_support,
             "presentations_by_campaign_and_direct_status": _nested_status_counts(
                 build.retained_specs
             ),
@@ -1136,6 +1394,24 @@ def render_manifest(
             "css_low_weight_audit_targets_excluded_d_le_2": len(
                 low_weight_excluded
             ),
+            "css_weight5_witness_certifications": len(
+                build.css_weight5_witness_records
+            ),
+            "css_weight5_witness_certifications_retained": len(
+                weight5_witness_retained
+            ),
+            "css_weight5_witness_certifications_excluded_d_le_2": len(
+                weight5_witness_excluded
+            ),
+            "css_upper_bound_witness_corrections": len(
+                build.css_upper_bound_witness_records
+            ),
+            "css_upper_bound_witness_corrections_retained": len(
+                upper_bound_witness_retained
+            ),
+            "css_upper_bound_witness_corrections_excluded_d_le_2": len(
+                upper_bound_witness_excluded
+            ),
             "retained_css_missing_attribution": len(
                 EXPECTED_MISSING_CSS_ATTRIBUTION
             ),
@@ -1167,6 +1443,16 @@ def render_manifest(
             "retained_presentation_ids": low_weight_retained,
             "excluded_presentation_ids": low_weight_excluded,
         },
+        "css_weight5_witness_certification": {
+            "artifact_manifest": build.css_weight5_witness_manifest,
+            "retained_presentation_ids": weight5_witness_retained,
+            "excluded_presentation_ids": weight5_witness_excluded,
+        },
+        "css_upper_bound_witness_correction": {
+            "artifact_manifest": build.css_upper_bound_witness_manifest,
+            "retained_presentation_ids": upper_bound_witness_retained,
+            "excluded_presentation_ids": upper_bound_witness_excluded,
+        },
         "source_artifacts": {
             key: source_descriptors[key]
             for key in sorted(source_descriptors)
@@ -1190,11 +1476,21 @@ def render_manifest(
 
 
 def _build_source_descriptors(
-    component_path: Path, css_low_weight_path: Path
+    component_path: Path,
+    css_low_weight_path: Path,
+    css_weight5_witness_path: Path = DEFAULT_CSS_WEIGHT5_WITNESSES,
+    css_upper_bound_witness_path: Path = (
+        DEFAULT_CSS_UPPER_BOUND_WITNESSES
+    ),
 ) -> dict[str, dict[str, Any]]:
     descriptors = {
         key: _artifact_descriptor(path, jsonl=True)
-        for key, path in _source_paths(component_path, css_low_weight_path).items()
+        for key, path in _source_paths(
+            component_path,
+            css_low_weight_path,
+            css_weight5_witness_path,
+            css_upper_bound_witness_path,
+        ).items()
     }
     descriptors.update(
         {
@@ -1234,6 +1530,16 @@ def main() -> int:
         default=DEFAULT_CSS_LOW_WEIGHT_AUDIT,
     )
     parser.add_argument(
+        "--css-weight5-witnesses",
+        type=Path,
+        default=DEFAULT_CSS_WEIGHT5_WITNESSES,
+    )
+    parser.add_argument(
+        "--css-upper-bound-witnesses",
+        type=Path,
+        default=DEFAULT_CSS_UPPER_BOUND_WITNESSES,
+    )
+    parser.add_argument(
         "--catalogue-output", type=Path, default=DEFAULT_CATALOGUE_OUTPUT
     )
     parser.add_argument(
@@ -1246,14 +1552,29 @@ def main() -> int:
 
     component_path = args.component_certificates.resolve()
     css_low_weight_path = args.css_low_weight_audit.resolve()
+    css_weight5_witness_path = args.css_weight5_witnesses.resolve()
+    css_upper_bound_witness_path = (
+        args.css_upper_bound_witnesses.resolve()
+    )
     catalogue_path = args.catalogue_output.resolve()
     manifest_path = args.manifest_output.resolve()
     initial_source_descriptors = _build_source_descriptors(
-        component_path, css_low_weight_path
+        component_path,
+        css_low_weight_path,
+        css_weight5_witness_path,
+        css_upper_bound_witness_path,
     )
-    build = build_publication_snapshot(component_path, css_low_weight_path)
+    build = build_publication_snapshot(
+        component_path,
+        css_low_weight_path,
+        css_weight5_witness_path,
+        css_upper_bound_witness_path,
+    )
     source_descriptors = _build_source_descriptors(
-        component_path, css_low_weight_path
+        component_path,
+        css_low_weight_path,
+        css_weight5_witness_path,
+        css_upper_bound_witness_path,
     )
     if source_descriptors != initial_source_descriptors:
         raise RuntimeError(

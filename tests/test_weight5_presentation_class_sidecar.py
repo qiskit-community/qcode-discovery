@@ -5,11 +5,57 @@ import re
 from collections import Counter
 from pathlib import Path
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SIDECAR = ROOT / "results" / "weight5_presentation_classes.jsonl"
 CATALOGUE = ROOT / "results" / "weight5_publication_catalogue.jsonl"
 SUPPLEMENT_TABLES = ROOT / "paper" / "weight5" / "weight5_supplemental_tables.tex"
+
+
+def _test_css_spec(campaign, *, lower: int | None, upper: int):
+    from scripts import generate_weight5_supplement as supplement
+
+    A = ((0, 0), (1, 0))
+    B = ((0, 0), (0, 1), (1, 1))
+    code = supplement.build_bb_code(2, 2, list(A), list(B))
+    spec = supplement.Spec(
+        campaign=campaign,
+        ell=2,
+        m=2,
+        n=int(code.num_qudits),
+        k=int(code.dimension),
+        A=A,
+        B=B,
+        C=(),
+        D=(),
+    )
+    if lower is not None:
+        spec.add_lower(lower, "L4")
+    spec.add_upper(upper, "B")
+    return spec
+
+
+def test_decoder_scalar_cannot_close_a_direct_exact_distance():
+    from scripts import generate_weight5_supplement as supplement
+
+    spec = _test_css_spec(supplement.CAMPAIGNS[0], lower=5, upper=5)
+    with pytest.raises(ValueError, match="unsupported exact-distance closure"):
+        spec.final_bounds()
+
+
+def test_decoder_scalar_cannot_close_a_cross_member_class_distance():
+    from scripts import generate_weight5_supplement as supplement
+
+    lower_member = _test_css_spec(
+        supplement.CAMPAIGNS[0], lower=5, upper=6
+    )
+    upper_member = _test_css_spec(
+        supplement.CAMPAIGNS[1], lower=None, upper=5
+    )
+    with pytest.raises(ValueError, match="B-only endpoint cannot close"):
+        supplement.build_presentation_classes([lower_member, upper_member])
 
 
 def load_classes() -> list[dict]:
@@ -32,7 +78,7 @@ def test_weight5_class_sidecar_accounting_and_schema():
     members = [member for row in rows for member in row["member_ids"]]
     assert len(members) == len(set(members)) == 1142
     for row in rows:
-        assert row["schema_version"] == 1
+        assert row["schema_version"] == 2
         assert (
             row["equivalence_relation"]
             == "colored_stored_generator_tanner_isomorphism_v1"
@@ -44,6 +90,13 @@ def test_weight5_class_sidecar_accounting_and_schema():
         ][:10]
         assert row["class_size"] == len(row["member_ids"])
         assert sum(row["member_direct_status_counts"].values()) == row["class_size"]
+        assert row["class_upper_is_supported"] == any(
+            method in {"H", "Hc", "I", "M", "S", "W"}
+            for method in row["class_upper_methods"]
+        )
+        assert row["class_distance_exact"] is False or row[
+            "class_upper_is_supported"
+        ] is True
 
 
 def test_reviewer_duplicate_examples_have_expected_classes():
@@ -91,7 +144,7 @@ def test_class_evidence_transfer_accounting():
     assert direct == {"E": 398, "C": 38, "U": 0}
 
 
-def test_compact_supplement_has_every_exact_class_member_and_one_per_interval_class():
+def test_compact_supplement_has_every_exact_class_member_and_one_per_nonexact_class():
     text = SUPPLEMENT_TABLES.read_text(encoding="utf-8")
     # Match catalogue rows specifically.  Representative presentation IDs are
     # also cited in the class-level parameter summary, so counting every ID in
@@ -113,8 +166,11 @@ def test_compact_supplement_has_every_exact_class_member_and_one_per_interval_cl
             merged["lower"] > direct["lower"]
             or merged["upper"] < direct["upper"]
         )
+        changes_display = strengthened or (
+            merged["upper_is_supported"] and not direct["upper_is_supported"]
+        )
         return (
-            not strengthened,
+            not changes_display,
             direct["status_code"] != "E",
             -direct["lower"],
             direct["upper"] - direct["lower"],
@@ -161,16 +217,26 @@ def test_compact_catalogue_status_and_class_effect_columns_match_sidecar():
         row = by_id[match.group(1)]
         direct = row["distance_direct"]
         merged = row["distance_class"]
-        expected_status = "Exact" if direct["status_code"] == "E" else "Interval"
+        expected_status = (
+            "Exact"
+            if direct["status_code"] == "E"
+            else ("Interval" if direct["upper_is_supported"] else "Estimate")
+        )
         strengthened = not direct["is_exact"] and (
             merged["lower"] > direct["lower"]
             or merged["upper"] < direct["upper"]
         )
-        expected_effect = (
-            "--"
-            if not strengthened
-            else ("Exact" if merged["is_exact"] else "Tighter")
+        support_upgrade = (
+            merged["upper_is_supported"] and not direct["upper_is_supported"]
         )
+        if not strengthened and not support_upgrade:
+            expected_effect = "--"
+        elif merged["is_exact"]:
+            expected_effect = "Exact"
+        elif not strengthened:
+            expected_effect = "Supported"
+        else:
+            expected_effect = "Tighter"
         assert columns[4] == expected_status
         assert columns[5] == expected_effect
 
@@ -184,21 +250,59 @@ def test_compact_catalogue_status_and_class_effect_columns_match_sidecar():
     )
     assert r"$10$ & Exact & -- & $0.93$" in exact_representative
 
-    expected_interval_representatives = {
-        "CS-2a6c3475": ("C006", "[5,10]", "[0.83,3.33]"),
-        "CS-5cdbb079": ("C045", "[5,9]", "[0.62,2.00]"),
-        "CL-ac793cd4": ("C426", "[5,22]", "[0.23,4.48]"),
-        "CL-9b2cfe69": ("C458", "[5,18]", "[0.23,3.00]"),
-        "CL-50ab00d1": ("C466", "[5,14]", "[0.23,1.81]"),
+    expected_nonexact_representatives = {
+        "CS-2a6c3475": (
+            "C006",
+            r"5;\widehat{10}",
+            "Estimate",
+            "Tighter",
+            r"0.83;\widehat{3.33}",
+        ),
+        "CS-5cdbb079": (
+            "C045",
+            r"5;\widehat{9}",
+            "Estimate",
+            "Tighter",
+            r"0.62;\widehat{2.00}",
+        ),
+        "CL-ac793cd4": (
+            "C426",
+            r"5;\widehat{22}",
+            "Estimate",
+            "Tighter",
+            r"0.23;\widehat{4.48}",
+        ),
+        "CL-9b2cfe69": (
+            "C458",
+            r"5;\widehat{18}",
+            "Estimate",
+            "Tighter",
+            r"0.23;\widehat{3.00}",
+        ),
+        "CL-6e6caeb4": (
+            "C466",
+            "[5,12]",
+            "Estimate",
+            "Tighter",
+            "[0.23,1.33]",
+        ),
     }
-    for presentation_id, (class_label, distance, fom) in expected_interval_representatives.items():
+    for presentation_id, values in expected_nonexact_representatives.items():
+        class_label, distance, status, effect, fom = values
         line = next(
             row
             for row in catalogue_lines
             if row.startswith(rf"\texttt{{{presentation_id}/")
         )
         assert line.startswith(rf"\texttt{{{presentation_id}/{class_label}}}")
-        assert rf"${distance}$ & Interval & Tighter & ${fom}$" in line
+        assert rf"${distance}$ & {status} & {effect} & ${fom}$" in line
+
+    support_upgrade = next(
+        row
+        for row in catalogue_lines
+        if row.startswith(r"\texttt{CS-0a81f585/C041}")
+    )
+    assert r"$[5,9]$ & Estimate & Supported & $[0.62,2.00]$" in support_upgrade
 
     assert "S (exact low-weight symplectic result)" not in text
     assert "W (symplectic witness)" not in text

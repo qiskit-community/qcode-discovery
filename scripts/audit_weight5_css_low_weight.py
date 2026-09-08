@@ -2,7 +2,7 @@
 """Deterministically audit every direct-U CSS row through weight four.
 
 The pre-audit normalized campaign snapshot contains 858 retained CSS
-presentations whose direct distance evidence is only an upper-bound witness
+presentations with an upper endpoint but no certified positive lower bound
 (status ``U``).  This script groups those presentations by colored
 stored-generator Tanner isomorphism, rebuilds one representative of each
 class directly over ``Z_ell x Z_m``, and exhaustively determines whether
@@ -481,7 +481,9 @@ def _baseline_catalogue_rows() -> list[dict[str, Any]]:
     publication catalogue.
     """
     campaign_data = supplement.build_catalogue(
-        include_css_low_weight_audit=False
+        include_css_low_weight_audit=False,
+        include_css_weight5_witnesses=False,
+        include_css_upper_bound_witnesses=False,
     )
     specs = [spec for _, retained, _, _ in campaign_data for spec in retained]
     classes = supplement.build_presentation_classes(specs)
@@ -492,6 +494,9 @@ def _baseline_catalogue_rows() -> list[dict[str, Any]]:
         class_status = supplement.presentation_class_status(group)
         for spec in group.members:
             direct_lower, direct_upper, direct_exact = spec.final_bounds()
+            direct_upper_is_supported = supplement.upper_endpoint_is_rigorous(
+                spec.upper_evidence, direct_upper
+            )
             rows.append(
                 {
                     "presentation_id": spec.spec_id,
@@ -511,12 +516,14 @@ def _baseline_catalogue_rows() -> list[dict[str, Any]]:
                         "lower": direct_lower or None,
                         "upper": direct_upper,
                         "is_exact": direct_exact,
+                        "upper_is_supported": direct_upper_is_supported,
                     },
                     "distance_class": {
                         "status_code": class_status,
                         "lower": group.lower or None,
                         "upper": group.upper,
                         "is_exact": group.exact,
+                        "upper_is_supported": group.upper_is_supported,
                         "inherited_or_tightened": (
                             (direct_lower, direct_upper, direct_exact)
                             != (group.lower, group.upper, group.exact)
@@ -607,6 +614,7 @@ def _post_audit_distance(
     source_lower = source_distance["lower"] or 0
     source_upper = int(source_distance["upper"])
     source_exact = bool(source_distance["is_exact"])
+    source_upper_is_supported = bool(source_distance["upper_is_supported"])
     audit_exact = audit["exact_distance"]
     if audit_exact is not None:
         if source_lower > audit_exact or source_upper < audit_exact:
@@ -616,6 +624,7 @@ def _post_audit_distance(
             )
         lower = upper = audit_exact
         exact = True
+        upper_is_supported = True
         evidence_method = "H"
     else:
         audit_lower = int(audit["certified_lower_bound"])
@@ -625,16 +634,26 @@ def _post_audit_distance(
             )
         lower = max(source_lower, audit_lower)
         upper = source_upper
-        exact = source_exact or lower == upper
+        exact = source_exact or (lower == upper and source_upper_is_supported)
+        upper_is_supported = source_upper_is_supported
         if source_exact:
             lower = upper = source_upper
         evidence_method = "L4"
     return {
         "status_code": "E" if exact else "C",
-        "status": "exact" if exact else "certified_interval",
+        "status": (
+            "exact"
+            if exact
+            else (
+                "certified_interval"
+                if upper_is_supported
+                else "certified_lower_with_estimated_upper"
+            )
+        ),
         "lower": lower,
         "upper": upper,
         "is_exact": exact,
+        "upper_is_supported": upper_is_supported,
         "new_evidence_method": evidence_method,
     }
 
@@ -721,6 +740,7 @@ def _audit_class(
             "lower": source_distance["lower"],
             "upper": source_distance["upper"],
             "is_exact": source_distance["is_exact"],
+            "upper_is_supported": source_distance["upper_is_supported"],
         },
         "post_audit_class_distance": post_audit,
         "transfer": {

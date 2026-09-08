@@ -1,9 +1,9 @@
 {
   "artifact_schema": "weight5_referee_v4_checks_v1",
   "catalogue_source": {
-    "bytes": 4843420,
+    "bytes": 5090330,
     "path": "results/weight5_publication_catalogue.jsonl",
-    "sha256": "fd177f878bf10d2d1e84ce3e64bb56f9610a1501fa578ae4d09db14700a659c5"
+    "sha256": "be92c4fd761d13ac1a215281cf14356e22344a6ebd54bcff183d4bb0fa218a2e"
   },
   "css_sector_agreement": {
     "exact_css_milp": {
@@ -42,9 +42,9 @@
         "exact_4": 37
       },
       "source": {
-        "bytes": 992285,
+        "bytes": 1026187,
         "path": "results/weight5_css_low_weight_audit.jsonl",
-        "sha256": "6c41846bfdfd29266386ed57307c50eea2905dbb119cb7ce681dd58aa895585c"
+        "sha256": "b0c2f28a6d3a4c21910f361e97cee69ce72dd7b19491866ef55b5320152c30ed"
       },
       "x_z_agreements": 492
     },
@@ -54,9 +54,9 @@
       "presentation_classes": 32,
       "presentations": 45,
       "source": {
-        "bytes": 80744,
+        "bytes": 82253,
         "path": "results/weight5_css_weight5_witnesses.jsonl",
-        "sha256": "364994476161cda985941b4154e643e68a333bfc9e3259ad21ffc437873d6f62"
+        "sha256": "b78ec37406d5b9d8160d067f1498b97cdf572e3e13f0d2b13cae2817d7f08e87"
       }
     }
   },

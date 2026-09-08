@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Build the weight-five campaign comparison data and exact-only figure.
 
-The script deliberately separates exact distances, certified intervals,
-reported distances, and witness-only upper bounds.  In particular, a MILP
-incumbent or BP--OSD logical operator proves only ``d <= d_witness``.  A
-completed low-weight exhaustive search can additionally certify a lower
-endpoint.
+The script deliberately separates exact distances, certified lower bounds,
+decoder estimates, reported distances, and explicit upper bounds.  A retained
+logical operator or MILP incumbent supports ``d <= d_upper``; a BP--OSD scalar
+whose operator was not retained is recorded only as an estimated endpoint.  A
+completed low-weight exhaustive search can additionally certify a lower endpoint.
 
-The CSV retains every aggregated point, including intervals, witness-only
-upper bounds, disconnected parent presentations, and their evidence status.
+The CSV retains every aggregated point, including rigorous intervals, decoder
+estimates, reported endpoints, disconnected parent presentations, and their
+evidence status.
 Current weight-five rows are read only from the normalized publication
 catalogue; raw discovery logs are not reinterpreted here.
 The publication figure is deliberately stricter: it shows only exact-distance
@@ -71,6 +72,7 @@ COMPONENT_CLASSES = RESULTS / "weight5_component_classes.jsonl"
 RATE_D_MAX = 30.0
 FOM_MIN = 0.035
 FOM_MAX = 33.0
+RIGOROUS_UPPER_METHODS = {"H", "Hc", "I", "M", "S", "W"}
 
 COLORS = {4: "#CC79A7", 5: "#0072B2", 6: "#D55E00", 8: "#009E73"}
 CURRENT_CSS_MARKER = "*"
@@ -329,6 +331,9 @@ def base_record(
     class_status_code: str = "",
     class_d_lower: int | None = None,
     class_d_upper: int | None = None,
+    class_d_estimate: int | None = None,
+    upper_is_supported: bool | None = None,
+    class_upper_is_supported: bool | None = None,
 ) -> dict[str, Any]:
     if status not in {"exact", "interval", "reported", "upper_bound"}:
         raise ValueError(f"unknown distance status: {status}")
@@ -341,6 +346,22 @@ def base_record(
             raise ValueError(f"empty distance interval: [{d_lower}, {d}]")
     elif d_lower is not None:
         raise ValueError(f"d_lower is not valid for distance status {status}")
+    if upper_is_supported is None and status in {"exact", "interval", "upper_bound"}:
+        upper_is_supported = True
+    if status == "exact" and upper_is_supported is not True:
+        raise ValueError("an exact distance requires supported upper evidence")
+    if upper_is_supported is False and status == "reported":
+        raise ValueError("a reported literature value is not a decoder estimate")
+    if class_upper_is_supported is None and class_status_code == "E":
+        class_upper_is_supported = True
+    if class_upper_is_supported is True and (
+        class_d_upper is None or class_d_estimate is not None
+    ):
+        raise ValueError("supported class endpoint is assigned inconsistently")
+    if class_upper_is_supported is False and (
+        class_d_upper is not None or class_d_estimate is None
+    ):
+        raise ValueError("estimated class endpoint is assigned inconsistently")
     return {
         "cohort": cohort,
         "generation": generation,
@@ -350,7 +371,9 @@ def base_record(
         "k": k,
         "d": d,
         "d_lower": d_lower,
-        "d_upper": d if status in {"exact", "interval", "upper_bound"} else None,
+        "d_upper": d if upper_is_supported else None,
+        "d_estimate": d if upper_is_supported is False else None,
+        "upper_is_supported": upper_is_supported,
         "distance_status": status,
         "evidence": evidence,
         "source": source,
@@ -368,6 +391,8 @@ def base_record(
         "class_status_code": class_status_code,
         "class_d_lower": class_d_lower,
         "class_d_upper": class_d_upper,
+        "class_d_estimate": class_d_estimate,
+        "class_upper_is_supported": class_upper_is_supported,
     }
 
 
@@ -381,6 +406,15 @@ def archive_evidence_text(distance: dict[str, Any]) -> str:
     upper = sorted(
         {(int(item["bound"]), str(item["method"])) for item in evidence["upper_bounds"]}
     )
+    unknown_upper_methods = {
+        method for _, method in upper if method not in RIGOROUS_UPPER_METHODS | {"B"}
+    }
+    if unknown_upper_methods:
+        raise ValueError(f"unknown upper-evidence methods: {unknown_upper_methods}")
+    supported_upper = [
+        item for item in upper if item[1] in RIGOROUS_UPPER_METHODS
+    ]
+    estimated_upper = [item for item in upper if item[1] == "B"]
     parts = []
     if exact:
         parts.append("exact methods " + "/".join(exact))
@@ -389,10 +423,19 @@ def archive_evidence_text(distance: dict[str, Any]) -> str:
             "certified lower "
             + ", ".join(f"{bound} ({method})" for bound, method in lower)
         )
-    if upper:
+    if supported_upper:
         parts.append(
-            "witnessed upper "
-            + ", ".join(f"{bound} ({method})" for bound, method in upper)
+            "supported upper "
+            + ", ".join(
+                f"{bound} ({method})" for bound, method in supported_upper
+            )
+        )
+    if estimated_upper:
+        parts.append(
+            "estimated endpoint "
+            + ", ".join(
+                f"{bound} ({method})" for bound, method in estimated_upper
+            )
         )
     return "normalized direct evidence: " + "; ".join(parts)
 
@@ -411,7 +454,7 @@ def load_current_publication_catalogue() -> list[dict[str, Any]]:
     status_map = {"E": "exact", "C": "interval", "U": "upper_bound"}
     for row in rows:
         if (
-            row.get("schema_version") != 1
+            row.get("schema_version") != 2
             or row.get("record_type") != "weight5_presentation"
         ):
             raise ValueError("unsupported weight-five publication catalogue record")
@@ -430,6 +473,14 @@ def load_current_publication_catalogue() -> list[dict[str, Any]]:
         status = status_map[status_code]
         upper = positive_int(distance["upper"], "publication distance upper")
         lower = distance["lower"] if status == "interval" else None
+        upper_is_supported = distance.get("upper_is_supported")
+        class_upper_is_supported = class_distance.get("upper_is_supported")
+        if not isinstance(upper_is_supported, bool) or not isinstance(
+            class_upper_is_supported, bool
+        ):
+            raise ValueError(f"missing endpoint support status for {identifier}")
+        if status == "exact" and not upper_is_supported:
+            raise ValueError(f"exact distance lacks supported evidence: {identifier}")
 
         connectivity = row["connectivity"]
         connectivity_status = str(connectivity["state"])
@@ -483,7 +534,18 @@ def load_current_publication_catalogue() -> list[dict[str, Any]]:
                 catalogue_status_code=status_code,
                 class_status_code=str(class_distance["status_code"]),
                 class_d_lower=class_distance["lower"],
-                class_d_upper=class_distance["upper"],
+                class_d_upper=(
+                    class_distance["upper"]
+                    if class_upper_is_supported
+                    else None
+                ),
+                class_d_estimate=(
+                    None
+                    if class_upper_is_supported
+                    else class_distance["upper"]
+                ),
+                upper_is_supported=upper_is_supported,
+                class_upper_is_supported=class_upper_is_supported,
             )
         )
     expected = int(manifest["counts"]["retained_presentations"])
@@ -518,6 +580,8 @@ def load_component_classes() -> list[dict[str, Any]]:
     if len(manifests) != 1:
         raise ValueError("component-class artifact must contain one manifest")
     manifest = manifests[0]
+    if manifest.get("schema_version") != 2:
+        raise ValueError("unsupported component-class artifact schema")
     source = manifest["source_file"]
     source_records = int(source["records"])
     source_digest = str(source["sha256"])
@@ -544,6 +608,8 @@ def load_component_classes() -> list[dict[str, Any]]:
     status_map = {"E": "exact", "C": "interval", "U": "upper_bound"}
     records = []
     for row in classes:
+        if row.get("schema_version") != 2:
+            raise ValueError("unsupported component-class record schema")
         parameters = row["parameters"]
         distance = row["distance"]
         status_code = str(distance["status_code"])
@@ -552,6 +618,12 @@ def load_component_classes() -> list[dict[str, Any]]:
         k = positive_int(parameters["k"], "component-class k")
         upper = positive_int(distance["upper"], "component-class distance upper")
         lower = distance["lower"] if status == "interval" else None
+        upper_is_supported = distance.get("upper_is_supported")
+        if not isinstance(upper_is_supported, bool):
+            raise ValueError("component class lacks endpoint support status")
+        expected_estimate = None if upper_is_supported else upper
+        if distance.get("estimated_upper") != expected_estimate:
+            raise ValueError("component-class estimate disagrees with support status")
         records.append(
             base_record(
                 cohort="current_component_class_w5",
@@ -564,8 +636,13 @@ def load_component_classes() -> list[dict[str, Any]]:
                 d_lower=lower,
                 status=status,
                 evidence=(
-                    "distance evidence transferred from component-canonical "
-                    "parent classes"
+                    (
+                        "supported distance bound transferred from "
+                        "component-canonical parent classes"
+                        if upper_is_supported
+                        else "estimated endpoint transferred from "
+                        "component-canonical parent classes"
+                    )
                 ),
                 source="results/weight5_component_classes.jsonl",
                 connectivity_status="component canonicalized",
@@ -582,7 +659,10 @@ def load_component_classes() -> list[dict[str, Any]]:
                 catalogue_status_code=status_code,
                 class_status_code=status_code,
                 class_d_lower=distance["lower"],
-                class_d_upper=upper,
+                class_d_upper=upper if upper_is_supported else None,
+                class_d_estimate=None if upper_is_supported else upper,
+                upper_is_supported=upper_is_supported,
+                class_upper_is_supported=upper_is_supported,
             )
         )
     return records
@@ -1393,6 +1473,12 @@ def aggregate_records(records: Iterable[dict[str, Any]]) -> list[dict[str, Any]]
             record["campaign_origin"],
             record["source_campaign"],
             record["catalogue_status_code"],
+            record["upper_is_supported"],
+            record["class_status_code"],
+            record["class_d_lower"],
+            record["class_d_upper"],
+            record["class_d_estimate"],
+            record["class_upper_is_supported"],
         )
         groups[key].append(record)
 
@@ -1455,6 +1541,10 @@ def aggregate_records(records: Iterable[dict[str, Any]]) -> list[dict[str, Any]]
         )
         row["rate"] = row["k"] / row["n"]
         row["fom"] = row["k"] * row["d"] ** 2 / row["n"]
+        row["fom_upper"] = row["fom"] if row["d_upper"] is not None else None
+        row["fom_estimate"] = (
+            row["fom"] if row["d_estimate"] is not None else None
+        )
         row["rate_panel_clipped"] = (
             row["distance_status"] in {"interval", "upper_bound"}
             and row["d"] > RATE_D_MAX
@@ -1465,7 +1555,11 @@ def aggregate_records(records: Iterable[dict[str, Any]]) -> list[dict[str, Any]]
         )
         row["plot_clipped"] = row["rate_panel_clipped"] or row["fom_panel_clipped"]
         if not row["label"]:
-            if row["distance_status"] == "upper_bound":
+            if row["d_estimate"] is not None and row["d_lower"] is not None:
+                distance = rf"d\geq {row['d_lower']};\ \widehat d={row['d_estimate']}"
+            elif row["d_estimate"] is not None:
+                distance = rf"\widehat d={row['d_estimate']}"
+            elif row["distance_status"] == "upper_bound":
                 distance = rf"\leq {row['d']}"
             elif row["distance_status"] == "interval":
                 distance = rf"{row['d_lower']}\leq d\leq {row['d']}"
@@ -1485,13 +1579,14 @@ def aggregate_records(records: Iterable[dict[str, Any]]) -> list[dict[str, Any]]
         row
         for row in aggregated
         if row["distance_status"] in {"interval", "upper_bound"}
+        and row["d_upper"] is not None
     ]
     for row in exact:
         row["exact_pareto"] = not any(
             other is not row and dominates(other, row) for other in exact
         )
-    # Reported literature values lack a local certificate and therefore do
-    # not define even the exploratory upper-endpoint envelope.
+    # Reported literature values and B-only decoder estimates lack a local
+    # certificate and therefore do not define the upper-bound envelope.
     upper_comparators = exact + upper
     for row in upper:
         row["upper_bound_envelope"] = not any(
@@ -1674,6 +1769,23 @@ def validate(records: list[dict[str, Any]], aggregated: list[dict[str, Any]]) ->
         raise ValueError(f"unexpected cohort/status counts: {dict(observed)}")
     if len(records) != sum(expected_raw.values()):
         raise ValueError(f"unexpected total record count: {len(records)}")
+    for record in records:
+        supported = record["upper_is_supported"]
+        expected_upper = record["d"] if supported is True else None
+        expected_estimate = record["d"] if supported is False else None
+        if (
+            record["d_upper"] != expected_upper
+            or record["d_estimate"] != expected_estimate
+        ):
+            raise ValueError(
+                "distance endpoint was assigned to the wrong support field: "
+                f"{record['cohort']} [[{record['n']},{record['k']}]]"
+            )
+    if any(
+        row["upper_bound_envelope"] and row["upper_is_supported"] is not True
+        for row in aggregated
+    ):
+        raise ValueError("an estimated endpoint entered the upper-bound envelope")
     challenge_w4 = {
         (row["n"], row["k"], row["d"], row["distance_status"])
         for row in records
@@ -1972,13 +2084,19 @@ def write_csv(rows: list[dict[str, Any]]) -> None:
         "d",
         "d_lower",
         "d_upper",
+        "d_estimate",
+        "upper_is_supported",
         "distance_status",
         "catalogue_status_code",
         "class_status_code",
         "class_d_lower",
         "class_d_upper",
+        "class_d_estimate",
+        "class_upper_is_supported",
         "rate",
         "fom",
+        "fom_upper",
+        "fom_estimate",
         "multiplicity",
         "rate_panel_clipped",
         "fom_panel_clipped",
@@ -2010,6 +2128,14 @@ def write_csv(rows: list[dict[str, Any]]) -> None:
             output = {field: row[field] for field in fields}
             output["rate"] = f"{row['rate']:.12g}"
             output["fom"] = f"{row['fom']:.12g}"
+            output["fom_upper"] = (
+                "" if row["fom_upper"] is None else f"{row['fom_upper']:.12g}"
+            )
+            output["fom_estimate"] = (
+                ""
+                if row["fom_estimate"] is None
+                else f"{row['fom_estimate']:.12g}"
+            )
             writer.writerow(output)
 
 
@@ -2380,8 +2506,12 @@ def print_summary(records: list[dict[str, Any]], aggregated: list[dict[str, Any]
     print(f"aggregated comparison rows: {len(aggregated)}")
     print(f"exact Pareto points: {sum(row['exact_pareto'] for row in aggregated)}")
     print(
-        "exploratory upper-bound envelope: "
+        "upper-bound envelope: "
         f"{sum(row['upper_bound_envelope'] for row in aggregated)}"
+    )
+    print(
+        "decoder-estimated endpoints: "
+        f"{sum(row['d_estimate'] is not None for row in aggregated)}"
     )
     for weight in (4, 5, 6, 8):
         rate_count = sum(
@@ -2416,7 +2546,7 @@ def print_summary(records: list[dict[str, Any]], aggregated: list[dict[str, Any]
     )
     print(f"retained PBB origin: fixed safety net={safety}, search generated={searched}")
     print(
-        "high upper bounds clipped from both panels: "
+        "high nonexact endpoints clipped from both panels: "
         f"{sum(row['plot_clipped'] for row in aggregated)}"
     )
     print(f"wrote {CSV_PATH.relative_to(ROOT)}")

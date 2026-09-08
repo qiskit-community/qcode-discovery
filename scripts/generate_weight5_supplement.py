@@ -7,9 +7,9 @@ change between observations.  This script therefore
 
 * sorts the terms within each polynomial and keys a specification by
   ``(campaign, ell, m, A, B, C, D)``;
-* keeps the tightest witnessed upper bound and strongest proved lower bound;
+* keeps the tightest reported upper endpoint and strongest proved lower bound;
 * lets a consistent exact certificate replace both bounds and promotes a
-  matching certified lower bound and witnessed upper bound to exact;
+  matching certified lower bound and rigorous upper bound to exact;
 * merges native CSS discovery events and reconstructed historical PBB
   generator-attribution sidecars; and
 * assigns every retained row to a presentation class defined by colored-BLISS
@@ -17,14 +17,14 @@ change between observations.  This script therefore
 * fails loudly on inconsistent dimensions or distance evidence.
 
 The typeset campaign tables contain every proposal in an exact class and one
-deterministic representative of each interval class; the complete retained
+deterministic representative of each nonexact class; the complete retained
 catalogue remains in the machine-readable publication artifact.  The BLISS
 relation includes sector exchange, monomial shifts, and
 lattice automorphisms that preserve the colored stored generator graph, but
 not equivalences requiring stabilizer-basis changes or local Clifford gates.
-Specifications are retained when their best supported distance upper endpoint
+Specifications are retained when their best reported distance endpoint
 is at least three.  Thus exact ``d <= 2``
-specifications and unresolved specifications already witnessed at ``d <= 2``
+specifications and unresolved specifications reported at ``d <= 2``
 are omitted, while unresolved specifications with upper endpoint at least
 three remain visible.
 
@@ -33,11 +33,11 @@ The PBB worker exhaustively excludes logical operators through weight six for
 ``milp+bposd``, ``bposd``, or ``milp_exact`` record.  Those completed searches
 give certified lower bounds 7 and 5, respectively.  The completed large-PBB
 deep-MILP audit is merged by specification.  Rows for which not every logical
-problem reached optimality remain certified intervals rather than being
-promoted from their incumbent witnesses.
+problem reached optimality retain certified lower bounds with rigorous MILP
+upper bounds rather than being promoted to exact distance.
 
 The post-hoc CSS audit similarly exhausts both logical sectors through weight
-four for every formerly upper-bound-only CSS row.  Its class-representative
+four for every CSS row formerly lacking direct lower-bound evidence.  Its class-representative
 results are transferred only across verified colored-Tanner isomorphisms.
 
 Usage:
@@ -84,13 +84,51 @@ PBB_COMPONENT_CERTIFICATION_PATH = (
 CSS_LOW_WEIGHT_AUDIT_PATH = (
     ROOT / "results" / "weight5_css_low_weight_audit.jsonl"
 )
+CSS_WEIGHT5_WITNESSES_PATH = (
+    ROOT / "results" / "weight5_css_weight5_witnesses.jsonl"
+)
+CSS_UPPER_BOUND_WITNESSES_PATH = (
+    ROOT / "results" / "weight5_css_upper_bound_witnesses.jsonl"
+)
+CSS_UPPER_BOUND_WITNESS_SCHEMA_VERSION = 1
+CSS_UPPER_BOUND_WITNESS_ARTIFACT_SCHEMA = (
+    "weight5_css_upper_bound_witnesses_v1"
+)
+CSS_UPPER_BOUND_WITNESS_ALGORITHM = (
+    "randomized_gf2_kernel_permutation_search_v1"
+)
+CSS_UPPER_BOUND_WITNESS_GENERATOR = (
+    "scripts/audit_weight5_css_upper_bound_witnesses.py"
+)
+EXPECTED_CSS_UPPER_BOUND_WITNESSES = {
+    "CL-1a333605": ("B", 22, 14),
+    "CL-23177205": ("B", 22, 14),
+    "CL-40a1f698": ("B", 23, 12),
+    "CL-4a95cc39": ("B", 14, 13),
+    "CL-54d0129e": ("B", 18, 13),
+    "CL-85245770": ("B", 17, 14),
+    "CL-d192c3d1": ("B", 14, 13),
+    "CL-daf9d6b0": ("B", 22, 16),
+    "CL-f5754da6": ("I", 24, 23),
+    "CS-22b9dba0": ("B", 14, 9),
+}
+CSS_UPPER_BOUND_WITNESS_SEEDS = {"X": 1000, "Z": 2000}
+CSS_UPPER_BOUND_WITNESS_DEFAULT_TRIALS = 400
+CSS_UPPER_BOUND_WITNESS_STRESS_TRIALS = {"CL-f5754da6": 8_000}
+CSS_WEIGHT5_WITNESS_SCHEMA_VERSION = 1
+CSS_WEIGHT5_WITNESS_ARTIFACT_SCHEMA = "weight5_css_weight5_witnesses_v1"
+CSS_WEIGHT5_WITNESS_ALGORITHM = "translation_anchored_pair_pair_collision_v1"
+CSS_WEIGHT5_WITNESS_GENERATOR = (
+    "scripts/audit_weight5_css_weight5_witnesses.py"
+)
+RIGOROUS_UPPER_METHODS = {"H", "Hc", "I", "M", "S", "W"}
 PUBLICATION_CATALOGUE_PATH = ROOT / "results" / "weight5_publication_catalogue.jsonl"
 PUBLICATION_MANIFEST_PATH = ROOT / "results" / "weight5_publication_manifest.json"
 COMPONENT_CLASSES_PATH = ROOT / "results" / "weight5_component_classes.jsonl"
 PBB_COMPONENT_LC_AUDIT_PATH = (
     ROOT / "results" / "weight5_pbb_component_lc_audit.jsonl"
 )
-CLASS_SCHEMA_VERSION = 1
+CLASS_SCHEMA_VERSION = 2
 CLASS_EQUIVALENCE_RELATION = "colored_stored_generator_tanner_isomorphism_v1"
 
 FIXED_PBB_SAFETY_NET = {
@@ -107,6 +145,16 @@ FIXED_PBB_SAFETY_NET = {
         ((0, 0), (0, 1)),
     ),
 }
+
+
+def upper_endpoint_is_rigorous(
+    upper_evidence: Iterable[tuple[int, str]], endpoint: int
+) -> bool:
+    """Whether the decisive endpoint is backed by non-decoder evidence."""
+    return any(
+        bound == endpoint and method in RIGOROUS_UPPER_METHODS
+        for bound, method in upper_evidence
+    )
 
 
 @dataclass(frozen=True)
@@ -185,7 +233,7 @@ class Spec:
     lower_evidence: list[tuple[int, str]] = field(default_factory=list)
     upper_evidence: list[tuple[int, str]] = field(default_factory=list)
     proof_sources: set[str] = field(default_factory=set)
-    witness_sources: set[str] = field(default_factory=set)
+    upper_sources: set[str] = field(default_factory=set)
     model_aliases: set[str | None] = field(default_factory=set)
     possible_model_aliases: set[str | None] = field(default_factory=set)
     attribution_status: str | None = None
@@ -213,7 +261,7 @@ class Spec:
             return
         d = positive_int(value, f"{self.campaign.slug}: upper bound")
         self.upper_evidence.append((d, source))
-        self.witness_sources.add(source)
+        self.upper_sources.add(source)
 
     def final_bounds(self) -> tuple[int, int, bool]:
         if len(self.exact_values) > 1:
@@ -238,6 +286,18 @@ class Spec:
                 f"empty distance interval for {self.spec_id}: [{lower}, {upper}]"
             )
         if lower > 0 and lower == upper:
+            closing_methods = sorted(
+                {
+                    method
+                    for bound, method in self.upper_evidence
+                    if bound == upper
+                }
+            )
+            if not upper_endpoint_is_rigorous(self.upper_evidence, upper):
+                raise ValueError(
+                    f"unsupported exact-distance closure for {self.spec_id}: "
+                    f"lower={lower}, upper methods={closing_methods}"
+                )
             return lower, upper, True
         return lower, upper, False
 
@@ -286,6 +346,8 @@ class PresentationClass:
     lower: int
     upper: int
     exact: bool
+    upper_is_supported: bool
+    upper_methods: tuple[str, ...]
     connectivity: str
 
 
@@ -394,8 +456,8 @@ def add_raw_evidence(spec: Spec, row: dict) -> None:
     spec.observations += 1
 
     if spec.campaign.family == "CSS":
-        # Every persisted CSS campaign stage is either a decoder witness or
-        # an exact-search timeout retaining its preceding decoder witness.
+        # Every persisted CSS campaign stage is either a decoder estimate or
+        # an exact-search timeout retaining its preceding decoder estimate.
         spec.add_upper(d, "B")
         return
 
@@ -421,7 +483,7 @@ def add_raw_evidence(spec: Spec, row: dict) -> None:
         spec.add_upper(row["d_milp"], "I")
     if row.get("d_bposd") is not None:
         spec.add_upper(row["d_bposd"], "B")
-    # The persisted d is the best witnessed upper bound available in-loop.
+    # The persisted d is the best reported upper endpoint available in-loop.
     spec.add_upper(d, "B" if method == "bposd" else "I")
 
 
@@ -688,8 +750,8 @@ def load_and_merge_css_low_weight_audit(
             "3": 42,
             "4": 50,
         },
-        "post_audit_status_by_class": {"C": 389, "E": 103},
-        "post_audit_status_by_target_presentation": {"C": 686, "E": 172},
+        "post_audit_status_by_class": {"C": 421, "E": 71},
+        "post_audit_status_by_target_presentation": {"C": 735, "E": 123},
         "presentations_proved_d_le_2": 2,
     }
     if (
@@ -875,6 +937,707 @@ def load_and_merge_css_low_weight_audit(
     return manifest, target_records
 
 
+def _css_witness_source_paths() -> set[Path]:
+    """Return every data artifact read while rebuilding witness targets."""
+    paths = {
+        COMPONENT_CERTIFICATION_PATH,
+        CSS_LOW_WEIGHT_AUDIT_PATH,
+    }
+    for campaign in CAMPAIGNS:
+        paths.add(campaign.raw_path)
+        paths.add(campaign.verification_path)
+        if campaign.event_path is not None:
+            paths.add(campaign.event_path)
+        if campaign.attribution_path is not None:
+            paths.add(campaign.attribution_path)
+    return {path.resolve() for path in paths}
+
+
+def _validate_css_witness_source_manifest(manifest: dict) -> None:
+    """Require an exact, hash-pinned list of witness-generator data inputs."""
+    source_artifacts = manifest.get("source_artifacts")
+    if not isinstance(source_artifacts, dict) or set(source_artifacts) != {
+        "catalogue_inputs",
+        "low_weight_audit",
+    }:
+        raise ValueError("malformed CSS witness source manifest")
+    low_weight_descriptor = source_artifacts["low_weight_audit"]
+    catalogue_descriptors = source_artifacts["catalogue_inputs"]
+    if not isinstance(low_weight_descriptor, dict) or not isinstance(
+        catalogue_descriptors, list
+    ):
+        raise ValueError("malformed CSS witness source descriptors")
+
+    expected_sources = _css_witness_source_paths()
+    observed_sources: set[Path] = set()
+    for descriptor in [low_weight_descriptor, *catalogue_descriptors]:
+        if not isinstance(descriptor, dict):
+            raise ValueError("malformed CSS witness source descriptor")
+        descriptor_path = descriptor.get("path")
+        if not isinstance(descriptor_path, str) or not descriptor_path:
+            raise ValueError("CSS witness source path is missing")
+        source_path = (ROOT / descriptor_path).resolve()
+        try:
+            expected_relative = source_path.relative_to(ROOT.resolve()).as_posix()
+        except ValueError as exc:
+            raise ValueError(
+                f"CSS witness source is outside the repository: {descriptor_path}"
+            ) from exc
+        if descriptor_path != expected_relative or source_path not in expected_sources:
+            raise ValueError(f"unexpected CSS witness source: {descriptor_path}")
+        if source_path in observed_sources:
+            raise ValueError(f"duplicate CSS witness source: {descriptor_path}")
+        observed_sources.add(source_path)
+        if (
+            not source_path.is_file()
+            or source_digest(source_path) != descriptor.get("sha256")
+        ):
+            raise ValueError(f"CSS witness source hash mismatch: {source_path}")
+    if observed_sources != expected_sources:
+        missing = sorted(
+            str(item.relative_to(ROOT))
+            for item in expected_sources - observed_sources
+        )
+        extra = sorted(
+            str(item.relative_to(ROOT))
+            for item in observed_sources - expected_sources
+        )
+        raise ValueError(
+            f"CSS witness source coverage mismatch: missing={missing}, extra={extra}"
+        )
+    if (
+        (ROOT / low_weight_descriptor["path"]).resolve()
+        != CSS_LOW_WEIGHT_AUDIT_PATH.resolve()
+    ):
+        raise ValueError("CSS witness low-weight source is malformed")
+
+
+def _css_matrix_rows_as_int(matrix: object, num_columns: int) -> list[int]:
+    """Convert a binary check matrix to the audit artifact's integer rows."""
+    rows: list[int] = []
+    for values in matrix:  # type: ignore[union-attr]
+        if len(values) != num_columns:
+            raise ValueError("rebuilt CSS check matrix has the wrong width")
+        row = 0
+        for column, raw_value in enumerate(values):
+            value = int(raw_value)
+            if value not in (0, 1):
+                raise ValueError("rebuilt CSS check matrix is not binary")
+            row |= value << column
+        rows.append(row)
+    return rows
+
+
+def _css_matrix_digest(rows: list[int], num_columns: int) -> str:
+    """Match the canonical check-matrix digest stored by the audit."""
+    width = (num_columns + 7) // 8
+    digest = hashlib.sha256()
+    digest.update(
+        json.dumps(
+            {"rows": len(rows), "columns": num_columns},
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=True,
+        ).encode("ascii")
+    )
+    digest.update(b"\0")
+    for row in rows:
+        digest.update(row.to_bytes(width, "little"))
+    return digest.hexdigest()
+
+
+def _css_rowspace_basis(
+    rows: list[int], num_columns: int
+) -> tuple[list[int], list[int]]:
+    """Return a GF(2) RREF basis and its pivot columns for integer rows."""
+    column_mask = (1 << num_columns) - 1
+    reduced = [row & column_mask for row in rows if row & column_mask]
+    pivots: list[int] = []
+    pivot_row = 0
+    for column in range(num_columns):
+        bit = 1 << column
+        found = next(
+            (
+                index
+                for index in range(pivot_row, len(reduced))
+                if reduced[index] & bit
+            ),
+            None,
+        )
+        if found is None:
+            continue
+        reduced[pivot_row], reduced[found] = (
+            reduced[found],
+            reduced[pivot_row],
+        )
+        pivot = reduced[pivot_row]
+        for index, row in enumerate(reduced):
+            if index != pivot_row and row & bit:
+                reduced[index] = row ^ pivot
+        pivots.append(column)
+        pivot_row += 1
+        if pivot_row == len(reduced):
+            break
+    return reduced[:pivot_row], pivots
+
+
+def _css_support_is_logical(
+    support: int,
+    check_rows: list[int],
+    stabilizer_basis: list[int],
+    stabilizer_pivots: list[int],
+) -> bool:
+    if support <= 0 or any((row & support).bit_count() % 2 for row in check_rows):
+        return False
+    remainder = support
+    for row, pivot in zip(stabilizer_basis, stabilizer_pivots, strict=True):
+        if remainder & (1 << pivot):
+            remainder ^= row
+    return remainder != 0
+
+
+def _css_qubit_labels(
+    indices: list[int], ell: int, m: int
+) -> list[dict[str, object]]:
+    group_order = ell * m
+    labels: list[dict[str, object]] = []
+    for index in indices:
+        block_index, group_index = divmod(index, group_order)
+        x_exp, y_exp = divmod(group_index, m)
+        labels.append(
+            {
+                "index": index,
+                "block": "left" if block_index == 0 else "right",
+                "x": x_exp,
+                "y": y_exp,
+            }
+        )
+    return labels
+
+
+def _is_css_l4_b5_witness_target(spec: Spec) -> bool:
+    """Identify a pre-witness CSS row whose B=5 scalar meets an L4 proof."""
+    return (
+        spec.campaign.family == "CSS"
+        and not spec.exact_values
+        and max((bound for bound, _ in spec.lower_evidence), default=0) == 5
+        and min((bound for bound, _ in spec.upper_evidence), default=None) == 5
+        and (5, "L4") in spec.lower_evidence
+        and (5, "B") in spec.upper_evidence
+        and not any(
+            bound == 5 and method in RIGOROUS_UPPER_METHODS
+            for bound, method in spec.upper_evidence
+        )
+    )
+
+
+def load_and_merge_css_weight5_witnesses(
+    specs_by_id: dict[str, Spec],
+    path: Path = CSS_WEIGHT5_WITNESSES_PATH,
+) -> tuple[dict, dict[str, dict]]:
+    """Validate and merge deterministic witnesses closing the 45 L4+B rows."""
+    rows = load_jsonl(path)
+    manifests = [row for row in rows if row.get("record_type") == "artifact_manifest"]
+    audits = [
+        row
+        for row in rows
+        if row.get("record_type") == "css_weight5_witness_audit"
+    ]
+    if len(manifests) != 1 or len(audits) != 45 or len(rows) != 46:
+        raise ValueError("malformed CSS weight-five witness artifact")
+    manifest = manifests[0]
+    if (
+        manifest.get("schema_version") != CSS_WEIGHT5_WITNESS_SCHEMA_VERSION
+        or manifest.get("record_type") != "artifact_manifest"
+        or manifest.get("artifact_schema") != CSS_WEIGHT5_WITNESS_ARTIFACT_SCHEMA
+        or manifest.get("generator") != CSS_WEIGHT5_WITNESS_GENERATOR
+        or manifest.get("algorithm") != CSS_WEIGHT5_WITNESS_ALGORITHM
+        or manifest.get("counts")
+        != {
+            "presentations": 45,
+            "presentation_classes": 32,
+            "explicit_witnesses": 90,
+            "all_x_witnesses_valid": True,
+            "all_z_witnesses_valid": True,
+        }
+    ):
+        raise ValueError("malformed CSS weight-five witness manifest")
+    _validate_css_witness_source_manifest(manifest)
+
+    expected_targets = {
+        spec_id
+        for spec_id, spec in specs_by_id.items()
+        if _is_css_l4_b5_witness_target(spec)
+    }
+    if len(expected_targets) != 45:
+        raise ValueError(
+            "pre-witness snapshot has "
+            f"{len(expected_targets)} direct L4+B=5 rows; expected 45"
+        )
+
+    target_records: dict[str, dict] = {}
+    pending_evidence: list[Spec] = []
+    for row in audits:
+        if (
+            row.get("schema_version") != CSS_WEIGHT5_WITNESS_SCHEMA_VERSION
+            or row.get("record_type") != "css_weight5_witness_audit"
+            or row.get("algorithm") != CSS_WEIGHT5_WITNESS_ALGORITHM
+        ):
+            raise ValueError("malformed CSS weight-five witness row")
+        presentation_id = str(row.get("presentation_id") or "")
+        if (
+            presentation_id not in expected_targets
+            or presentation_id in target_records
+        ):
+            raise ValueError(
+                f"invalid or duplicate CSS weight-five witness target "
+                f"{presentation_id!r}"
+            )
+        spec = specs_by_id[presentation_id]
+        class_id = row.get("class_id")
+        if (
+            not isinstance(class_id, str)
+            or not class_id
+            or spec.css_low_weight_audit_class_ids != {class_id}
+        ):
+            raise ValueError(
+                f"{presentation_id}: witness class disagrees with low-weight audit"
+            )
+
+        expected_generators = {
+            "A_terms": [list(term) for term in spec.A],
+            "B_terms": [list(term) for term in spec.B],
+        }
+        params = row.get("parameters") or {}
+        if (
+            row.get("generators") != expected_generators
+            or params.get("ell") != spec.ell
+            or params.get("m") != spec.m
+            or params.get("n") != spec.n
+            or params.get("k_catalogue") != spec.k
+            or params.get("k_rebuilt") != spec.k
+            or params.get("d_exact") != 5
+        ):
+            raise ValueError(
+                f"{presentation_id}: rebuilt presentation disagrees with source"
+            )
+
+        lower_bound = row.get("lower_bound") or {}
+        if (
+            lower_bound.get("method") != "L4"
+            or lower_bound.get("certified") != 5
+            or lower_bound.get("audit_class_id") != class_id
+            or not isinstance(lower_bound.get("audit_representative_id"), str)
+            or not lower_bound["audit_representative_id"]
+        ):
+            raise ValueError(
+                f"{presentation_id}: malformed lower-bound provenance"
+            )
+        audit_representative = specs_by_id.get(
+            lower_bound["audit_representative_id"]
+        )
+        if (
+            audit_representative is None
+            or audit_representative.css_low_weight_audit_class_ids != {class_id}
+        ):
+            raise ValueError(
+                f"{presentation_id}: unknown low-weight audit representative"
+            )
+        historical = row.get("historical_upper_bound") or {}
+        if (
+            historical.get("method") != "B"
+            or historical.get("value") != 5
+            or historical.get("operator_was_persisted") is not False
+            or not isinstance(historical.get("matching_scalar_observations"), int)
+            or isinstance(historical.get("matching_scalar_observations"), bool)
+            or historical["matching_scalar_observations"] <= 0
+        ):
+            raise ValueError(
+                f"{presentation_id}: malformed historical B endpoint"
+            )
+
+        code = build_bb_code(spec.ell, spec.m, list(spec.A), list(spec.B))
+        if int(code.num_qudits) != spec.n or int(code.dimension) != spec.k:
+            raise ValueError(
+                f"{presentation_id}: independently rebuilt code disagrees with source"
+            )
+        rows_x = _css_matrix_rows_as_int(code.matrix_x, spec.n)
+        rows_z = _css_matrix_rows_as_int(code.matrix_z, spec.n)
+        expected_matrix_digests = {
+            "H_X_sha256": _css_matrix_digest(rows_x, spec.n),
+            "H_Z_sha256": _css_matrix_digest(rows_z, spec.n),
+        }
+        if row.get("matrix_digests") != expected_matrix_digests:
+            raise ValueError(
+                f"{presentation_id}: CSS witness matrix digest mismatch"
+            )
+        basis_x, pivots_x = _css_rowspace_basis(rows_x, spec.n)
+        basis_z, pivots_z = _css_rowspace_basis(rows_z, spec.n)
+
+        witnesses = row.get("replacement_explicit_witnesses") or {}
+        if set(witnesses) != {"X", "Z"}:
+            raise ValueError(
+                f"{presentation_id}: malformed CSS witness sectors"
+            )
+        for sector_name in ("X", "Z"):
+            sector = witnesses.get(sector_name) or {}
+            indices = sector.get("qubit_indices_zero_based")
+            if (
+                not isinstance(indices, list)
+                or sector.get("weight") != 5
+                or len(indices) != 5
+                or len(set(indices)) != 5
+                or indices != sorted(indices)
+                or any(
+                    not isinstance(index, int)
+                    or isinstance(index, bool)
+                    or not 0 <= index < spec.n
+                    for index in indices
+                )
+            ):
+                raise ValueError(
+                    f"{presentation_id}: malformed {sector_name} witness support"
+                )
+            group_order = spec.ell * spec.m
+            anchor = sector.get("anchor_qubit")
+            if (
+                anchor not in {0, group_order}
+                or anchor not in indices
+                or sector.get("qubits")
+                != _css_qubit_labels(indices, spec.ell, spec.m)
+                or not isinstance(sector.get("pairs_indexed"), int)
+                or isinstance(sector.get("pairs_indexed"), bool)
+                or sector["pairs_indexed"] <= 0
+                or not isinstance(sector.get("pairs_probed"), int)
+                or isinstance(sector.get("pairs_probed"), bool)
+                or sector["pairs_probed"] <= 0
+                or sector.get("zero_check_syndrome") is not True
+                or sector.get("outside_stabilizer_rowspace") is not True
+            ):
+                raise ValueError(
+                    f"{presentation_id}: malformed {sector_name} witness metadata"
+                )
+
+            support = sum(1 << index for index in indices)
+            if sector_name == "X":
+                check_rows = rows_z
+                stabilizer_basis = basis_x
+                stabilizer_pivots = pivots_x
+            else:
+                check_rows = rows_x
+                stabilizer_basis = basis_z
+                stabilizer_pivots = pivots_z
+            if sector.get("stabilizer_rank") != len(stabilizer_pivots):
+                raise ValueError(
+                    f"{presentation_id}: wrong {sector_name} stabilizer rank"
+                )
+            if not _css_support_is_logical(
+                support,
+                check_rows,
+                stabilizer_basis,
+                stabilizer_pivots,
+            ):
+                raise ValueError(
+                    f"{presentation_id}: invalid {sector_name} logical witness"
+                )
+
+        target_records[presentation_id] = row
+        pending_evidence.append(spec)
+
+    if set(target_records) != expected_targets:
+        missing = sorted(expected_targets - set(target_records))
+        extra = sorted(set(target_records) - expected_targets)
+        raise ValueError(
+            "CSS weight-five witness target mismatch: "
+            f"missing={missing}, extra={extra}"
+        )
+    if len({row["class_id"] for row in target_records.values()}) != 32:
+        raise ValueError("CSS weight-five witness class coverage mismatch")
+
+    # Mutate only after the complete artifact has independently validated.
+    for spec in pending_evidence:
+        spec.add_upper(5, "W")
+    return manifest, target_records
+
+
+def load_and_merge_css_upper_bound_witnesses(
+    specs_by_id: dict[str, Spec],
+    path: Path = CSS_UPPER_BOUND_WITNESSES_PATH,
+) -> tuple[dict, dict[str, dict]]:
+    """Validate and merge independently reconstructed CSS witnesses.
+
+    The artifact supplies explicit logical operators that tighten nine
+    decoder-scalar endpoints and one nonoptimal MILP incumbent.  The merge
+    adds only witnessed (``W``) upper bounds and never promotes a distance
+    to exact.
+    """
+    rows = load_jsonl(path)
+    manifests = [row for row in rows if row.get("record_type") == "artifact_manifest"]
+    audits = [
+        row
+        for row in rows
+        if row.get("record_type") == "css_upper_bound_witness_correction"
+    ]
+    if len(manifests) != 1 or len(audits) != 10 or len(rows) != 11:
+        raise ValueError("malformed CSS upper-bound witness artifact")
+    manifest = manifests[0]
+    if (
+        manifest.get("schema_version")
+        != CSS_UPPER_BOUND_WITNESS_SCHEMA_VERSION
+        or manifest.get("record_type") != "artifact_manifest"
+        or manifest.get("artifact_schema")
+        != CSS_UPPER_BOUND_WITNESS_ARTIFACT_SCHEMA
+        or manifest.get("generator") != CSS_UPPER_BOUND_WITNESS_GENERATOR
+        or manifest.get("algorithm") != CSS_UPPER_BOUND_WITNESS_ALGORITHM
+        or manifest.get("counts")
+        != {
+            "presentations": 10,
+            "presentation_classes": 10,
+            "explicit_witnesses": 20,
+            "prior_methods": {"B": 9, "I": 1},
+            "all_x_witnesses_valid": True,
+            "all_z_witnesses_valid": True,
+        }
+    ):
+        raise ValueError("malformed CSS upper-bound witness manifest")
+
+    _validate_css_witness_source_manifest(manifest)
+
+    target_records: dict[str, dict] = {}
+    pending_evidence: list[tuple[Spec, int]] = []
+    for row in audits:
+        if (
+            row.get("schema_version")
+            != CSS_UPPER_BOUND_WITNESS_SCHEMA_VERSION
+            or row.get("record_type") != "css_upper_bound_witness_correction"
+            or row.get("algorithm") != CSS_UPPER_BOUND_WITNESS_ALGORITHM
+        ):
+            raise ValueError("malformed CSS upper-bound witness row")
+        presentation_id = str(row.get("presentation_id") or "")
+        if not presentation_id or presentation_id in target_records:
+            raise ValueError(
+                f"invalid or duplicate CSS upper-bound witness target "
+                f"{presentation_id!r}"
+            )
+        spec = specs_by_id.get(presentation_id)
+        if spec is None:
+            raise ValueError(
+                f"unknown CSS upper-bound witness target "
+                f"{presentation_id!r}"
+            )
+
+        expected_generators = {
+            "A_terms": [list(term) for term in spec.A],
+            "B_terms": [list(term) for term in spec.B],
+        }
+        params = row.get("parameters") or {}
+        if (
+            row.get("generators") != expected_generators
+            or params.get("ell") != spec.ell
+            or params.get("m") != spec.m
+            or params.get("n") != spec.n
+            or params.get("k_catalogue") != spec.k
+            or params.get("k_rebuilt") != spec.k
+        ):
+            raise ValueError(
+                f"{presentation_id}: rebuilt presentation disagrees with source"
+            )
+        class_id = row.get("class_id")
+        if (
+            not isinstance(class_id, str)
+            or not class_id
+            or spec.css_low_weight_audit_class_ids != {class_id}
+        ):
+            raise ValueError(
+                f"{presentation_id}: witness class disagrees with low-weight audit"
+            )
+        lower_bound = row.get("lower_bound") or {}
+        if (
+            lower_bound.get("method") != "L4"
+            or lower_bound.get("certified") != 5
+            or lower_bound.get("audit_class_id") != class_id
+            or not isinstance(lower_bound.get("audit_representative_id"), str)
+            or not lower_bound["audit_representative_id"]
+        ):
+            raise ValueError(
+                f"{presentation_id}: malformed lower-bound provenance"
+            )
+        audit_representative = specs_by_id.get(
+            lower_bound["audit_representative_id"]
+        )
+        if (
+            audit_representative is None
+            or audit_representative.css_low_weight_audit_class_ids != {class_id}
+        ):
+            raise ValueError(
+                f"{presentation_id}: unknown low-weight audit representative"
+            )
+
+        code = build_bb_code(spec.ell, spec.m, list(spec.A), list(spec.B))
+        if int(code.num_qudits) != spec.n or int(code.dimension) != spec.k:
+            raise ValueError(
+                f"{presentation_id}: independently rebuilt code disagrees with source"
+            )
+        rows_x = _css_matrix_rows_as_int(code.matrix_x, spec.n)
+        rows_z = _css_matrix_rows_as_int(code.matrix_z, spec.n)
+        expected_matrix_digests = {
+            "H_X_sha256": _css_matrix_digest(rows_x, spec.n),
+            "H_Z_sha256": _css_matrix_digest(rows_z, spec.n),
+        }
+        if row.get("matrix_digests") != expected_matrix_digests:
+            raise ValueError(
+                f"{presentation_id}: CSS witness matrix digest mismatch"
+            )
+        basis_x, pivots_x = _css_rowspace_basis(rows_x, spec.n)
+        basis_z, pivots_z = _css_rowspace_basis(rows_z, spec.n)
+
+        historical = row.get("historical_upper_bound") or {}
+        corrected = row.get("corrected_upper_bound") or {}
+        historical_method = historical.get("method")
+        if historical_method not in {"B", "I"} or corrected.get("method") != "W":
+            raise ValueError(f"{presentation_id}: unexpected evidence methods")
+        historical_value = positive_int(
+            historical.get("value"), f"{presentation_id}: historical upper bound"
+        )
+        new_value = positive_int(
+            corrected.get("value"), f"{presentation_id}: corrected upper bound"
+        )
+        expected_correction = EXPECTED_CSS_UPPER_BOUND_WITNESSES.get(
+            presentation_id
+        )
+        if expected_correction != (
+            historical_method,
+            historical_value,
+            new_value,
+        ):
+            raise ValueError(
+                f"{presentation_id}: unexpected CSS witness correction "
+                f"{(historical_method, historical_value, new_value)}"
+            )
+        if new_value >= historical_value:
+            raise ValueError(
+                f"{presentation_id}: corrected bound does not improve on the "
+                "historical value"
+            )
+        _, source_upper, source_exact = spec.final_bounds()
+        if source_exact or source_upper != historical_value:
+            raise ValueError(
+                f"{presentation_id}: source endpoint is {source_upper}, not "
+                f"the expected {historical_value}"
+            )
+        if historical.get("operator_was_persisted") is not False:
+            raise ValueError(
+                f"{presentation_id}: prior evidence persistence is malformed"
+            )
+        if not any(
+            bound == historical_value and method == historical_method
+            for bound, method in spec.upper_evidence
+        ):
+            raise ValueError(
+                f"{presentation_id}: expected historical "
+                f"{historical_method}={historical_value} "
+                "evidence not found on source spec"
+            )
+
+        witnesses = row.get("replacement_explicit_witnesses") or {}
+        if set(witnesses) != {"X", "Z"}:
+            raise ValueError(
+                f"{presentation_id}: malformed CSS witness sectors"
+            )
+        sector_weights = []
+        for sector_name in ("X", "Z"):
+            sector = witnesses.get(sector_name) or {}
+            if (
+                sector.get("zero_check_syndrome") is not True
+                or sector.get("outside_stabilizer_rowspace") is not True
+                or sector.get("weight_matches_support_len") is not True
+            ):
+                raise ValueError(f"{presentation_id}: unverified {sector_name} witness")
+            indices = sector.get("qubit_indices_zero_based")
+            weight = sector.get("weight")
+            if (
+                not isinstance(indices, list)
+                or not isinstance(weight, int)
+                or isinstance(weight, bool)
+                or len(indices) != weight
+                or len(set(indices)) != weight
+                or any(
+                    not isinstance(index, int)
+                    or isinstance(index, bool)
+                    or not 0 <= index < spec.n
+                    for index in indices
+                )
+            ):
+                raise ValueError(
+                    f"{presentation_id}: malformed {sector_name} witness support"
+                )
+            if indices != sorted(indices):
+                raise ValueError(
+                    f"{presentation_id}: noncanonical {sector_name} witness support"
+                )
+            expected_trials = CSS_UPPER_BOUND_WITNESS_STRESS_TRIALS.get(
+                presentation_id,
+                CSS_UPPER_BOUND_WITNESS_DEFAULT_TRIALS,
+            )
+            if (
+                sector.get("operator_type") != sector_name
+                or sector.get("qubits")
+                != _css_qubit_labels(indices, spec.ell, spec.m)
+                or sector.get("search_trials") != expected_trials
+                or sector.get("search_seed")
+                != CSS_UPPER_BOUND_WITNESS_SEEDS[sector_name]
+            ):
+                raise ValueError(
+                    f"{presentation_id}: malformed {sector_name} witness metadata"
+                )
+
+            support = sum(1 << index for index in indices)
+            if sector_name == "X":
+                check_rows = rows_z
+                stabilizer_basis = basis_x
+                stabilizer_pivots = pivots_x
+            else:
+                check_rows = rows_x
+                stabilizer_basis = basis_z
+                stabilizer_pivots = pivots_z
+            if sector.get("stabilizer_rank") != len(stabilizer_pivots):
+                raise ValueError(
+                    f"{presentation_id}: wrong {sector_name} stabilizer rank"
+                )
+            if not _css_support_is_logical(
+                support,
+                check_rows,
+                stabilizer_basis,
+                stabilizer_pivots,
+            ):
+                raise ValueError(
+                    f"{presentation_id}: invalid {sector_name} logical witness"
+                )
+            sector_weights.append(weight)
+        if min(sector_weights) != new_value:
+            raise ValueError(
+                f"{presentation_id}: corrected bound disagrees with sector witnesses"
+            )
+
+        target_records[presentation_id] = row
+        pending_evidence.append((spec, new_value))
+
+    if len(pending_evidence) != 10:
+        raise ValueError(
+            f"expected 10 CSS upper-bound witness corrections, applied "
+            f"{len(pending_evidence)}"
+        )
+    if set(target_records) != set(EXPECTED_CSS_UPPER_BOUND_WITNESSES):
+        raise ValueError("CSS upper-bound witness target set mismatch")
+    if len({row["class_id"] for row in target_records.values()}) != 10:
+        raise ValueError("CSS upper-bound witness class coverage mismatch")
+
+    # Mutate only after every record validates.
+    for spec, new_value in pending_evidence:
+        spec.add_upper(new_value, "W")
+    return manifest, target_records
+
+
 def source_digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -903,7 +1666,7 @@ def status_for(spec: Spec) -> str:
 
 
 def retain_for_catalogue(spec: Spec) -> bool:
-    """Retain specifications whose supported upper endpoint is at least 3."""
+    """Retain specifications whose best reported endpoint is at least three."""
     _, upper, _ = spec.final_bounds()
     return upper >= 3
 
@@ -912,9 +1675,51 @@ def distance_text(spec: Spec) -> str:
     lower, upper, exact = spec.final_bounds()
     if exact:
         return str(upper)
+    if upper_endpoint_is_rigorous(spec.upper_evidence, upper):
+        if lower:
+            return rf"[{lower},{upper}]"
+        return rf"\leq {upper}"
     if lower:
-        return rf"[{lower},{upper}]"
-    return rf"\leq {upper}"
+        return rf"{lower};\widehat{{{upper}}}"
+    return rf"\widehat{{{upper}}}"
+
+
+def spec_upper_is_supported(spec: Spec) -> bool:
+    """Whether the proposal's displayed endpoint is a rigorous upper bound."""
+    _, upper, _ = spec.final_bounds()
+    return upper_endpoint_is_rigorous(spec.upper_evidence, upper)
+
+
+def endpoint_pair_text(
+    lower: float, upper: float, *, upper_is_supported: bool
+) -> str:
+    """Format a certified lower value with a bound or estimated endpoint."""
+    if upper_is_supported:
+        return f"[{lower:.2f},{upper:.2f}]"
+    return rf"{lower:.2f};\widehat{{{upper:.2f}}}"
+
+
+def class_changes_display(spec: Spec, group: PresentationClass) -> bool:
+    """Whether class merging changes the displayed value or evidence quality."""
+    return class_strengthens_row(spec, group) or (
+        group.upper_is_supported and not spec_upper_is_supported(spec)
+    )
+
+
+def nonexact_evidence_label(*, upper_is_supported: bool) -> str:
+    """Return the compact table label for a nonexact distance record."""
+    return "Interval" if upper_is_supported else "Estimate"
+
+
+def class_effect_label(spec: Spec, group: PresentationClass) -> str:
+    """Describe the publication-facing effect of merging class evidence."""
+    if not class_changes_display(spec, group):
+        return "--"
+    if group.exact:
+        return "Exact"
+    if not class_strengthens_row(spec, group):
+        return "Supported"
+    return "Tighter"
 
 
 def fom_text(spec: Spec) -> str:
@@ -924,8 +1729,16 @@ def fom_text(spec: Spec) -> str:
         return format_exact_fom(spec.n, spec.k, upper)
     if lower:
         lower_fom = spec.k * lower * lower / spec.n
-        return f"[{lower_fom:.2f},{upper_fom:.2f}]"
-    return rf"\leq {upper_fom:.2f}"
+        return endpoint_pair_text(
+            lower_fom,
+            upper_fom,
+            upper_is_supported=upper_endpoint_is_rigorous(
+                spec.upper_evidence, upper
+            ),
+        )
+    if upper_endpoint_is_rigorous(spec.upper_evidence, upper):
+        return rf"\leq {upper_fom:.2f}"
+    return rf"\widehat{{{upper_fom:.2f}}}"
 
 
 def format_exact_fom(n: int, k: int, distance: int) -> str:
@@ -942,11 +1755,11 @@ def evidence_text(spec: Spec) -> str:
         tags = set(spec.proof_sources)
         # Preserve the useful fact that the one hash-exact PBB-small row had
         # only an incomplete MILP cross-check.
-        if "H" in tags and "M" not in tags and "I" in spec.witness_sources:
+        if "H" in tags and "M" not in tags and "I" in spec.upper_sources:
             tags.add("I")
     else:
         tags = {source for _, source in spec.lower_evidence}
-        tags.update(spec.witness_sources)
+        tags.update(spec.upper_sources)
     # Keep the machine-readable evidence tag as ``H`` while matching the
     # ``Exh.`` label used by the main paper for the same exhaustive search.
     display = {"H": "Exh.", "Hc": r"H$_c$"}
@@ -1080,6 +1893,28 @@ def build_presentation_classes(specs: list[Spec]) -> list[PresentationClass]:
             if not lower <= exact <= upper:
                 raise ValueError(f"{class_id}: exact distance conflicts with bounds")
             lower = upper = exact
+        class_upper_evidence = [
+            item for spec in members for item in spec.upper_evidence
+        ]
+        upper_methods = tuple(
+            sorted(
+                {
+                    method
+                    for bound, method in class_upper_evidence
+                    if bound == upper
+                }
+            )
+        )
+        upper_is_supported = upper_endpoint_is_rigorous(
+            class_upper_evidence, upper
+        )
+        class_exact = bool(exact_values)
+        if lower == upper and not class_exact:
+            if not upper_is_supported:
+                raise ValueError(
+                    f"{class_id}: B-only endpoint cannot close a class interval"
+                )
+            class_exact = True
 
         connectivity_states = {
             "connected" if connectivity_info(spec).is_connected else "disconnected"
@@ -1097,7 +1932,9 @@ def build_presentation_classes(specs: list[Spec]) -> list[PresentationClass]:
                 members=members,
                 lower=lower,
                 upper=upper,
-                exact=lower == upper,
+                exact=class_exact,
+                upper_is_supported=upper_is_supported,
+                upper_methods=upper_methods,
                 connectivity=next(iter(connectivity_states)),
             )
         )
@@ -1155,6 +1992,8 @@ def render_presentation_classes(classes: list[PresentationClass]) -> str:
             "class_distance_lower": group.lower,
             "class_distance_upper": group.upper,
             "class_distance_exact": group.exact,
+            "class_upper_is_supported": group.upper_is_supported,
+            "class_upper_methods": list(group.upper_methods),
             "member_direct_status_counts": {
                 status: status_counts[status] for status in ("E", "C", "U")
             },
@@ -1206,13 +2045,17 @@ def class_strengthens_row(spec: Spec, group: PresentationClass) -> bool:
 
 
 def catalogue_distance_text(spec: Spec, group: PresentationClass) -> str:
-    """Render the tighter class distance whenever merging strengthens a row."""
-    if class_strengthens_row(spec, group):
+    """Render class distance when merging improves value or evidence quality."""
+    if class_changes_display(spec, group):
         if group.exact:
             return str(group.upper)
-        if group.lower:
+        if group.upper_is_supported and group.lower:
             return rf"[{group.lower},{group.upper}]"
-        return rf"\leq {group.upper}"
+        if group.upper_is_supported:
+            return rf"\leq {group.upper}"
+        if group.lower:
+            return rf"{group.lower};\widehat{{{group.upper}}}"
+        return rf"\widehat{{{group.upper}}}"
     return distance_text(spec)
 
 
@@ -1222,19 +2065,17 @@ def catalogue_status_text(spec: Spec) -> str:
     if status == "E":
         return "Exact"
     if status == "C":
-        return "Interval"
+        return nonexact_evidence_label(
+            upper_is_supported=spec_upper_is_supported(spec)
+        )
     raise ValueError(
         f"{spec.spec_id}: retained catalogue unexpectedly has only an upper bound"
     )
 
 
 def catalogue_class_effect_text(spec: Spec, group: PresentationClass) -> str:
-    """State explicitly whether class-level evidence changes the displayed row."""
-    if not class_strengthens_row(spec, group):
-        return "--"
-    if group.exact:
-        return "Exact"
-    return "Tighter"
+    """State explicitly whether class evidence changes the displayed row."""
+    return class_effect_label(spec, group)
 
 
 def typeset_representative(group: PresentationClass) -> Spec:
@@ -1242,7 +2083,7 @@ def typeset_representative(group: PresentationClass) -> Spec:
     def key(spec: Spec) -> tuple:
         lower, upper, exact = spec.final_bounds()
         return (
-            not class_strengthens_row(spec, group),
+            not class_changes_display(spec, group),
             not exact,
             -lower,
             upper - lower,
@@ -1254,7 +2095,7 @@ def typeset_representative(group: PresentationClass) -> Spec:
 
 
 def typeset_spec_ids(classes: list[PresentationClass]) -> set[str]:
-    """Keep all members of exact classes and one member of each interval class."""
+    """Keep all members of exact classes and one member of each nonexact class."""
     selected: set[str] = set()
     for group in classes:
         if group.exact:
@@ -1265,15 +2106,21 @@ def typeset_spec_ids(classes: list[PresentationClass]) -> set[str]:
 
 
 def catalogue_fom_text(spec: Spec, group: PresentationClass) -> str:
-    """Render the tighter class FOM whenever merging strengthens a row."""
-    if class_strengthens_row(spec, group):
+    """Render class FOM when merging improves value or evidence quality."""
+    if class_changes_display(spec, group):
         lower_fom = spec.k * group.lower * group.lower / spec.n
         upper_fom = spec.k * group.upper * group.upper / spec.n
         if group.exact:
             return format_exact_fom(spec.n, spec.k, group.upper)
         if group.lower:
-            return f"[{lower_fom:.2f},{upper_fom:.2f}]"
-        return rf"\leq {upper_fom:.2f}"
+            return endpoint_pair_text(
+                lower_fom,
+                upper_fom,
+                upper_is_supported=group.upper_is_supported,
+            )
+        if group.upper_is_supported:
+            return rf"\leq {upper_fom:.2f}"
+        return rf"\widehat{{{upper_fom:.2f}}}"
     return fom_text(spec)
 
 
@@ -1307,16 +2154,18 @@ def render_summary(
         r"\scriptsize",
         r"\setlength{\tabcolsep}{2pt}",
         r"\begin{longtable}{lrrrrrrrr}",
-        r"\caption{Catalogue accounting after filtering.  ``Logged obs.'' counts all observations with a positive reported distance; ``Kept obs.'' restricts this count to retained proposals.  ``All'' and ``Kept'' give proposal counts before and after filtering, and ``Classes'' gives the number of retained presentation classes.  Exact and certified-interval counts are proposal-level statuses before the final class merge and can include low-weight evidence transferred from a verified representative.}\label{tab:w5-supp-summary}\\",
+        r"\caption{Catalogue accounting after filtering.  ``Logged obs.'' counts all observations with a positive reported distance; ``Kept obs.'' restricts this count to retained proposals.  ``All'' and ``Kept'' give proposal counts before and after filtering, and ``Classes'' gives the number of retained presentation classes.  Exact and unresolved counts are proposal-level statuses before the final class merge and can include low-weight evidence transferred from a verified representative.  Unresolved rows pair a certified lower bound with either a rigorous upper bound or a decoder estimate.}\label{tab:w5-supp-summary}\\",
         r"\toprule",
-        r"Campaign & Logged obs. & Kept obs. & All & Kept & Classes & Removed & Exact & Interval\\",
+        r"Campaign & Logged obs. & Kept obs. & All & Kept & Classes & Removed & Exact & Unresolved\\",
         r"\midrule",
     ]
     totals = Counter()
     for campaign, specs, raw_rows, _ in campaign_data:
         statuses = Counter(status_for(spec) for spec in specs)
         if statuses["U"]:
-            raise ValueError(f"{campaign.slug}: retained upper-bound-only row")
+            raise ValueError(
+                f"{campaign.slug}: retained row lacks positive lower-bound evidence"
+            )
         class_count = len({class_of[spec.spec_id] for spec in specs})
         retained_observations = sum(spec.observations for spec in specs)
         removed_specs = campaign.expected_specs - len(specs)
@@ -1677,9 +2526,9 @@ def table_header(
         f"({displayed_row_count:,} displayed of {retained_row_count:,} retained "
         f"proposals; {class_count:,} presentation classes).  The "
         "table includes every proposal in an exact class and one deterministic "
-        "representative of every interval class.  Own evidence and Evid. describe "
+        "representative of every nonexact class.  Own evidence and Evid. describe "
         "the proposal before class merging; Class effect reports when merging makes the "
-        r"displayed $d$ and FOM exact or tighter.  Column abbreviations, "
+        r"displayed $d$ and FOM exact, tighter, or rigorously supported.  Column abbreviations, "
         "filtering, and evidence conventions are defined above."
     )
     label = f"tab:w5-supp-{campaign.slug}"
@@ -1773,6 +2622,11 @@ def render(
     total_removed_specs = total_source_specs - total_specs
     all_specs = [spec for _, specs, _, _ in campaign_data for spec in specs]
     statuses = Counter(status_for(spec) for spec in all_specs)
+    nonexact_direct_evidence = Counter(
+        "interval" if spec_upper_is_supported(spec) else "estimate"
+        for spec in all_specs
+        if status_for(spec) == "C"
+    )
     transferred_low_weight_exact = sum(
         status_for(spec) == "E"
         and spec.css_low_weight_audit_transferred
@@ -1794,6 +2648,21 @@ def render(
     class_statuses = Counter(
         presentation_class_status(group) for group in presentation_classes
     )
+    nonexact_class_evidence = Counter(
+        "interval" if group.upper_is_supported else "estimate"
+        for group in presentation_classes
+        if presentation_class_status(group) == "C"
+    )
+    if nonexact_direct_evidence != {"interval": 64, "estimate": 680}:
+        raise ValueError(
+            "unexpected direct nonexact evidence split: "
+            f"{nonexact_direct_evidence}"
+        )
+    if nonexact_class_evidence != {"interval": 53, "estimate": 350}:
+        raise ValueError(
+            "unexpected class nonexact evidence split: "
+            f"{nonexact_class_evidence}"
+        )
     specs_by_family = Counter(spec.campaign.family for spec in all_specs)
     class_counts = Counter(
         (group.family, presentation_class_status(group), group.connectivity)
@@ -1844,7 +2713,7 @@ def render(
         for spec in group.members
         if class_strengthens_row(spec, group)
     )
-    if strengthened_status_pairs != {("C", "C"): 100, ("C", "E"): 38}:
+    if strengthened_status_pairs != {("C", "C"): 99, ("C", "E"): 38}:
         raise ValueError(
             "unexpected class-strengthened catalogue rows: "
             f"{strengthened_status_pairs}"
@@ -1911,7 +2780,9 @@ def render(
             f"expected 20 retained fixed-safety-net rows, found {len(fixed_safety_net)}"
         )
     if statuses["U"] or class_statuses["U"]:
-        raise ValueError("publication catalogue contains an upper-bound-only status")
+        raise ValueError(
+            "publication catalogue contains a row without positive lower-bound evidence"
+        )
     displayed_ids = typeset_spec_ids(presentation_classes)
     if len(displayed_ids) != 839:
         raise ValueError(
@@ -1960,7 +2831,7 @@ def render(
                 "catalogue retains "
                 f"{total_specs:,} proposals ({total_retained_observations:,} "
                 r"observations), omitting exact $d\leq2$ rows and rows with a "
-                r"verified upper bound $d_{\rm ub}\leq2$.  Canonical labelling "
+                r"reported endpoint $d_{\rm rep}\leq2$.  Canonical labelling "
                 f"groups the retained normalized tuples into "
                 f"{len(presentation_classes):,} presentation classes, defined here "
                 "as stored-generator colored-Tanner isomorphism classes: "
@@ -1975,7 +2846,7 @@ def render(
                 "the C or P label after the slash identifies the presentation "
                 "class.  The four campaign tables print all "
                 f"{exact_class_members:,} proposals in exact classes and one "
-                f"representative of each interval class ({len(displayed_ids):,} "
+                f"representative of each nonexact class ({len(displayed_ids):,} "
                 f"rows total); the complete {total_specs:,}-row catalogue and "
                 "supporting evidence are available through the project "
                 r"repository~\cite{cruzbenito2026qcode}."
@@ -1983,11 +2854,14 @@ def render(
             "",
             r"\subsection{Distance evidence and class merging}",
             (
-                "Duplicate observations are merged conservatively: exact values "
-                "must agree, certified lower bounds are maximized, and witnessed "
-                "upper bounds are minimized.  For one representative of each of 492 "
-                "presentation classes containing all 858 formerly upper-bound-only "
-                "proposals, we exhaustively searched both CSS logical sectors for "
+                "Duplicate observations are merged by requiring exact values to "
+                "agree, maximizing certified lower bounds, and retaining the "
+                "smallest reported endpoint together with whether that endpoint is "
+                "rigorous or decoder-only.  "
+                "For one representative of each of 492 "
+                "presentation classes containing all 858 proposals formerly lacking "
+                "direct lower-bound evidence, we "
+                "exhaustively searched both CSS logical sectors for "
                 "nontrivial operators of weight at most four.  The search enumerates "
                 "supports of at most two qubits and combines pairs whose syndromes "
                 "cancel, rejecting combinations that are stabilizers.  The audit "
@@ -1996,30 +2870,40 @@ def render(
                 r"proposals) have $d=3$ or 4.  For the other 428 classes "
                 r"(764 proposals), it certified $d\geq5$.  Every "
                 "retained row has either an exact distance or a certified "
-                "two-sided interval.  The catalogue contains "
-                f"{statuses['E']:,} exact proposals and {statuses['C']:,} "
-                "certified-interval proposals.  "
-                f"{transferred_low_weight_exact:,} exact rows inherit an exact "
+                "positive lower bound paired with a reported endpoint.  "
+                "Before the final class merge, "
+                f"{statuses['E']:,} proposals have exact row-level status and "
+                f"{statuses['C']:,} have unresolved row-level status.  Of the latter, "
+                f"{nonexact_direct_evidence['interval']:,} have rigorous upper "
+                "bounds and "
+                f"{nonexact_direct_evidence['estimate']:,} retain decoder estimates.  "
+                f"{transferred_low_weight_exact:,} proposals with exact row-level "
+                "status inherit an exact "
                 r"$d\leq4$ result from an audited class representative.  A separate "
-                f"set of {transferred_low_weight_completion:,} exact rows combines a "
+                f"set of {transferred_low_weight_completion:,} proposals with exact "
+                "row-level status combines a "
                 r"transferred $d\geq5$ result with its own weight-five witness.  "
                 "These transferred-evidence subsets measure a different property "
-                "from the 45 proposals in the main text that already carried "
-                "weight-five witnesses before the audit."
+                "from the 45 proposals whose decoder estimates of 5 were matched "
+                "by reconstructed and independently verified weight-five witnesses."
             ),
             "",
             (
                 "Merging distance evidence within each presentation class gives "
                 f"{class_statuses['E']:,} exact classes and "
-                f"{class_statuses['C']:,} certified-interval classes.  The exact "
+                f"{class_statuses['C']:,} classes with a certified lower bound "
+                "and reported endpoint: "
+                f"{nonexact_class_evidence['interval']:,} rigorous intervals and "
+                f"{nonexact_class_evidence['estimate']:,} lower-bound--plus--estimate "
+                "records.  The exact "
                 f"classes cover {exact_class_members:,} proposals: "
-                f"{statuses['E']:,} directly exact rows and "
-                f"{inherited_exact_statuses['C']:,} rows made exact by class "
-                "isomorphism.  Class merging tightens without closing the interval "
+                f"{statuses['E']:,} already had exact row-level status before this "
+                f"merge and {inherited_exact_statuses['C']:,} acquire it by class "
+                "isomorphism.  Class merging tightens without establishing an exact value "
                 f"for another {strengthened_status_pairs[('C', 'C')]:,} rows.  The "
                 "campaign tables separate each proposal's own evidence from the "
                 "class effect.  Where a class effect is shown, the displayed "
-                r"$d$ and FOM use the class-level interval, whereas Evid. lists only "
+                r"$d$ and FOM use the class-level evidence, whereas Evid. lists only "
                 "evidence attached to that proposal.  The figure of merit is "
                 r"$\mathrm{FOM}=kd^2/n$; values are rounded to two decimals unless "
                 "three are needed to distinguish a close comparison."
@@ -2030,7 +2914,7 @@ def render(
                 "The basis-independent connectivity test finds that "
                 f"{disconnected_total:,} of {total_specs:,} retained proposals "
                 f"are disconnected, including {disconnected_exact:,} of the "
-                f"{statuses['E']:,} directly exact proposals.  By family, "
+                f"{statuses['E']:,} proposals with exact row-level status.  By family, "
                 f"307 of the {specs_by_family['CSS']:,} CSS proposals and 102 "
                 f"of the {specs_by_family['PBB']:,} PBB proposals are disconnected.  "
                 "The component partition agrees with the generator-graph partition "
@@ -2063,7 +2947,7 @@ def render(
                 f"{component_class_counts['component_classes_by_status']['E']:,} "
                 "are exact and "
                 f"{component_class_counts['component_classes_by_status']['C']:,} "
-                "have certified distance intervals.  Because this comparison uses "
+                "are nonexact.  Because this comparison uses "
                 "presentation-graph isomorphism rather than complete "
                 "stabilizer-code equivalence, "
                 f"{component_class_counts['component_classes']:,} remains an upper "
@@ -2086,8 +2970,15 @@ def render(
                 "Evidence codes are Exh. (exact exhaustive search), H$_c$ (exact "
                 "component enumeration plus isomorphism and dimension additivity), "
                 "M (MILP optimality for every logical sector), $L_w$ (exhaustive "
-                "exclusion of logical operators through weight $w$), I (MILP incumbent), and B "
-                "(BP--OSD witness).  Obs. is the "
+                "exclusion of logical operators through weight $w$), I (MILP incumbent), "
+                "W (independently reconstructed and verified logical operator), and B "
+                "(BP--OSD/decoder estimate; operator not retained).  For a nonexact "
+                r"row, $[L,U]$ denotes a certified lower bound and a rigorous upper "
+                r"bound, whereas $L;\widehat{U}$ pairs the certified lower bound "
+                "with a decoder estimate; the FOM column uses the same notation.  "
+                "Own evidence labels these cases Interval and Estimate, respectively.  "
+                "Class effect identifies an exact value, a tighter endpoint, or a "
+                "rigorous endpoint supplied by an isomorphic presentation.  Obs. is the "
                 "number of raw-log observations, not an equivalence-class "
                 "multiplicity.  Decomp. gives the connectivity decomposition "
                 "computed from the displayed polynomials: "
@@ -2095,13 +2986,13 @@ def render(
                 r"$r\times\code{n_0,k_0}$ for $r$ "
                 "pairwise-isomorphic disjoint components with parameters "
                 r"$\code{n_0,k_0}$.  Each component has the same true distance "
-                "as the direct sum, so the row's exact distance or certified interval "
-                "carries over unchanged."
+                "as the direct sum, so the row's exact distance or its certified "
+                "lower bound and reported endpoint carry over unchanged."
             ),
             "",
             r"\subsection{Generator attribution and artifacts}",
             (
-                "Attr. uses G for GPT-5.6-sol, O for Claude Opus 5, N for the "
+                "Attr. uses G for GPT-5.6 Sol, O for Claude Opus 5, N for the "
                 "seed/null source, F for the fixed PBB baseline evaluated in every "
                 "run, and -- when no attribution record exists.  These labels record "
                 "associated generator programs, not independent discovery or the "
@@ -2122,7 +3013,8 @@ def render(
                 f"For the {len(pbb_audit_specs):,} retained PBB-large targets, the "
                 "completed audit certifies "
                 f"{pbb_audit_statuses['E']:,} exact distances and leaves "
-                f"{pbb_audit_statuses['C']:,} certified intervals.  Further details, "
+                f"{pbb_audit_statuses['C']:,} ranges with certified lower bounds "
+                "and supported upper endpoints.  Further details, "
                 "the complete machine-readable catalogue, and supporting evidence "
                 r"are available through the project repository~"
                 r"\cite{cruzbenito2026qcode}."
@@ -2168,7 +3060,10 @@ def render(
 
 
 def build_catalogue(
-    *, include_css_low_weight_audit: bool = True
+    *,
+    include_css_low_weight_audit: bool = True,
+    include_css_weight5_witnesses: bool = True,
+    include_css_upper_bound_witnesses: bool = True,
 ) -> list[tuple[Campaign, list[Spec], int, int]]:
     loaded_campaigns: list[
         tuple[Campaign, dict[tuple, Spec], int, int]
@@ -2201,6 +3096,10 @@ def build_catalogue(
 
     if include_css_low_weight_audit:
         load_and_merge_css_low_weight_audit(specs_by_id)
+    if include_css_weight5_witnesses:
+        load_and_merge_css_weight5_witnesses(specs_by_id)
+    if include_css_upper_bound_witnesses:
+        load_and_merge_css_upper_bound_witnesses(specs_by_id)
 
     campaign_data = []
     for campaign, specs_by_key, raw_rows, verification_rows in loaded_campaigns:
@@ -2221,7 +3120,7 @@ def print_audit(
     }
     print(
         "campaign\tlogged_obs\tretained_obs\tall_specs\tretained_specs\t"
-        "presentation_classes\tremoved_specs\tverify_rows\texact\tbounded\tupper_only"
+        "presentation_classes\tremoved_specs\tverify_rows\texact\tnonexact\tendpoint_only"
     )
     totals = Counter()
     for campaign, specs, raw_rows, verification_rows in campaign_data:
@@ -2243,8 +3142,8 @@ def print_audit(
             removed_specs=removed_specs,
             verification_rows=verification_rows,
             exact=statuses["E"],
-            bounded=statuses["C"],
-            upper_only=statuses["U"],
+            nonexact=statuses["C"],
+            endpoint_only=statuses["U"],
         )
     print(
         f"total\t{totals['logged_observations']}\t"
@@ -2252,7 +3151,7 @@ def print_audit(
         f"{totals['retained_specs']}\t{len(presentation_classes)}\t"
         f"{totals['removed_specs']}\t"
         f"{totals['verification_rows']}\t{totals['exact']}\t"
-        f"{totals['bounded']}\t{totals['upper_only']}"
+        f"{totals['nonexact']}\t{totals['endpoint_only']}"
     )
 
 

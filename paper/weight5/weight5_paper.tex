@@ -21,7 +21,7 @@ Bicycle Codes}
 % \author{Andrew W. Cross}
 % \affiliation{IBM Research}
 
-\date{6 September 2026}
+\date{8 September 2026}
 
 \begin{abstract}
 Building on our earlier program-evolution workflow guided by large language
@@ -35,11 +35,11 @@ A post-search comparison certifies seven imported
 Lin--Pryadko archive constructions.  For leading parameter triples also
 represented in that archive, we provide exact distance evidence, explicit
 bivariate presentations, and verified component reductions.  A
-basis-invariant connectivity analysis identifies 409 of the 1,142 catalogue
-entries as disconnected and shows that 73.1\% of the classes with exact 
-distance certificates contain repeated connected components. 
-Algebraic analysis organizes the connected CSS classes into order-3, 
-order-7, and order-15 cyclotomic-kernel strata.  The strongest exact 
+basis-independent connectivity analysis identifies 409 of the 1,142 catalogue
+entries as disconnected and shows that 73.1\% of the classes with exact
+distance certificates contain repeated connected components.
+Algebraic analysis organizes the connected CSS classes into order-3,
+order-7, and order-15 cyclotomic-kernel strata.  The strongest exact
 connected PBB parameter point is $\code{216,4,10}$, attained
 by two distinct component classes.  A three-replicate stratified-uniform
 transfer control reveals complementary behavior: 816 of 936 distinct CSS
@@ -47,8 +47,8 @@ proposals recorded with positive distance (87.18\%) are certified at $d\geq5$,
 compared with 4,672--4,785 of 6,444 proposals selected by each control
 (72.50--74.26\%), while the without-replacement controls cover more connected
 classes.  Every replicate samples the campaign-certified $\code{180,4,14}$
-class.  Together, these results extend LLM-guided discovery to a more 
-constrained code family and provide a reproducible structural and 
+class.  Together, these results extend LLM-guided discovery to a more
+constrained code family and provide a reproducible structural and
 exact-distance account of its strongest candidates.
 \end{abstract}
 
@@ -145,7 +145,8 @@ distinguish them from exact distances in the comparison.
 
 The archive serves as a post hoc comparison set and was not used during the
 campaign.  Its exhaustive abelian range ends at block length $n=100$, below
-the six searched abelian parent codes, which have $n\geq120$.  Moreover, retaining
+the six searched abelian lattices, whose parent block lengths satisfy
+$n\geq120$.  Moreover, retaining
 one construction per $(G,k,d)$ tuple supports parameter-level comparison but
 not same-lattice recall or code equivalence.  Sections~\ref{sec:css-results}
 and~\ref{sec:pareto-comparison} report the equivalence and distance evidence
@@ -174,7 +175,7 @@ leaderboard of verifier-checked submissions.  We use its submitted family
 labels as provenance metadata rather than equivalence classifications.  We
 assign each entry a check weight equal to the
 maximum nonzero row weight of its submitted $H_X$ and $H_Z$ matrices.  The
-comparison set comprises all 97 entries labeled BB in that revision and the
+comparison set comprises all 97 entries labelled BB in that revision and the
 five weight-five entries outside that family.  We analyze their evidence and
 connectivity in Sec.~\ref{sec:pareto-comparison}.
 
@@ -185,7 +186,7 @@ finite-length performance.  For the literature comparison,
 we construct separate exact Pareto frontiers by check weight for two pairs of
 objectives: rate and distance, both maximized; and block length and $kd^2/n$,
 with $n$ minimized and $kd^2/n$ maximized.  The plotted frontiers use exact
-distances, with interval evidence retained in
+distances, with nonexact evidence retained in
 the accompanying dataset.
 
 \section{Search space and methods}
@@ -284,8 +285,8 @@ exact $\FF_2$ rank and the family constraints, and stratified into low-,
 medium-, and high-$k$ bands before distance evaluation.  We call a
 positive-distance record an \emph{observation} and a distinct normalized
 $(\ell,m,A,B,C,D)$ tuple a \emph{proposal}.  Repeated observations can therefore
-map to the same proposal.  Proposals proved or bounded to have $d\leq2$ are
-excluded from the final catalogue.  The Supplemental Material gives the
+map to the same proposal.  Proposals with a proved value or reported endpoint
+$d\leq2$ are excluded from the final catalogue.  The Supplemental Material gives the
 per-campaign accounting.
 
 \subsection{Distance certification and catalogue reduction}
@@ -294,13 +295,15 @@ Initial CSS ranking used belief propagation with ordered-statistics decoding
 (BP--OSD), followed for the strongest candidates by combination-sweep OSD and
 an exact-search attempt.  PBB candidates first underwent exhaustive
 low-weight search and then size-dependent symplectic MILP and BP--OSD.  These
-stages rank candidates and return logical-operator witnesses; exact-distance
-status is assigned using the criteria below.
+stages rank candidates and produce distance estimates or solver bounds;
+exact-distance status is assigned using the criteria below.
 
 We call $d$ exact only when exhaustive enumeration or an analytic argument
 provides a lower bound matching a logical witness, or when all required MILP
-problems terminate with proven optima.  Otherwise, a decoder output or MILP
-incumbent supplies only an upper bound $d\leq d_{\rm ub}$.  The MILP uses the
+problems terminate with proven optima.  Otherwise, an explicit logical witness
+or a nonoptimal MILP incumbent supplies an upper bound $d\leq d_{\rm ub}$; a
+decoder scalar whose operator was not retained is reported only as an estimated
+upper endpoint.  The MILP uses the
 Landahl--Anderson--Rice binary formulation~\cite{landahl2011color}, implemented
 with \texttt{scipy.optimize.milp}~\cite{virtanen2020scipy} and HiGHS, with one
 problem for each of the $2k$ logical objectives.  Every reported witness is
@@ -351,8 +354,8 @@ campaign observations.  The control therefore inherits the campaign's
 lattice--band allocation and tests selection within strata, not allocation
 among them.  Each selected pair follows the same BP--OSD cascade, followed by
 an exhaustive search for nontrivial logical operators of weight at most four.
-Exact evidence is
-transferred only across identical certified presentation classes.
+Exact evidence is transferred only between proposals in the same certified
+presentation class.
 
 The primary endpoints are the certified-$d\geq5$ fraction, connected
 certified-class coverage, and highest-FOM campaign-certified class sampled.
@@ -366,8 +369,8 @@ are available in the code repository~\cite{cruzbenito2026qcode}.
 \label{sec:catalogue-results}
 
 The four campaigns produced 13,923 positive-distance observations representing
-1,297 distinct proposals.  After excluding 155 proposals proved or bounded to
-have $d\leq2$, the retained catalogue contains 12,036 observations across
+1,297 distinct proposals.  After excluding 155 proposals with an exact value
+or reported endpoint $d\leq2$, the retained catalogue contains 12,036 observations across
 1,142 proposals: 912 CSS and 230 PBB.  Of these, 1,081 are nonbaseline
 proposals attributable to LLM-generated programs.  The remaining 61 comprise
 35 seed/null-only proposals, six without a retained attribution event, and 20
@@ -384,12 +387,12 @@ proposals before the catalogue-wide low-weight search.
 \begin{table}[tbp]
 \centering
 \caption{Certification outcomes for the targeted follow-up after
-excluding proposals with $d\leq2$.  ``Interval'' denotes a certified lower
-bound and a witnessed upper bound whose endpoints do not coincide.}
+excluding proposals with $d\leq2$.  ``Nonexact'' combines a certified lower
+bound with either a rigorous upper bound or a decoder estimate.}
 \label{tab:certification-outcomes}
 \begin{tabular}{lrrr}
 \toprule
-Campaign & Targets & Exact & Interval\\
+Campaign & Targets & Exact & Nonexact\\
 \midrule
 CSS-small & 16 & 12 & 4\\
 CSS-large & 78 & 38 & 40\\
@@ -402,12 +405,12 @@ Total & 175 & 106 & 69\\
 \end{table}
 
 For the 96 prespecified CSS follow-up targets, including two later excluded at
-$d=2$, the ratio of the initial witness bound to the final certified upper
-bound had medians 1.80 in the small profile and 2.08 in the large profile, with
-maximum 14.5.  Class-level evidence also
+$d=2$, the ratio of the initial estimated endpoint to the final reported
+endpoint had medians 1.80 in the small profile and 2.08 in the large
+profile, with maximum 14.5.  Class-level evidence also
 materially tightens individual presentations: five presentations of one exact
-$\code{432,4,10}$ class had direct upper bounds 10, 10, 20, 22, and 23, and
-the exact $d=10$ result applies to all five.
+$\code{432,4,10}$ class comprised one exact result at 10 and four decoder
+estimates at 10, 20, 22, and 23; the exact result applies to all five.
 
 The catalogue-wide low-weight search examined 492 CSS classes containing
 proposals without direct lower-bound evidence.  It found two $d=2$ proposals,
@@ -419,11 +422,12 @@ are therefore exact.  Thus every retained CSS entry has a certified positive
 lower bound.
 
 The 1,142 retained proposals form 630 presentation classes: 535 CSS and 95
-PBB.  Combining the certification stages across both families, direct evidence
-establishes exact distances for 398 proposals.  Transfer within presentation
-classes adds 38, giving 436 proposals in 227 exact classes; the remaining 403
-classes retain certified intervals.  No class contains conflicting distances
-or incompatible bounds.
+PBB.  Before the final presentation-class merge, 398 proposals have exact
+row-level status.  Merging class evidence adds 38, giving 436 proposals in 227
+exact classes; the remaining 403
+classes retain certified lower bounds paired with either rigorous upper bounds
+or decoder estimates.  No class contains conflicting distances or incompatible
+bounds.
 
 The basis-independent connectivity partition agrees with the stored-generator
 Tanner partition for all 1,142 proposals.  It identifies 307 of 912 CSS
@@ -442,6 +446,8 @@ are given in Secs.~\ref{sec:css-results} and~\ref{sec:pbb-results}.  Pareto
 selection uses one representative of each component class, so replication
 cannot create a frontier point.
 
+\begingroup
+\clubpenalty=10000
 Componentwise analysis of seven high-$k$ CSS parents finds that each is a
 direct sum of pairwise-isomorphic components.  One parent,
 $18\times\code{24,4,2}$, is excluded by the $d\leq2$ rule; the other six are
@@ -456,10 +462,12 @@ proposal has $k\geq20$: the largest connected dimension is 16, attained
 by the exact $\code{384,16,4}$ code, while the largest connected PBB dimension
 is four.  Thus most of the catalogue's large parent dimensions arise through
 replication.
+\par
+\endgroup
 
 Repeating the canonical labelling after replacing each parent by one
 connected component reduces the 630 parent classes to 608 component classes:
-528 CSS and 80 PBB, with 206 exact and 402 interval classes.  This component
+528 CSS and 80 PBB, with 206 exact and 402 nonexact classes.  This component
 quotient is the catalogue used for comparisons between connected
 constructions.  The shortest components with certified exact distances are a
 PBB $\code{12,2,3}$ code and a CSS $\code{24,4,3}$ code, both with FOM 1.50.
@@ -528,21 +536,16 @@ it with the compiled benchmarks below.
 
 Among the connected CSS codes in the present catalogue, $\code{180,4,14}$ has
 the largest exact FOM, 4.356; $\code{180,4,13}$ provides another exact result,
-with FOM 3.76.  After merging
-compatible evidence within presentation classes, the connected
-interval classes with the two largest class-level FOM ceilings are
-$\code{432,4,5{\leq}d{\leq}24}$ and
-$\code{420,6,5{\leq}d{\leq}18}$, at 5.33 and 4.63, respectively.  For each
-class, the reported interval combines the strongest lower bound with the
-tightest compatible upper bound across all member presentations; a weaker
-witness bound for an individual proposal therefore does not determine
-the class ceiling.  The exhaustive
-low-weight search certifies both lower endpoints.  The
-$\code{432,4,5{\leq}d{\leq}24}$ class was included among the original 96 CSS
-targets, and its upper endpoint is a nonoptimal MILP incumbent.  The
-$\code{420,6,5{\leq}d{\leq}18}$ class was not among those targets.
+with FOM 3.76.  Among connected CSS classes with nonexact distance, the largest
+supported FOM ceiling is
+$\code{432,4,5{\leq}d{\leq}23}$, at 4.90.  Two non-isomorphic singleton
+classes tie next at $\code{420,4,5{\leq}d{\leq}22}$, with ceiling 4.61.  The
+exhaustive low-weight search certifies the lower endpoints.  All three presentations were
+included among the original 96 CSS targets.  The two length-420 upper endpoints
+are nonoptimal MILP incumbents; an independently verified logical operator
+tightens the length-432 upper bound from the MILP incumbent 24 to 23.
 These interval classes are distinct from the exact $\code{432,4,10}$ and
-$\code{420,6,5}$ presentation classes with the same respective $(n,k)$
+$\code{420,4,5}$ presentation classes with the same respective $(n,k)$
 values.
 Table~\ref{tab:css} gives their generators alongside selected exact
 constructions.  The supplement contains the compact catalogue, and the full
@@ -553,14 +556,15 @@ comparison uses the connected code.
 \begin{table*}[t]
 \centering
 \caption{Selected connected weight-five CSS BB presentations.  Exact distances are
-certified; interval rows combine a certified lower bound with a witnessed upper
-bound, so the corresponding displayed FOMs are upper bounds.  M denotes exact
+certified; interval rows combine a certified lower bound with a supported upper
+endpoint, so the corresponding displayed FOMs are upper bounds.  M denotes exact
 MILP certification over all logical sectors of the displayed presentation;
 M+class transfers such a certificate from an isomorphic presentation in the
 same presentation class; M+component denotes a connected BB realization
 shown by BLISS canonicalization to be isomorphic to a component of an
-MILP-certified parent.  B denotes a BP--OSD witness, I a nonoptimal MILP
-incumbent, and L4 exhaustive exclusion through weight four.  Each row specifies
+MILP-certified parent.  B denotes a decoder estimate whose operator was not
+retained, I a nonoptimal MILP incumbent, W an independently reconstructed and
+verified logical operator, and L4 exhaustive exclusion through weight four.  Each row specifies
 a presentation through its lattice and generators; matching $(n,k)$ values do
 not imply equivalence.}
 \label{tab:css}
@@ -577,8 +581,9 @@ $\code{180,4,13}$ & $(10,9)$ & $1+x^2y^3$ & $1+x^5y+x^7y^8$ & 3.76 & M\\
 $\code{180,4,14}$ & $(10,9)$ & $1+x^2y^2+x^5y$ & $1+x^3y^3$ & 4.356 & M\\
 $\code{432,4,10}$ & $(18,12)$ & $1+x^4y^3$ & $1+xy^{11}+x^2y^{10}$ & 0.93 & M+class\\
 \midrule
-$\code{420,6,5{\leq}d{\leq}18}$ & $(15,14)$ & $1+x^7y^7$ & $1+x^4y+x^{14}y^{10}$ & $\leq4.63$ & L4+B\\
-$\code{432,4,5{\leq}d{\leq}24}$ & $(18,12)$ & $1+x^4y^3$ & $1+x^5y^{11}+x^{10}y$ & $\leq5.33$ & L4+I+B\\
+$\code{420,4,5{\leq}d{\leq}22}$ & $(15,14)$ & $1+x^3y$ & $1+x^{10}y^6+x^{11}y^2$ & $\leq4.61$ & L4+I+B\\
+$\code{420,4,5{\leq}d{\leq}22}$ & $(15,14)$ & $1+x^4y^3+x^8y^{11}$ & $1+x^3y^3$ & $\leq4.61$ & L4+I+B\\
+$\code{432,4,5{\leq}d{\leq}23}$ & $(18,12)$ & $1+x^4y^3$ & $1+x^5y^{11}+x^{10}y$ & $\leq4.90$ & L4+I+W+B\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -589,7 +594,7 @@ connected codes in this profile have parameters $\code{384,16,4}$,
 $\code{384,4,4}$,
 $\code{420,10,5}$, $\code{420,6,5}$, $\code{420,4,5}$,
 $\code{420,6,3}$, $\code{432,4,10}$, and $\code{432,4,4}$.  The best FOM
-among them is $0.926$ for $\code{432,4,10}$.
+among them is $0.93$ for $\code{432,4,10}$.
 
 \subsection{Algebraic family classification}
 \label{sec:algebraic-classification}
@@ -738,7 +743,7 @@ here.  Seven of the 28 classes are exact (five at $d=4$ and these two at
 $d=10$), compared with nine of the other 86 noncyclic classes (two at $d=3$,
 four at $d=4$, and three at $d=5$).  Certified lower bounds of at least five
 occur in 23 of 28 and 80 of 86 classes, respectively.  Because certification
-targeted selected candidates and interval distances are censored, we interpret
+targeted selected candidates and nonexact distances are censored, we interpret
 these counts as structural coverage statistics for the stratum rather than as
 performance estimates.
 
@@ -773,10 +778,10 @@ CSS presentation of the $\code{36,4,6}$ Khesin--Lu mirror code has the same
 property.  We therefore use ``low-order quotient character'' and ``cyclotomic
 kernel'' as a structural taxonomy within the known abelian 2BGA/BB family.
 The order-seven $\code{140,6,10}$ code realizes the factor-first coprime-BB
-approach at weight five.  The leading interval candidates
-$\code{420,6,5\leq d\leq18}$ and $\code{432,4,5\leq d\leq24}$ provide further
-members of the order-seven and order-three strata; exact resolution would
-enable a performance comparison.
+approach at weight five.  The leading interval classes---one
+$\code{432,4,5\leq d\leq23}$ class and two non-isomorphic
+$\code{420,4,5\leq d\leq22}$ classes---are further members of the order-three
+stratum; exact resolution would enable a performance comparison.
 
 \subsection{Pareto comparison across check weights}
 \label{sec:pareto-comparison}
@@ -790,12 +795,16 @@ cumulative ``weight at most $w$'' envelopes.  Their ordering at short block
 lengths is interpreted in that fixed-weight sense.  Only exact distances enter
 the figure.  For this
 study, the figure uses one connected representative per component class
-rather than unreduced parent presentations.  Codes from earlier
-campaigns for which polynomial supports are available undergo the same
-translation-subgroup test.  Every Challenge entry is rebuilt from its submitted $H_X,H_Z$ matrices
+rather than unreduced parent presentations.  For earlier-campaign codes with
+polynomial supports, a translation-subgroup test computes the index in
+$\mathbb{Z}_{\ell}\times\mathbb{Z}_m$ of the subgroup generated by differences
+within $\operatorname{supp}(A)\cup\operatorname{supp}(C)$ and within
+$\operatorname{supp}(B)\cup\operatorname{supp}(D)$, with $C=D=0$ for CSS
+codes; this index gives the number of translation components of the stored
+presentation.  Every Challenge entry is rebuilt from its submitted $H_X,H_Z$ matrices
 and reduced using the same invariant row-space decomposition as the present
-catalogue.  Intervals, witness-only ceilings, and disconnected parents remain
-available in the accompanying comparison dataset.
+catalogue.  Certified intervals, decoder estimates, witness-only ceilings, and
+disconnected parents remain available in the accompanying comparison dataset.
 
 Challenge entries without exact certificates are treated only as
 witness-based upper bounds.  When different sources report identical
@@ -810,7 +819,7 @@ replicated parents, enter the frontiers.  The Challenge analysis similarly reduc
 $\code{96,12,4}$ and $\code{192,24,4}$ to six and twelve copies,
 respectively, of the same connected $\code{16,2,4}$ component.
 Table~\ref{tab:pareto-points} lists every exact Pareto point in each panel so
-that the figure need not be densely labeled.
+that the figure need not be densely labelled.
 
 \begin{figure*}[t]
 \centering
@@ -1023,7 +1032,7 @@ weight-five comparators $\code{30,4,5}$, $\code{60,4,8}$, and
 $\code{132,4,12}$ are 0.518, 0.522, and 0.463.  These are finite-size
 descriptors and do not establish an asymptotic trend.
 
-Of the 97 Challenge entries labeled bivariate bicycle, 55 have exact
+Of the 97 Challenge entries labelled bivariate bicycle, 55 have exact
 certificates and 42 have witness-only upper bounds.  Under our row-weight
 definition, five have weight four, 76 weight six, 10 weight eight, one weight
 10, and five weight greater than 25; none has weight five.  The weight-four
@@ -1135,12 +1144,12 @@ Table~\ref{tab:pbb} summarizes the selected PBB presentations and their evidence
 \begin{table*}[t]
 \centering
 \caption{Selected weight-five PBB presentations.  Exact rows are certified.  Interval
-rows combine exclusion through weight four with an upper-endpoint witness, so
+rows combine exclusion through weight four with a supported upper endpoint, so
 their FOMs are upper bounds.  Evidence labels are Exh.+M (exhaustive search
 corroborated by all-logical MILP), M (all-logical MILP), M+component (a
 connected presentation matched by colored-BLISS to a component of a
 homogeneous M-certified parent), and L4+I+B (certified $d\geq5$ plus both a
-nonoptimal MILP incumbent and a BP--OSD witness).
+nonoptimal MILP incumbent and a decoder estimate).
 Baseline rows identify fixed-family controls supplied by the campaign
 evaluators independently of model output.  Each row specifies a particular
 polynomial presentation, and repeated parameter triples need not denote the
@@ -1252,10 +1261,11 @@ the operators
 \]
 are nontrivial logicals of Pauli weights $2\ell/3$ and $m$, respectively.
 Here $AQ=0$ and $Bh=0$ establish commutation.  Nontriviality of $L_x$
-follows because a stabilizer representation would require $uB=Q$, which is
-impossible after evaluating at $y=1$.  For $L_y$, the companion condition
-$uB=0$ also gives $uD=0$ because $D=B$, so a stabilizer representation would
-reduce to $vA^*=h$.  Coefficientwise in $y$, this would make the zero divisor
+follows because a stabilizer representation would require a coefficient
+$p$ satisfying $pB=Q$, which is impossible after evaluating at $y=1$.
+For $L_y$, a representation would require a coefficient $q$ satisfying
+$qB=0$; because $D=B$, this also gives $qD=0$, leaving $rA^*=h$ for another
+coefficient $r$.  Coefficientwise in $y$, this would make the zero divisor
 $A^*$ invertible.  Consequently,
 \begin{equation}
  d\leq\min\!\left(m,\frac{2\ell}{3}\right).
@@ -1399,7 +1409,7 @@ scope.
 \section{Data and code availability}
 
 The Supplemental Material gives a compact catalogue containing every proposal
-in an exact class and one representative of each remaining interval class.  The
+in an exact class and one representative of each remaining nonexact class.  The
 complete machine-readable catalogue and reproduction code are available in
 the qcode-discovery repository~\cite{cruzbenito2026qcode}.  The repository also
 contains campaign configurations, archived QEC Challenge comparison data,

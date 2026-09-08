@@ -243,13 +243,13 @@
       "sha256": "1cb409277976ce356eac556d62eb570dad3089c41924a7160ef190a2038a9c9e"
     },
     "results/weight5_publication_catalogue.jsonl": {
-      "bytes": 4843420,
+      "bytes": 5090330,
       "records": 1142,
-      "sha256": "fd177f878bf10d2d1e84ce3e64bb56f9610a1501fa578ae4d09db14700a659c5"
+      "sha256": "be92c4fd761d13ac1a215281cf14356e22344a6ebd54bcff183d4bb0fa218a2e"
     },
     "results/weight5_publication_manifest.json": {
-      "bytes": 35864,
-      "sha256": "9c5c09b82f8c637aebe519e4566589eca8ffc8be7f4e1a026ea5b0607f6f6a13"
+      "bytes": 47708,
+      "sha256": "221c2026333bc075c5ea92a909d7d4e5e7bdf409e8eb50a3eac107a87992c18f"
     }
   },
   "executed_source_note": "This hash identifies the untracked sampler source loaded by the initial run; those exact source bytes were not separately archived. The released current source records the protocol and implements its deterministic replay. A documented one-variable rank repair replayed the same seeded stopping rule, replaced 16 of 19,332 selected indices, and evaluated only those replacements with the current source. Superseded records and before/after hashes are retained under each stream's repair directory.",
@@ -293,8 +293,8 @@
       "sha256": "9e989f0bf789378009301942a1a23a444cf70520e366de215359d3ac2e04e432"
     },
     "scripts/audit_weight5_css_low_weight.py": {
-      "bytes": 34953,
-      "sha256": "453039ecf20027df351679f7e2b2a084b379939bead697ea8ae57b82bbd8aaae"
+      "bytes": 35833,
+      "sha256": "24c363d3c0c78261e80d3e29d79c0307b5505c4bb2f3e8c2f369ccd4757f160d"
     },
     "scripts/run_weight5_uniform_baseline.py": {
       "bytes": 142667,

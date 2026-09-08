@@ -1,5 +1,5 @@
 {
-  "catalogue_schema": "weight5_publication_catalogue_v1",
+  "catalogue_schema": "weight5_publication_catalogue_v2",
   "component_certification": {
     "artifact_manifest": {
       "artifact": "weight5_component_certifications",
@@ -54,6 +54,12 @@
     "css_low_weight_audit_targets": 858,
     "css_low_weight_audit_targets_excluded_d_le_2": 2,
     "css_low_weight_audit_targets_retained": 856,
+    "css_upper_bound_witness_corrections": 10,
+    "css_upper_bound_witness_corrections_excluded_d_le_2": 0,
+    "css_upper_bound_witness_corrections_retained": 10,
+    "css_weight5_witness_certifications": 45,
+    "css_weight5_witness_certifications_excluded_d_le_2": 0,
+    "css_weight5_witness_certifications_retained": 45,
     "disconnected_classes": 268,
     "disconnected_presentations": 409,
     "excluded_by_campaign": {
@@ -71,6 +77,14 @@
     },
     "excluded_presentations": 155,
     "explicit_bb_component_matches": 3,
+    "nonexact_classes_by_upper_support": {
+      "estimated": 350,
+      "supported": 53
+    },
+    "nonexact_presentations_by_upper_support": {
+      "estimated": 680,
+      "supported": 64
+    },
     "presentations_by_campaign_and_direct_status": {
       "css-large": {
         "C": 453,
@@ -157,12 +171,12 @@
           "4": 50
         },
         "post_audit_status_by_class": {
-          "C": 389,
-          "E": 103
+          "C": 421,
+          "E": 71
         },
         "post_audit_status_by_target_presentation": {
-          "C": 686,
-          "E": 172
+          "C": 735,
+          "E": 123
         },
         "presentations_proved_d_le_2": 2
       },
@@ -173,7 +187,7 @@
       },
       "producer": {
         "path": "scripts/audit_weight5_css_low_weight.py",
-        "sha256": "453039ecf20027df351679f7e2b2a084b379939bead697ea8ae57b82bbd8aaae"
+        "sha256": "24c363d3c0c78261e80d3e29d79c0307b5505c4bb2f3e8c2f369ccd4757f160d"
       },
       "record_type": "artifact_manifest",
       "schema_version": 1,
@@ -243,7 +257,7 @@
         },
         "source_normalizer": {
           "path": "scripts/generate_weight5_supplement.py",
-          "sha256": "4e0a33178b2af08928560af74307f73404135e43d32ed446f9593aee14ae8748"
+          "sha256": "e340aa7f2723cb105c2eee976e64c606f416b875178526f200e3743740842b5f"
         }
       }
     },
@@ -1110,13 +1124,235 @@
       "CS-ff5ab961"
     ]
   },
+  "css_upper_bound_witness_correction": {
+    "artifact_manifest": {
+      "algorithm": "randomized_gf2_kernel_permutation_search_v1",
+      "artifact_schema": "weight5_css_upper_bound_witnesses_v1",
+      "counts": {
+        "all_x_witnesses_valid": true,
+        "all_z_witnesses_valid": true,
+        "explicit_witnesses": 20,
+        "presentation_classes": 10,
+        "presentations": 10,
+        "prior_methods": {
+          "B": 9,
+          "I": 1
+        }
+      },
+      "decoder_scalar_provenance": "The refined_estimate and osd_cs_verified evaluation stages record only a decoder-heuristic scalar distance, with no logical operator. This artifact supplies independently verified explicit witnesses for the nine targeted decoder endpoints.",
+      "generator": "scripts/audit_weight5_css_upper_bound_witnesses.py",
+      "record_type": "artifact_manifest",
+      "schema_version": 1,
+      "semantics": "Explicit independently reconstructed X- and Z-sector logical witnesses that strictly tighten ten CSS proposal-level upper endpoints. Nine supersede decoder scalars and one tightens a nonoptimal MILP incumbent; none establishes exact distance.",
+      "source_artifacts": {
+        "catalogue_inputs": [
+          {
+            "path": "results/evolution/weight5_css_large_v1/all_codes_weight5_css.jsonl",
+            "sha256": "9dae8379fd5945c0a37b6ee060528141035f74896cff493a84ebdcb2da88d3a6"
+          },
+          {
+            "path": "results/evolution/weight5_css_large_v1/discovery_events.jsonl",
+            "sha256": "baf8ceb79318aae7a2cae3a9d2c582eab27d3c9f6a63a4182c0b6fbfebd9fa42"
+          },
+          {
+            "path": "results/evolution/weight5_css_small_v1/all_codes_weight5_css.jsonl",
+            "sha256": "ad8348ac6b99698f1ec5ca8c14b062272bf310cc93318444bc557056d34d99cc"
+          },
+          {
+            "path": "results/evolution/weight5_css_small_v1/discovery_events.jsonl",
+            "sha256": "dc3c126d7abded6e040ea80b18528a07b04e9f5dcda0e86d55d59ab53cad223a"
+          },
+          {
+            "path": "results/evolution/weight5_pbb_large_v1/all_codes_weight5_pbb.jsonl",
+            "sha256": "8df01e3ee290a16a175f33ec8795d292ed373c60a58aab7a25648f6cccea26a5"
+          },
+          {
+            "path": "results/evolution/weight5_pbb_large_v1/historical_attribution.jsonl",
+            "sha256": "b5b133493ec9bbb93eda9dc0e9009455d2b6740c71aa4171ec12490671fa65c8"
+          },
+          {
+            "path": "results/evolution/weight5_pbb_small_v1/all_codes_weight5_pbb.jsonl",
+            "sha256": "d53179fef2ec0ea6edaf73d9977fe14b1a1d115c75ff46c18c930afa6b764955"
+          },
+          {
+            "path": "results/evolution/weight5_pbb_small_v1/historical_attribution.jsonl",
+            "sha256": "c6f6a8e110218efb48eb318ef28463da22a44fd2929c781ce5666c67edd46372"
+          },
+          {
+            "path": "results/weight5_component_certifications.jsonl",
+            "sha256": "77c5596c69152a6400953abb7819ba8ff0f8602590749549b4e07a3340f86ae6"
+          },
+          {
+            "path": "results/weight5_css_large_v1_milp_verified.jsonl",
+            "sha256": "0f8e18d70eb75438b2608aff0b00582bcb89b97c144d2b0b11ddcdacd8a1923c"
+          },
+          {
+            "path": "results/weight5_css_small_v1_milp_verified.jsonl",
+            "sha256": "7207983c9b0728679666d5a65519c06c2fd97aee0922b102e16a98d732a235bd"
+          },
+          {
+            "path": "results/weight5_pbb_large_v1_deep_milp_verify.jsonl",
+            "sha256": "3031ee7b09ea2f3e0fc16be450491b5ace1f61fc90e48c51489c2499a0b95e22"
+          },
+          {
+            "path": "results/weight5_pbb_small_v1_deep_milp_verify.jsonl",
+            "sha256": "2e7e3229f7cd6184951b9dbbae1ee075b884e517c2c71afe15269ce3c92745c4"
+          }
+        ],
+        "low_weight_audit": {
+          "path": "results/weight5_css_low_weight_audit.jsonl",
+          "sha256": "b0c2f28a6d3a4c21910f361e97cee69ce72dd7b19491866ef55b5320152c30ed"
+        }
+      }
+    },
+    "excluded_presentation_ids": [],
+    "retained_presentation_ids": [
+      "CL-1a333605",
+      "CL-23177205",
+      "CL-40a1f698",
+      "CL-4a95cc39",
+      "CL-54d0129e",
+      "CL-85245770",
+      "CL-d192c3d1",
+      "CL-daf9d6b0",
+      "CL-f5754da6",
+      "CS-22b9dba0"
+    ]
+  },
+  "css_weight5_witness_certification": {
+    "artifact_manifest": {
+      "algorithm": "translation_anchored_pair_pair_collision_v1",
+      "artifact_schema": "weight5_css_weight5_witnesses_v1",
+      "counts": {
+        "all_x_witnesses_valid": true,
+        "all_z_witnesses_valid": true,
+        "explicit_witnesses": 90,
+        "presentation_classes": 32,
+        "presentations": 45
+      },
+      "generator": "scripts/audit_weight5_css_weight5_witnesses.py",
+      "historical_bp_osd_persistence": "The campaign records contain scalar d=5 observations but no operator vectors; this artifact supplies replacement witnesses.",
+      "record_type": "artifact_manifest",
+      "schema_version": 1,
+      "semantics": "Explicit independently reconstructed X- and Z-sector logical witnesses for all direct CSS rows where an L4 lower bound meets a historical B=5 scalar; W, rather than B, closes each distance.",
+      "source_artifacts": {
+        "catalogue_inputs": [
+          {
+            "path": "results/evolution/weight5_css_large_v1/all_codes_weight5_css.jsonl",
+            "sha256": "9dae8379fd5945c0a37b6ee060528141035f74896cff493a84ebdcb2da88d3a6"
+          },
+          {
+            "path": "results/evolution/weight5_css_large_v1/discovery_events.jsonl",
+            "sha256": "baf8ceb79318aae7a2cae3a9d2c582eab27d3c9f6a63a4182c0b6fbfebd9fa42"
+          },
+          {
+            "path": "results/evolution/weight5_css_small_v1/all_codes_weight5_css.jsonl",
+            "sha256": "ad8348ac6b99698f1ec5ca8c14b062272bf310cc93318444bc557056d34d99cc"
+          },
+          {
+            "path": "results/evolution/weight5_css_small_v1/discovery_events.jsonl",
+            "sha256": "dc3c126d7abded6e040ea80b18528a07b04e9f5dcda0e86d55d59ab53cad223a"
+          },
+          {
+            "path": "results/evolution/weight5_pbb_large_v1/all_codes_weight5_pbb.jsonl",
+            "sha256": "8df01e3ee290a16a175f33ec8795d292ed373c60a58aab7a25648f6cccea26a5"
+          },
+          {
+            "path": "results/evolution/weight5_pbb_large_v1/historical_attribution.jsonl",
+            "sha256": "b5b133493ec9bbb93eda9dc0e9009455d2b6740c71aa4171ec12490671fa65c8"
+          },
+          {
+            "path": "results/evolution/weight5_pbb_small_v1/all_codes_weight5_pbb.jsonl",
+            "sha256": "d53179fef2ec0ea6edaf73d9977fe14b1a1d115c75ff46c18c930afa6b764955"
+          },
+          {
+            "path": "results/evolution/weight5_pbb_small_v1/historical_attribution.jsonl",
+            "sha256": "c6f6a8e110218efb48eb318ef28463da22a44fd2929c781ce5666c67edd46372"
+          },
+          {
+            "path": "results/weight5_component_certifications.jsonl",
+            "sha256": "77c5596c69152a6400953abb7819ba8ff0f8602590749549b4e07a3340f86ae6"
+          },
+          {
+            "path": "results/weight5_css_large_v1_milp_verified.jsonl",
+            "sha256": "0f8e18d70eb75438b2608aff0b00582bcb89b97c144d2b0b11ddcdacd8a1923c"
+          },
+          {
+            "path": "results/weight5_css_small_v1_milp_verified.jsonl",
+            "sha256": "7207983c9b0728679666d5a65519c06c2fd97aee0922b102e16a98d732a235bd"
+          },
+          {
+            "path": "results/weight5_pbb_large_v1_deep_milp_verify.jsonl",
+            "sha256": "3031ee7b09ea2f3e0fc16be450491b5ace1f61fc90e48c51489c2499a0b95e22"
+          },
+          {
+            "path": "results/weight5_pbb_small_v1_deep_milp_verify.jsonl",
+            "sha256": "2e7e3229f7cd6184951b9dbbae1ee075b884e517c2c71afe15269ce3c92745c4"
+          }
+        ],
+        "low_weight_audit": {
+          "path": "results/weight5_css_low_weight_audit.jsonl",
+          "sha256": "b0c2f28a6d3a4c21910f361e97cee69ce72dd7b19491866ef55b5320152c30ed"
+        }
+      }
+    },
+    "excluded_presentation_ids": [],
+    "retained_presentation_ids": [
+      "CL-03413624",
+      "CL-37987300",
+      "CL-89dd6c68",
+      "CL-94086b72",
+      "CL-c065aeaf",
+      "CL-e72cc9d8",
+      "CS-02441504",
+      "CS-0893ef17",
+      "CS-0f220f7a",
+      "CS-1363c9b9",
+      "CS-21e1c012",
+      "CS-2aa84247",
+      "CS-2d69d929",
+      "CS-373a98a4",
+      "CS-461d5f82",
+      "CS-48842317",
+      "CS-49a65af6",
+      "CS-4a07bbcc",
+      "CS-56984308",
+      "CS-64d66132",
+      "CS-654080d0",
+      "CS-67685e6f",
+      "CS-6cecbcd3",
+      "CS-6d6a31f9",
+      "CS-712a2f67",
+      "CS-75b1d537",
+      "CS-7701034d",
+      "CS-770cc2a8",
+      "CS-81c206b7",
+      "CS-83ce21aa",
+      "CS-8ca0927a",
+      "CS-95b2af5c",
+      "CS-98bca4ef",
+      "CS-999229aa",
+      "CS-a6d60d3d",
+      "CS-accf4ce7",
+      "CS-ba902f48",
+      "CS-c29564a1",
+      "CS-c73a5314",
+      "CS-dc117df8",
+      "CS-de1d2921",
+      "CS-f0ceea98",
+      "CS-fc4dc8ca",
+      "CS-fcc9d58d",
+      "CS-ff5ab961"
+    ]
+  },
   "distance_semantics": {
-    "C": "certified positive lower bound and witnessed upper bound",
+    "C": "certified positive lower bound plus a reported endpoint; upper_is_supported distinguishes rigorous upper evidence from a decoder estimate",
     "E": "exact distance",
-    "U": "witnessed upper bound only; no positive lower bound is certified",
-    "class_transfer": "Compatible distance evidence is intersected within each colored-BLISS stored-generator Tanner-isomorphism class.",
+    "U": "reported endpoint only; no positive lower bound is certified; upper_is_supported distinguishes rigorous upper evidence from a decoder estimate",
+    "class_transfer": "Certified lower bounds are combined within each colored-BLISS stored-generator Tanner-isomorphism class. The smallest reported endpoint is retained separately, with upper_is_supported distinguishing rigorous upper evidence from a decoder estimate.",
+    "estimated_upper_and_fom": "For a B-only decisive endpoint, upper retains the reported numeric estimate for compatibility, estimated_upper and fom_estimate carry its explicit estimate semantics, and fom_upper is null so it cannot be consumed as a certified upper-bound FOM. For rigorous endpoints estimated_upper and fom_estimate are null.",
     "evidence_methods": {
-      "B": "BP-OSD or another decoder witness (upper bound)",
+      "B": "BP-OSD or another decoder estimate (upper endpoint; operator not retained)",
       "H": "exhaustive low-weight hash search (exact)",
       "Hc": "exact component enumeration transferred to an isomorphic direct sum",
       "I": "MILP incumbent (upper bound)",
@@ -1125,16 +1361,24 @@
       "M": "MILP optimum (exact)",
       "S": "independent exact solver result",
       "W": "independent witness (upper bound)"
-    }
+    },
+    "exact_methods": "direct exact certificates are named by method; exact distances closed by matching endpoints use a composite lower+upper label such as L4+W",
+    "status_labels": {
+      "certified_interval": "certified lower and rigorous upper endpoints",
+      "certified_lower_with_estimated_upper": "certified lower bound plus a B-only estimated endpoint",
+      "estimated_upper_only": "B-only estimated endpoint without a certified positive lower",
+      "supported_upper_only": "rigorous upper endpoint without a certified positive lower"
+    },
+    "upper_is_supported": "true exactly when the decisive upper endpoint has H, Hc, I, M, S, or W evidence; false for a B-only endpoint"
   },
-  "manifest_type": "weight5_publication_manifest_v1",
+  "manifest_type": "weight5_publication_manifest_v2",
   "normalization": {
     "canonicalizer": {
       "name": "python-igraph/BLISS",
       "version": "1.0.0"
     },
     "distance_filter": {
-      "rule": "retain iff best supported distance upper endpoint >= 3",
+      "rule": "retain iff best reported distance endpoint >= 3",
       "warning": "For U records this rule does not certify d>=3; their true distance may be one or two."
     },
     "equivalence_relation": "colored_stored_generator_tanner_isomorphism_v1",
@@ -1151,17 +1395,17 @@
   },
   "output_artifacts": {
     "catalogue": {
-      "bytes": 4843420,
+      "bytes": 5090330,
       "path": "results/weight5_publication_catalogue.jsonl",
       "records": 1142,
-      "sha256": "fd177f878bf10d2d1e84ce3e64bb56f9610a1501fa578ae4d09db14700a659c5"
+      "sha256": "be92c4fd761d13ac1a215281cf14356e22344a6ebd54bcff183d4bb0fa218a2e"
     }
   },
   "producer": {
     "path": "scripts/build_weight5_publication_catalogue.py",
-    "sha256": "e8042313df60cdf6f68987b99b563b67a56752a046931670592f54766bc71920"
+    "sha256": "2e10a2319a5699a1b9abeb16eb2a6e145968cf3b0e577b8bd4a0291962b7ad31"
   },
-  "schema_version": 1,
+  "schema_version": 2,
   "software_artifacts": {
     "bb_constructor": {
       "bytes": 4155,
@@ -1179,9 +1423,19 @@
       "sha256": "2bbf0900b1b80fc5fbaa93444c0637dc1cc65aa4660625fb504d3e30e1cd3150"
     },
     "css_low_weight_audit_generator": {
-      "bytes": 34953,
+      "bytes": 35833,
       "path": "scripts/audit_weight5_css_low_weight.py",
-      "sha256": "453039ecf20027df351679f7e2b2a084b379939bead697ea8ae57b82bbd8aaae"
+      "sha256": "24c363d3c0c78261e80d3e29d79c0307b5505c4bb2f3e8c2f369ccd4757f160d"
+    },
+    "css_upper_bound_witness_generator": {
+      "bytes": 25367,
+      "path": "scripts/audit_weight5_css_upper_bound_witnesses.py",
+      "sha256": "67f4eaea72843dd7f40fb6cc4319e044d6e2ff64b55a96093eea5594d829383d"
+    },
+    "css_weight5_witness_generator": {
+      "bytes": 16337,
+      "path": "scripts/audit_weight5_css_weight5_witnesses.py",
+      "sha256": "5063bad09c6cc12422377a3d971189bb0e0080335df32d92fbc7e000272c0f39"
     },
     "dependency_lock": {
       "bytes": 1052131,
@@ -1204,14 +1458,14 @@
       "sha256": "e51dd20131e61719da121e272bd8781beead6e4d26a56ba7f40f9b5c8e87e826"
     },
     "publication_catalogue_generator": {
-      "bytes": 51179,
+      "bytes": 63780,
       "path": "scripts/build_weight5_publication_catalogue.py",
-      "sha256": "e8042313df60cdf6f68987b99b563b67a56752a046931670592f54766bc71920"
+      "sha256": "2e10a2319a5699a1b9abeb16eb2a6e145968cf3b0e577b8bd4a0291962b7ad31"
     },
     "source_normalizer": {
-      "bytes": 97205,
+      "bytes": 133590,
       "path": "scripts/generate_weight5_supplement.py",
-      "sha256": "4e0a33178b2af08928560af74307f73404135e43d32ed446f9593aee14ae8748"
+      "sha256": "e340aa7f2723cb105c2eee976e64c606f416b875178526f200e3743740842b5f"
     },
     "tanner_canonicalizer": {
       "bytes": 16824,
@@ -1227,10 +1481,22 @@
       "sha256": "77c5596c69152a6400953abb7819ba8ff0f8602590749549b4e07a3340f86ae6"
     },
     "all:css_low_weight_audit": {
-      "bytes": 992285,
+      "bytes": 1026187,
       "path": "results/weight5_css_low_weight_audit.jsonl",
       "records": 493,
-      "sha256": "6c41846bfdfd29266386ed57307c50eea2905dbb119cb7ce681dd58aa895585c"
+      "sha256": "b0c2f28a6d3a4c21910f361e97cee69ce72dd7b19491866ef55b5320152c30ed"
+    },
+    "all:css_upper_bound_witnesses": {
+      "bytes": 31978,
+      "path": "results/weight5_css_upper_bound_witnesses.jsonl",
+      "records": 11,
+      "sha256": "636ea74bf2d978861f0ffd344ecd2e342f9c337fe31252e972ef4e0dc8d18bd2"
+    },
+    "all:css_weight5_witnesses": {
+      "bytes": 82253,
+      "path": "results/weight5_css_weight5_witnesses.jsonl",
+      "records": 46,
+      "sha256": "b78ec37406d5b9d8160d067f1498b97cdf572e3e13f0d2b13cae2817d7f08e87"
     },
     "css-large:discovery_events": {
       "bytes": 993058,

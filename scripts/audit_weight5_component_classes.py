@@ -8,8 +8,9 @@ generator-basis-invariant stabilizer partition and applies the same colored
 BLISS canonicalization to that component.
 
 The output is deterministic JSON Lines: one manifest followed by one record
-per component-presentation class.  Distance evidence is intersected across all
-parent classes reducing to the same component.
+per component-presentation class.  Certified bounds are combined across all
+parent classes reducing to the same component, while decoder-only endpoints
+remain explicitly marked as estimates.
 """
 
 from __future__ import annotations
@@ -35,7 +36,7 @@ from evaluation.connectivity import (  # noqa: E402
 from evaluation.pbb_code import build_pbb_code  # noqa: E402
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 CATALOGUE = ROOT / "results" / "weight5_publication_catalogue.jsonl"
 DEFAULT_OUTPUT = ROOT / "results" / "weight5_component_classes.jsonl"
 
@@ -80,6 +81,12 @@ def _load_catalogue() -> list[dict[str, Any]]:
     ]
     if len(rows) != 1_142:
         raise ValueError(f"expected 1,142 catalogue rows, found {len(rows)}")
+    if any(
+        row.get("schema_version") != 2
+        or row.get("record_type") != "weight5_presentation"
+        for row in rows
+    ):
+        raise ValueError("component audit requires publication catalogue schema v2")
     return rows
 
 
@@ -104,13 +111,23 @@ def _parent_class_reductions(rows: list[dict[str, Any]]) -> list[dict[str, Any]]
             distance["lower"],
             distance["upper"],
             bool(distance["is_exact"]),
+            distance.get("upper_is_supported"),
         )
+        if not isinstance(distance_tuple[3], bool):
+            raise ValueError(
+                f"{parent_class_id}: missing upper-endpoint support status"
+            )
+        if distance_tuple[2] and not distance_tuple[3]:
+            raise ValueError(
+                f"{parent_class_id}: exact distance lacks supported upper evidence"
+            )
         for member in members:
             member_distance = member["distance_class"]
             if (
                 member_distance["lower"],
                 member_distance["upper"],
                 bool(member_distance["is_exact"]),
+                member_distance.get("upper_is_supported"),
             ) != distance_tuple:
                 raise ValueError(f"{parent_class_id}: inconsistent class evidence")
             if member["connectivity"]["state"] != connectivity["state"]:
@@ -164,6 +181,9 @@ def _parent_class_reductions(rows: list[dict[str, Any]]) -> list[dict[str, Any]]
                 "distance_lower": distance["lower"],
                 "distance_upper": int(distance["upper"]),
                 "distance_exact": bool(distance["is_exact"]),
+                "distance_upper_is_supported": bool(
+                    distance["upper_is_supported"]
+                ),
             }
         )
     return reductions
@@ -194,14 +214,38 @@ def _component_classes(reductions: list[dict[str, Any]]) -> list[dict[str, Any]]
         ]
         lower = max(lowers) if lowers else None
         upper = min(int(row["distance_upper"]) for row in parents)
+        upper_is_supported = any(
+            row["distance_upper"] == upper
+            and row["distance_upper_is_supported"]
+            for row in parents
+        )
         if exact_values:
             exact = next(iter(exact_values))
             if (lower is not None and lower > exact) or upper < exact:
                 raise ValueError(f"component {digest}: incompatible distance evidence")
             lower = upper = exact
+            upper_is_supported = True
         if lower is not None and lower > upper:
             raise ValueError(f"component {digest}: empty distance interval")
-        status = "E" if lower == upper else ("C" if lower is not None else "U")
+        closes_exactly = bool(exact_values) or (
+            lower is not None and lower == upper and upper_is_supported
+        )
+        status = "E" if closes_exactly else ("C" if lower is not None else "U")
+        if status == "E":
+            status_name = "exact"
+        elif status == "C":
+            status_name = (
+                "certified_interval"
+                if upper_is_supported
+                else "certified_lower_with_estimated_upper"
+            )
+        else:
+            status_name = (
+                "supported_upper_only"
+                if upper_is_supported
+                else "estimated_upper_only"
+            )
+        endpoint_fom = component_k * upper * upper / component_n
         preliminary.append(
             {
                 "schema_version": SCHEMA_VERSION,
@@ -210,14 +254,22 @@ def _component_classes(reductions: list[dict[str, Any]]) -> list[dict[str, Any]]
                 "component_digest_sha256": digest,
                 "parameters": {"n": component_n, "k": component_k},
                 "distance": {
+                    "status": status_name,
                     "status_code": status,
                     "lower": lower,
                     "upper": upper,
+                    "estimated_upper": (
+                        None if upper_is_supported else upper
+                    ),
                     "is_exact": status == "E",
+                    "upper_is_supported": upper_is_supported,
                     "fom_lower": (
                         None if lower is None else component_k * lower * lower / component_n
                     ),
-                    "fom_upper": component_k * upper * upper / component_n,
+                    "fom_upper": endpoint_fom if upper_is_supported else None,
+                    "fom_estimate": (
+                        None if upper_is_supported else endpoint_fom
+                    ),
                 },
                 "parent_class_ids": sorted(row["parent_class_id"] for row in parents),
                 "parent_class_labels": sorted(
@@ -301,7 +353,10 @@ def build_rows() -> list[dict[str, Any]]:
             "Each retained parent presentation is replaced by one member of its "
             "homogeneous, pairwise-isomorphic connected-component orbit before "
             "colored-BLISS canonicalization; this remains a stored-generator "
-            "equivalence and not complete stabilizer-code equivalence."
+            "equivalence and not complete stabilizer-code equivalence. The "
+            "distance upper_is_supported flag is true only when the decisive "
+            "endpoint has non-decoder evidence; a B-only value is retained in "
+            "upper and estimated_upper as an estimate, with fom_upper left null."
         ),
     }
     return [manifest, *classes]

@@ -129,8 +129,8 @@ def test_checked_in_artifact_covers_every_direct_u_css_presentation():
         "4": 50,
     }
     assert manifest["counts"]["post_audit_status_by_target_presentation"] == {
-        "C": 686,
-        "E": 172,
+        "C": 735,
+        "E": 123,
     }
     for descriptor in manifest["source_artifacts"].values():
         path = ROOT / descriptor["path"]
@@ -149,3 +149,43 @@ def test_checked_in_artifact_covers_every_direct_u_css_presentation():
                 assert len(witness["qubit_indices_zero_based"]) == sector[
                     "exact_distance"
                 ]
+
+
+def test_post_audit_distance_does_not_close_on_decoder_estimate():
+    module = _load_script()
+    audit = {"exact_distance": None, "certified_lower_bound": 5}
+    source = {
+        "lower": None,
+        "upper": 5,
+        "is_exact": False,
+        "upper_is_supported": False,
+    }
+
+    observed = module._post_audit_distance(source, audit)
+
+    assert observed == {
+        "status_code": "C",
+        "status": "certified_lower_with_estimated_upper",
+        "lower": 5,
+        "upper": 5,
+        "is_exact": False,
+        "upper_is_supported": False,
+        "new_evidence_method": "L4",
+    }
+
+
+def test_post_audit_distance_closes_on_rigorous_upper_bound():
+    module = _load_script()
+    audit = {"exact_distance": None, "certified_lower_bound": 5}
+    source = {
+        "lower": None,
+        "upper": 5,
+        "is_exact": False,
+        "upper_is_supported": True,
+    }
+
+    observed = module._post_audit_distance(source, audit)
+
+    assert observed["status_code"] == "E"
+    assert observed["status"] == "exact"
+    assert observed["is_exact"] is True

@@ -4,9 +4,9 @@
 The historical BP--OSD API used by the weight-five campaign returned only a
 scalar upper bound.  Consequently the raw campaign JSONL files record
 ``d = 5`` but not the corresponding operator.  After the deterministic
-weight-four audit proved ``d >= 5``, those scalar observations made 45 direct
-catalogue rows exact.  This script supplies the missing independently
-checkable upper-bound evidence without rerunning BP--OSD.
+weight-four audit proved ``d >= 5``, 45 direct rows still needed independently
+checkable upper-bound evidence before they could be called exact.  This script
+supplies that evidence without rerunning BP--OSD.
 
 For each such presentation and each CSS sector, translation invariance lets a
 weight-five support be shifted until one of its qubits is the origin of its
@@ -16,12 +16,14 @@ reported support is then checked directly to have zero syndrome and nonzero
 remainder modulo the same-type stabilizer row space.
 
 The checked-in artifact is deterministic: it contains no timestamps or
-runtime measurements.
+runtime measurements.  It is rebuilt directly from the raw campaign inputs,
+component certificates, and low-weight audit; it does not read the downstream
+publication catalogue that consumes it.
 
 Usage::
 
-    python scripts/audit_weight5_css_weight5_witnesses.py
-    python scripts/audit_weight5_css_weight5_witnesses.py --check
+    uv run python scripts/audit_weight5_css_weight5_witnesses.py
+    uv run python scripts/audit_weight5_css_weight5_witnesses.py --check
 """
 
 from __future__ import annotations
@@ -32,11 +34,10 @@ import hashlib
 import json
 from pathlib import Path
 import sys
-from typing import Any, Iterable, Sequence
+from typing import Any, Sequence
 
 
 ROOT = Path(__file__).resolve().parent.parent
-CATALOGUE = ROOT / "results" / "weight5_publication_catalogue.jsonl"
 LOW_WEIGHT_AUDIT = ROOT / "results" / "weight5_css_low_weight_audit.jsonl"
 DEFAULT_OUTPUT = ROOT / "results" / "weight5_css_weight5_witnesses.jsonl"
 
@@ -45,6 +46,7 @@ ARTIFACT_SCHEMA = "weight5_css_weight5_witnesses_v1"
 ALGORITHM = "translation_anchored_pair_pair_collision_v1"
 
 sys.path.insert(0, str(ROOT))
+from scripts import generate_weight5_supplement as supplement  # noqa: E402
 from scripts.audit_weight5_css_low_weight import (  # noqa: E402
     _columns_from_rows,
     _matrix_digest,
@@ -86,36 +88,12 @@ def _load_jsonl(path: Path) -> list[dict[str, Any]]:
     ]
 
 
-def _has_bound(
-    evidence: Iterable[dict[str, Any]], method: str, bound: int
-) -> bool:
-    return any(
-        item.get("method") == method and int(item.get("bound", -1)) == bound
-        for item in evidence
-    )
-
-
-def _is_direct_l4_b_exact_five(row: dict[str, Any]) -> bool:
-    direct = row.get("distance_direct", {})
-    evidence = direct.get("evidence", {})
-    return bool(
-        row.get("family") == "CSS"
-        and direct.get("is_exact") is True
-        and direct.get("lower") == 5
-        and direct.get("upper") == 5
-        and _has_bound(evidence.get("lower_bounds", []), "L4", 5)
-        and _has_bound(evidence.get("upper_bounds", []), "B", 5)
-    )
-
-
-def _candidate_key(row: dict[str, Any]) -> tuple[object, ...]:
-    params = row["parameters"]
-    generators = row["generators"]
+def _candidate_key(spec: supplement.Spec) -> tuple[object, ...]:
     return (
-        int(params["ell"]),
-        int(params["m"]),
-        tuple(sorted(tuple(term) for term in generators["A_terms"])),
-        tuple(sorted(tuple(term) for term in generators["B_terms"])),
+        int(spec.ell),
+        int(spec.m),
+        tuple(sorted(spec.A)),
+        tuple(sorted(spec.B)),
     )
 
 
@@ -132,21 +110,15 @@ def _raw_key(row: dict[str, Any]) -> tuple[object, ...] | None:
 
 
 def _index_raw_observations(
-    catalogue_rows: Sequence[dict[str, Any]],
-) -> tuple[dict[tuple[object, ...], list[dict[str, Any]]], list[Path]]:
-    paths = sorted(
-        {
-            ROOT / row["source_artifacts"]["raw_log"]["path"]
-            for row in catalogue_rows
-        }
-    )
+    paths: Sequence[Path],
+) -> dict[tuple[object, ...], list[dict[str, Any]]]:
     index: dict[tuple[object, ...], list[dict[str, Any]]] = defaultdict(list)
     for path in paths:
         for observation in _load_jsonl(path):
             key = _raw_key(observation)
             if key is not None:
                 index[key].append(observation)
-    return index, paths
+    return index
 
 
 def find_weight_five_witness(
@@ -191,11 +163,12 @@ def find_weight_five_witness(
         for offset, left in enumerate(vertices):
             left_bit = 1 << left
             left_syndrome = check_columns[left]
-            left_remainder = remainder_columns[left]
             for right in vertices[offset + 1 :]:
                 total_pairs_probed += 1
                 probe_support = left_bit | (1 << right)
-                probe_remainder = left_remainder ^ remainder_columns[right]
+                probe_remainder = (
+                    remainder_columns[left] ^ remainder_columns[right]
+                )
                 target = anchor_syndrome ^ left_syndrome ^ check_columns[right]
                 for indexed_remainder, indexed_support in pair_by_syndrome.get(
                     target, ()
@@ -237,26 +210,29 @@ def _low_weight_by_class() -> dict[str, dict[str, Any]]:
 
 
 def _audit_row(
-    row: dict[str, Any],
+    spec: supplement.Spec,
+    class_id: str,
     low_weight: dict[str, dict[str, Any]],
     raw_index: dict[tuple[object, ...], list[dict[str, Any]]],
 ) -> dict[str, Any]:
-    params = row["parameters"]
-    generators = row["generators"]
-    ell, m = int(params["ell"]), int(params["m"])
-    num_qubits = int(params["n"])
+    ell, m = int(spec.ell), int(spec.m)
+    num_qubits = int(spec.n)
     group_order = ell * m
     if num_qubits != 2 * group_order:
-        raise ValueError(f"{row['presentation_id']}: n != 2 ell m")
+        raise ValueError(f"{spec.spec_id}: n != 2 ell m")
 
-    class_id = row["equivalence"]["class_id"]
     lower_audit = low_weight[class_id]
     if lower_audit["audit_evidence"] != {
         "result": "excluded_through_weight_4",
         "exact_distance": None,
         "certified_lower_bound": 5,
     }:
-        raise ValueError(f"{row['presentation_id']}: missing L4 lower bound")
+        raise ValueError(f"{spec.spec_id}: missing L4 lower bound")
+
+    generators = {
+        "A_terms": [list(term) for term in spec.A],
+        "B_terms": [list(term) for term in spec.B],
+    }
 
     rows_x, rows_z = build_bb_check_rows(
         ell, m, generators["A_terms"], generators["B_terms"]
@@ -276,11 +252,11 @@ def _audit_row(
 
     observations = [
         item
-        for item in raw_index.get(_candidate_key(row), [])
+        for item in raw_index.get(_candidate_key(spec), [])
         if int(item.get("d", -1)) == 5
     ]
     if not observations:
-        raise ValueError(f"{row['presentation_id']}: no historical d=5 record")
+        raise ValueError(f"{spec.spec_id}: no historical d=5 record")
     witness_like_keys = {
         key
         for observation in observations
@@ -289,29 +265,29 @@ def _audit_row(
     }
     if witness_like_keys:
         raise ValueError(
-            f"{row['presentation_id']}: unexpected persisted witness keys "
+            f"{spec.spec_id}: unexpected persisted witness keys "
             f"{sorted(witness_like_keys)}"
         )
 
     rank_x = witness_x["stabilizer_rank"]
     rank_z = witness_z["stabilizer_rank"]
     rebuilt_k = num_qubits - rank_x - rank_z
-    if rebuilt_k != int(params["k"]):
+    if rebuilt_k != int(spec.k):
         raise ValueError(
-            f"{row['presentation_id']}: rebuilt k={rebuilt_k} != {params['k']}"
+            f"{spec.spec_id}: rebuilt k={rebuilt_k} != {spec.k}"
         )
 
     return {
         "schema_version": SCHEMA_VERSION,
         "record_type": "css_weight5_witness_audit",
         "algorithm": ALGORITHM,
-        "presentation_id": row["presentation_id"],
+        "presentation_id": spec.spec_id,
         "class_id": class_id,
         "parameters": {
             "ell": ell,
             "m": m,
             "n": num_qubits,
-            "k_catalogue": int(params["k"]),
+            "k_catalogue": int(spec.k),
             "k_rebuilt": rebuilt_k,
             "d_exact": 5,
         },
@@ -350,16 +326,62 @@ def _audit_row(
 
 
 def build_records() -> list[dict[str, Any]]:
-    catalogue_rows = _load_jsonl(CATALOGUE)
+    campaign_data = supplement.build_catalogue(
+        include_css_low_weight_audit=False,
+        include_css_weight5_witnesses=False,
+        include_css_upper_bound_witnesses=False,
+    )
+    all_specs = [spec for _, specs, _, _ in campaign_data for spec in specs]
+    specs_by_id: dict[str, supplement.Spec] = {}
+    for spec in all_specs:
+        if spec.spec_id in specs_by_id:
+            raise ValueError(f"duplicate retained specification ID: {spec.spec_id}")
+        specs_by_id[spec.spec_id] = spec
+    supplement.load_and_merge_css_low_weight_audit(specs_by_id)
+
     targets = sorted(
-        (row for row in catalogue_rows if _is_direct_l4_b_exact_five(row)),
-        key=lambda row: row["presentation_id"],
+        (
+            spec
+            for spec in all_specs
+            if supplement._is_css_l4_b5_witness_target(spec)
+        ),
+        key=lambda spec: spec.spec_id,
     )
     if len(targets) != 45:
         raise ValueError(f"expected 45 direct L4+B rows, found {len(targets)}")
+
+    # The targets cannot pass final_bounds() until W evidence is attached, so
+    # compute their canonical IDs directly.  The digest is exactly the class
+    # identity used by build_presentation_classes().
+    class_of = {
+        spec.spec_id: (
+            f"TC-{supplement.connectivity_info(spec).presentation_digest[:10]}"
+        )
+        for spec in targets
+    }
+
     low_weight = _low_weight_by_class()
-    raw_index, raw_paths = _index_raw_observations(targets)
-    audits = [_audit_row(row, low_weight, raw_index) for row in targets]
+    raw_paths = sorted({spec.campaign.raw_path for spec in targets})
+    raw_index = _index_raw_observations(raw_paths)
+    audits = [
+        _audit_row(spec, class_of[spec.spec_id], low_weight, raw_index)
+        for spec in targets
+    ]
+
+    catalogue_inputs = sorted(
+        {
+            path
+            for campaign in supplement.CAMPAIGNS
+            for path in (
+                campaign.raw_path,
+                campaign.event_path,
+                campaign.verification_path,
+                campaign.attribution_path,
+            )
+            if path is not None
+        }
+        | {supplement.COMPONENT_CERTIFICATION_PATH}
+    )
 
     manifest = {
         "schema_version": SCHEMA_VERSION,
@@ -369,7 +391,8 @@ def build_records() -> list[dict[str, Any]]:
         "algorithm": ALGORITHM,
         "semantics": (
             "Explicit independently reconstructed X- and Z-sector logical "
-            "witnesses for all direct CSS catalogue rows made exact by L4+B."
+            "witnesses for all direct CSS rows where an L4 lower bound meets "
+            "a historical B=5 scalar; W, rather than B, closes each distance."
         ),
         "historical_bp_osd_persistence": (
             "The campaign records contain scalar d=5 observations but no "
@@ -399,17 +422,13 @@ def build_records() -> list[dict[str, Any]]:
             ),
         },
         "source_artifacts": {
-            "publication_catalogue": {
-                "path": _relative(CATALOGUE),
-                "sha256": _sha256(CATALOGUE),
-            },
             "low_weight_audit": {
                 "path": _relative(LOW_WEIGHT_AUDIT),
                 "sha256": _sha256(LOW_WEIGHT_AUDIT),
             },
-            "raw_campaign_logs": [
+            "catalogue_inputs": [
                 {"path": _relative(path), "sha256": _sha256(path)}
-                for path in raw_paths
+                for path in catalogue_inputs
             ],
         },
     }
