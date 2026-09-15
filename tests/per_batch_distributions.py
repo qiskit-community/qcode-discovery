@@ -285,10 +285,10 @@ def main():
                         default="results/per_batch_distributions.json",
                         help="Output JSON file")
     parser.add_argument("--figure", type=str,
-                        default="paper/figures/per_batch_distributions.pdf",
+                        default="paper/2606.02418/figures/per_batch_distributions.pdf",
                         help="Output figure file")
     parser.add_argument("--detailed-figure", type=str,
-                        default="paper/figures/per_batch_by_decoder.pdf",
+                        default="paper/2606.02418/figures/per_batch_by_decoder.pdf",
                         help="Detailed per-decoder figure file")
     parser.add_argument("--from-json", type=str, default=None,
                         help="Load results from existing JSON instead of re-running")

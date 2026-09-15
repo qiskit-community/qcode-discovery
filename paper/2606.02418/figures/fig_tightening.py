@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-root = Path(__file__).resolve().parent.parent.parent
+root = Path(__file__).resolve().parent.parent.parent.parent
 
 # --- Data: all 154 codes (evolution d_est vs 150k verified d) ---
 with open(root / "results" / "soak_test_publication.json") as f:

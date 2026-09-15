@@ -4,7 +4,7 @@ Discovering bivariate bicycle (BB) and perturbed bivariate bicycle (PBB) quantum
 
 Five evolution campaigns employing six LLMs from three families discover **465 distinct codes** (97 CSS, 368 non-CSS) with CSS encoding dimensions up to k = 54 (prior best: k = 16). MILP distance computation reveals a sharp rate-distance tradeoff and that BP-OSD overestimates distance by up to 12x for high-rate codes. Total cost: ~US$400 over ~140 hours.
 
-**Paper**: "Evolutionary Discovery of Bivariate Bicycle Codes with LLM-Guided Search" — see [`paper/paper.tex`](paper/paper.tex).
+**Paper**: "Evolutionary Discovery of Bivariate Bicycle Codes with LLM-Guided Search" — see [`paper/2606.02418/paper.tex`](paper/2606.02418/paper.tex).
 
 ## Headline Results
 
@@ -293,12 +293,13 @@ qcode-discovery/
 │   ├── evolution_ansatz_campaign4/        #   Campaign 4 checkpoints
 │   └── evolution/                         #   Campaign 5 runs
 │       └── campaign7/                    #     Published Campaign 5 checkpoints
-├── paper/                                 # Paper source and figures
-│   ├── paper.tex                          #   Main paper
-│   ├── supplemental.tex                   #   Supplemental material
-│   ├── css_catalog_tables.tex             #   Auto-generated CSS catalog
-│   ├── pbb_catalog_tables.tex             #   Auto-generated PBB catalog
-│   └── figures/                           #   Figure generation scripts + PDFs
+├── paper/                                 # Paper sources (one subfolder per paper)
+│   └── 2606.02418/                        #   "Evolutionary Discovery of BB Codes" paper
+│       ├── paper.tex                      #     Main paper
+│       ├── supplemental.tex               #     Supplemental material
+│       ├── css_catalog_tables.tex         #     Auto-generated CSS catalog
+│       ├── pbb_catalog_tables.tex         #     Auto-generated PBB catalog
+│       └── figures/                       #     Figure generation scripts + PDFs
 └── plans/                                 # Research direction plans
 ```
 
@@ -440,15 +441,15 @@ The repository uses internal numbering that differs from the paper:
 | **Sec V.C** Non-CSS pipeline | `evaluation/distance_bposd_noncss.py` (achievable-syndrome sampling), `evaluation/distance_milp.py` (symplectic MILP) |
 | **Sec V.D** Trust boundaries | `evaluation/evaluator.py` (`DISTANCE_TRUST_RATIO`, `DISTANCE_UNTRUST_RATIO`) |
 | **Sec VI.A** Structural families | `tests/check_all_equivalences.py` (BLISS dedup), `tests/verify_decomposition_288_24_12.py` (direct-sum proof), `tests/test_k_formula_verification.py` (k = 8ℓ/3) |
-| **Sec VI.B** Rate-distance tradeoff | `paper/figures/plot_pareto_frontier.py` |
+| **Sec VI.B** Rate-distance tradeoff | `paper/2606.02418/figures/plot_pareto_frontier.py` |
 | **Sec VI.C** Comparison with prior art | `tests/verify_bravyi_codes.py`, `results/ilp_catalog.json` |
 | **Sec VI.D** Code capacity simulations | `tests/threshold_simulation.py`, `tests/threshold_simulation_noncss.py`, `tests/threshold_simulation_independent_xz.py` (depolarizing channel + iid X/Z decoder, n ≤ 144), `tests/threshold_simulation_360_12_20_depol.py`, `tests/threshold_simulation_360_12_24_depol.py`, `tests/threshold_simulation_360_12_24.py`, `tests/threshold_simulation_missing.py` |
 | **Sec VI.E** BP-OSD overestimation | `tests/bp_osd_intensive_search.py`, `tests/bp_osd_intensive_search_batch2.py`, `tests/per_batch_distributions.py`, `tests/extended_verification.py` |
 | **Sec VI.F** Ablation | `tests/ablation_k_only.py`, `tests/ablation_ga_generators.py`, `tests/ablation_extended.py`, `tests/milp_ga_codes.py`, `tests/verify_ga_distances.py` |
 | **App C** Representative LLM mutations | `results/evolution_gemini3flash_seed42/` (Campaign 1 checkpoint diffs) |
 | **App F** LC-CSS equivalence accounting | `evaluation/clifford_equivalence.py` (`is_lc_equivalent_css`, `verify_lc_bruteforce`, `check_lc_pattern_feasibility`) |
-| **SM Sec I** CSS catalog | `paper/css_catalog_tables.tex` ← `results/ilp_catalog.json` |
-| **SM Sec II** PBB catalog | `paper/pbb_catalog_tables.tex` ← `results/campaign7_publication_merged.jsonl`, `tests/generate_pbb_catalog_rows.py` |
+| **SM Sec I** CSS catalog | `paper/2606.02418/css_catalog_tables.tex` ← `results/ilp_catalog.json` |
+| **SM Sec II** PBB catalog | `paper/2606.02418/pbb_catalog_tables.tex` ← `results/campaign7_publication_merged.jsonl`, `tests/generate_pbb_catalog_rows.py` |
 | **SM Sec III** Per-decoder comparison | `results/soak_test_publication.json`, `results/ensemble_verification_150k.json` |
 | **SM Sec IV** BP-OSD per-batch analysis | `tests/per_batch_distributions.py`, `results/per_batch_distributions.json` |
 | **SM Sec V** Distance tightening | `results/ensemble_verification_60k.json` → `results/ensemble_verification_150k.json` |
@@ -462,10 +463,10 @@ The repository uses internal numbering that differs from the paper:
 
 ### Figures → Generation Scripts
 
-All figure scripts are in `paper/figures/`. To regenerate:
+All figure scripts are in `paper/2606.02418/figures/`. To regenerate:
 
 ```bash
-cd paper/figures
+cd paper/2606.02418/figures
 uv run python <script>.py
 ```
 
@@ -498,8 +499,8 @@ uv run python <script>.py
 
 | Table | Content | Data Source |
 |-------|---------|-------------|
-| **Tables cat144/cat288/cat360**: CSS catalog | 225 representations → 97 distinct | `paper/css_catalog_tables.tex` ← `results/ilp_catalog.json` |
-| **Tables pbb_cat***: PBB catalog | 368 non-CSS codes | `paper/pbb_catalog_tables.tex` ← `results/campaign7_publication_merged.jsonl` |
+| **Tables cat144/cat288/cat360**: CSS catalog | 225 representations → 97 distinct | `paper/2606.02418/css_catalog_tables.tex` ← `results/ilp_catalog.json` |
+| **Tables pbb_cat***: PBB catalog | 368 non-CSS codes | `paper/2606.02418/pbb_catalog_tables.tex` ← `results/campaign7_publication_merged.jsonl` |
 | **Tab: Decoder rates**: Per-decoder success by k/n | Decoder comparison | `results/soak_test_publication.json`, `results/ensemble_verification_150k.json` |
 | **Tab: Per-batch stats**: 5 codes × 3 decoders | Per-batch distributions | `results/per_batch_distributions.json` |
 | **Tab: Extended verification**: 1.5M trials | 4 codes at 10x depth | `results/extended_verification_1500k.json`, `results/gross_verification_1500k.json` |
@@ -544,7 +545,7 @@ uv run python <script>.py
 | `scripts/verify_deep_milp.py` | Deep MILP (up to 14400s/logical, 60 workers) | `results/campaign7_deep_milp.jsonl` |
 | `scripts/verify_publication.py` | Publication MILP+BP-OSD verification pass | `results/campaign7_publication.jsonl` (merged into `results/campaign7_publication_merged.jsonl` with deep MILP evidence) |
 | `scripts/merge_deep_milp_results.py` | Merge deep MILP evidence into publication catalog | `results/campaign7_publication_merged.jsonl` |
-| `tests/generate_pbb_catalog_rows.py` | Generate LaTeX catalog | `paper/pbb_catalog_tables.tex` |
+| `tests/generate_pbb_catalog_rows.py` | Generate LaTeX catalog | `paper/2606.02418/pbb_catalog_tables.tex` |
 
 ### Result Files Reference
 

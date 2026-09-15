@@ -225,12 +225,23 @@ results/*_new_unverified.jsonl
 results/*.log
 results/*.log.clean
 
-# Paper source (managed separately via Overleaf)
+# Paper source (each paper lives in its own subfolder, e.g. paper/2606.02418/)
+# .tex/.bib/.pdf/.md are tracked; LaTeX build byproducts (.aux/.log/.bbl/etc.) are not.
 paper/*
-!paper/*.tex
-!paper/figures/
-paper/figures/*
-!paper/figures/*.py
+!paper/*/
+paper/*/*
+!paper/*/*.tex
+!paper/*/*.bib
+!paper/*/*.pdf
+!paper/*/*.md
+!paper/*/figures/
+paper/*/figures/*
+!paper/*/figures/*.py
+!paper/*/figures/*.pdf
+
+# Scratch/report files that live alongside the paper but aren't paper sources
+paper/*/all_codes.md
+paper/*/campaign4_report.md
 report-backup/
 
 # Local backups

@@ -65,7 +65,7 @@ def compute_running_best(scores):
 
 
 # --- Parse ensemble logs ---
-root = Path(__file__).resolve().parent.parent.parent
+root = Path(__file__).resolve().parent.parent.parent.parent
 log2 = root / "results/evolution/run_20260219_203003/logs/openevolve_20260219_203006.log"
 log3 = root / "results/evolution/run_20260220_060158/logs/openevolve_20260220_060202.log"
 

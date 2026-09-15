@@ -56,7 +56,7 @@ uv run python tests/extended_verification.py           # 1.5M trials on headline
 
 | Script | Runtime | Description | Output |
 |--------|---------|-------------|--------|
-| `ilp_catalog.py` | hours | ILP exact distance for all 97 CSS catalog codes. Parses polynomials directly from `paper/paper.tex`. Contains its own local ILP solver (independent of `evaluation/distance_milp.py`) for cross-validation. | `results/ilp_catalog.json` |
+| `ilp_catalog.py` | hours | ILP exact distance for all 97 CSS catalog codes. Parses polynomials directly from `paper/2606.02418/paper.tex`. Contains its own local ILP solver (independent of `evaluation/distance_milp.py`) for cross-validation. | `results/ilp_catalog.json` |
 | `milp_optimality_audit.py` | hours | Per-logical MILP optimality check on key d≥12 codes ([[144,12,12]], [[288,16,12]], [[288,24,12]], [[360,16,14]]). Reports whether solver proved optimality for each of 2k logical operators. | `results/milp_optimality_audit.json` |
 | `verify_campaign4_milp.py` | ~24h | MILP-verify all Campaign 4 (mixed-monomial) codes, ordered by FOM. Incremental, resumable. | `results/campaign4_milp_verified.jsonl` |
 | `reverify_top_incumbents.py` | hours | Re-verify top 39 Campaign 4 incumbents with 10× MILP timeouts. | `results/campaign4_reverified.jsonl` |
@@ -137,7 +137,7 @@ uv run python tests/enumerate_constant_monomial.py     # constant-monomial enume
 | `pbb_survey_milp_66.py` | PBB survey at (6,6) lattice. |
 | `benchmark_noncss.py` | Non-CSS comparative benchmark. |
 | `lattice_survey.py` | Lattice-level code survey. |
-| `generate_pbb_catalog_rows.py` | Generate LaTeX PBB catalog tables for `paper/pbb_catalog_tables.tex`. |
+| `generate_pbb_catalog_rows.py` | Generate LaTeX PBB catalog tables for `paper/2606.02418/pbb_catalog_tables.tex`. |
 
 ## Validation Priority Guide
 
@@ -146,7 +146,7 @@ When manually validating the paper's computational claims, prioritize in this or
 1. **MILP ILP formulation** (`evaluation/distance_milp.py:66` and `:333`): These produce the "exact distance" claims. Verify the mod-2 constraint encoding via integer slack variables. Check on a known code (e.g. Gross [[144,12,12]]) that MILP returns d=12.
 2. **FOM computation** (`evaluation/evaluator.py:94`): Trivial formula (k·d²/n) but used everywhere. Spot-check on a few catalog codes.
 3. **Non-CSS code construction** (`evaluation/pbb_code.py`): Verify the paper-convention stabilizer matrix `H = (A B C D ; 0 0 B^T A^T)` (block-1 z-part `[C | D]`, commutativity `A C^T + B D^T` symmetric). The `_poly_to_matrix` function must use `sympy.Poly` — documented bug class.
-4. **LC equivalence** (`evaluation/clifford_equivalence.py:278` and `:610`): Underpins the classification of 285/295 PBB codes as genuinely non-CSS (9 Hadamard-CSS via `is_equivalently_css`, 1 uniform-S-CSS via `is_lc_equivalent_css_group`, 285 pass all tested Clifford reductions). Known issues in `paper/theorem3_issues.md`.
+4. **LC equivalence** (`evaluation/clifford_equivalence.py:278` and `:610`): Underpins the classification of 285/295 PBB codes as genuinely non-CSS (9 Hadamard-CSS via `is_equivalently_css`, 1 uniform-S-CSS via `is_lc_equivalent_css_group`, 285 pass all tested Clifford reductions). Known issues in `paper/2606.02418/theorem3_issues.md`.
 5. **Low-weight logical enumeration** (`evaluation/distance_bposd_noncss.py:40` and `:118`): Catches BP-OSD blind spots. Verify on known d=2 codes (A=B cases) that they find weight-2 logicals.
 6. **Soak test protocol** (`tests/soak_test.py`): Verify multi-decoder protocol produces stable bounds. Extended 1.5M verification should match 150k results for well-behaved codes.
 7. **Tanner graph deduplication** (`tests/paper_equivalence_check.py`): Verify known-equivalent codes are correctly identified.
