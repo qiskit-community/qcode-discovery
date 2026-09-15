@@ -14,7 +14,7 @@ i.e., A and B each live in a single variable.  Such codes are
 hypergraph-product (HGP) codes of two cyclic codes (Tillich & Zemor
 2014; Eberhardt et al. 2412.04181), so the parameters
 $[[2 \ell m, k, d]]$ follow standard HGP formulas in terms of the
-chosen weight-3 cyclic codes; see ``paper/2606.02418/review_monomial_family.md``
+chosen weight-3 cyclic codes; see ``report-backup/review_monomial_family.md``
 for the prior-art map.  The terminology "constant-monomial" is local
 to this codebase -- the standard names elsewhere are "HGP of cyclic
 codes" or "BB codes associated with univariate polynomials".
