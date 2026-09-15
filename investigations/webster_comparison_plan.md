@@ -9,10 +9,10 @@
 
 ## 1. Why this is worth doing
 
-The paper already cites Webster et al. four times — at [paper.tex:128](../paper/paper.tex#L128), [paper.tex:317](../paper/paper.tex#L317), [paper.tex:322](../paper/paper.tex#L322), and [paper.tex:699](../paper/paper.tex#L699) — as concurrent work that confirms BP-OSD overestimation and offers `QDistEvol` as a possible remedy. Running their package on our catalog gives three useful cross-checks:
+The paper already cites Webster et al. four times — at [paper.tex:128](../paper/2606.02418/paper.tex#L128), [paper.tex:317](../paper/2606.02418/paper.tex#L317), [paper.tex:322](../paper/2606.02418/paper.tex#L322), and [paper.tex:699](../paper/2606.02418/paper.tex#L699) — as concurrent work that confirms BP-OSD overestimation and offers `QDistEvol` as a possible remedy. Running their package on our catalog gives three useful cross-checks:
 
 1. **Exact MILP is exact.** Records with a source-specific exact flag (`d_is_exact=True`, `milp_exact=True`, or `trust_level=="EXACT"` with no upper-bound flag) claim a *proven* minimum weight via our MILP pipeline. Webster's `BZDistMW` (Brouwer-Zimmermann enumeration) is an independent exact method when it completes. Webster's `MIPDist` is an independent solver formulation, but its public result dictionary does not expose OR-tools optimality status; treat it as a witness-producing upper-bound cross-check, not a proof. If Webster returns a verified witness lower than any of our exact distances, one side has a formulation bug. This is the highest-value test in the entire plan.
-2. **BP-OSD ensemble at 150k trials is well-calibrated.** [results/ensemble_verification_150k.json](../results/ensemble_verification_150k.json) is our strongest stochastic upper bound. `QDistEvol` is Webster's headline heuristic. The paper hypothesizes ([paper.tex:700](../paper/paper.tex#L700)) that QDistEvol "may reduce the overestimation gap" — but we have not measured this on our codes. This is exactly the experiment the paper points at.
+2. **BP-OSD ensemble at 150k trials is well-calibrated.** [results/ensemble_verification_150k.json](../results/ensemble_verification_150k.json) is our strongest stochastic upper bound. `QDistEvol` is Webster's headline heuristic. The paper hypothesizes ([paper.tex:700](../paper/2606.02418/paper.tex#L700)) that QDistEvol "may reduce the overestimation gap" — but we have not measured this on our codes. This is exactly the experiment the paper points at.
 3. **The non-CSS symplectic MILP linearization is correct.** Our non-CSS exact distance (`evaluation/distance_milp.py`) uses a binary-OR linearization of per-qubit support. Webster's non-CSS pipeline (`codeDistance(H, L, tB=2)`) takes a symplectic two-block matrix and uses a different internal formulation. Agreement on small non-CSS codes is the cleanest cross-check we can run on the linearization.
 
 The user explicitly chose **investigations/ exploratory** as the destination — so this is "look first, decide later," not a publication-grade verification sweep. That argues for tight scope and rich per-code logging over breadth.
@@ -134,7 +134,7 @@ the CSS/PBB catalog values in the executed scope?
 - CSS rows from [results/ensemble_verification_150k.json](../results/ensemble_verification_150k.json) where `claimed_d > verified_d` or where any decoder batch exceeds `verified_d`
 - Non-CSS rows from `campaign7_publication_merged.jsonl` with both `d_milp` and `d_bposd`, largest `d_bposd - d_milp` gaps first
 - The `[[144, 32, ?]]` cases mentioned in CLAUDE.md ("range 6 to 18 across batches")
-- The `[[48, 5, 10]]` reference Webster themselves cite ([paper.tex:129](../paper/paper.tex#L129)), only if we can reconstruct or import the same code unambiguously
+- The `[[48, 5, 10]]` reference Webster themselves cite ([paper.tex:129](../paper/2606.02418/paper.tex#L129)), only if we can reconstruct or import the same code unambiguously
 
 Estimate ~15-20 codes after deduplication. Pull CSS cases from `ensemble_verification_150k.json` using `verified_d`, `claimed_d`, `decoder_summary`, `total_trials`, and `total_time_s`. Pull PBB cases from the JSONL by filtering `d_milp_initial - d_milp` and `d_bposd - d_milp` deltas. For non-exact PBB rows, label `d_milp` as an incumbent upper bound, not ground truth.
 
@@ -142,7 +142,7 @@ Estimate ~15-20 codes after deduplication. Pull CSS cases from `ensemble_verific
 
 **Pass criterion.** This is not a pass/fail — it's a measurement. We log `(d_ours_bposd_150k, d_QDistEvol, d_decoderDist, d_truth_or_incumbent)` and chart the gap-closing per code.
 
-**What "good" looks like.** If QDistEvol consistently matches exact `d_milp` on codes where our BP-OSD overestimates, that's strong support for [paper.tex:700](../paper/paper.tex#L700)'s suggestion to integrate it. If it only improves incumbents or does not improve them, that's a finding too.
+**What "good" looks like.** If QDistEvol consistently matches exact `d_milp` on codes where our BP-OSD overestimates, that's strong support for [paper.tex:700](../paper/2606.02418/paper.tex#L700)'s suggestion to integrate it. If it only improves incumbents or does not improve them, that's a finding too.
 
 ### 4.3 Comparison C — Symplectic linearization sanity (non-CSS small codes)
 

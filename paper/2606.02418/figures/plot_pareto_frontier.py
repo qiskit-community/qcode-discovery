@@ -5,7 +5,7 @@ Plots k vs d and FOM vs n for both CSS BB codes and non-CSS PBB codes,
 with exact/trusted distinction for non-CSS. Requested by R2 and R3.
 
 Usage::
-    uv run python paper/figures/plot_pareto_frontier.py
+    uv run python paper/2606.02418/figures/plot_pareto_frontier.py
 """
 
 import json
