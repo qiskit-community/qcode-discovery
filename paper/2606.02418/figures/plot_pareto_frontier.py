@@ -17,7 +17,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 
 
 def classify_structure(A_terms, B_terms):
@@ -277,7 +277,7 @@ def main():
                    is_css=False, d_min=6)
 
     plt.tight_layout()
-    outpath = ROOT / "paper" / "figures" / "fig_pareto_frontier.pdf"
+    outpath = ROOT / "paper" / "2606.02418" / "figures" / "fig_pareto_frontier.pdf"
     outpath.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(outpath, dpi=300, bbox_inches="tight")
     print(f"Saved to {outpath}")
