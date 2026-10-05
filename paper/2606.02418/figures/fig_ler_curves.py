@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-root = Path(__file__).resolve().parent.parent.parent
+root = Path(__file__).resolve().parent.parent.parent.parent
 
 # --- Load data ---
 with open(root / "results" / "threshold_simulation_milp.json") as f:

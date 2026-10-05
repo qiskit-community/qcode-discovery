@@ -1,6 +1,6 @@
 """ILP exact distance for all CSS catalog codes.
 
-Parses polynomial definitions from paper/css_catalog_tables.tex and runs ILP
+Parses polynomial definitions from paper/2606.02418/css_catalog_tables.tex and runs ILP
 distance computation on each code. Saves results to results/ilp_catalog.json.
 """
 
@@ -196,7 +196,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Read supplemental CSS catalog tables.
-    with open("paper/css_catalog_tables.tex") as f:
+    with open("paper/2606.02418/css_catalog_tables.tex") as f:
         tex_lines = f.readlines()
 
     tables = {}

@@ -1,6 +1,6 @@
 """Comprehensive verification of the k = 8*ell/3 formula claim from the paper.
 
-Paper claims (lines 620-666 of paper/paper.tex):
+Paper claims (lines 620-666 of paper/2606.02418/paper.tex):
 1. For A = 1+y+y^2, B = 1+x^c+x^{2c}, exhaustive enumeration over all (ell, m, c) with ell*m <= 250
 2. k > 0 iff 3|ell AND 3|m
 3. When 3|ell and 3|m, max k (over all valid c) is at c = ell/3, equals 8*ell/3

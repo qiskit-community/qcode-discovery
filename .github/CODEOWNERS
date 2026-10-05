@@ -1,0 +1,7 @@
+# CODEOWNERS
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Order matters: later matches override earlier ones. A catch-all at the top
+# means every file needs an explicit owner below to be covered.
+
+* @cbjuan

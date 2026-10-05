@@ -1,0 +1,715 @@
+%% Supplemental Material for:
+%% "Evolutionary Discovery of Bivariate Bicycle Codes with LLM-Guided Search"
+%%
+%% This document is compiled separately from the main text (paper.tex).
+%% It references sections/tables in the main text by their revtex4-2 numbering.
+
+\documentclass[aps,prxquantum,twocolumn,superscriptaddress,nofootinbib]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\newtheorem{theorem}{Theorem}
+\newcommand{\FF}{\ensuremath{\mathbb{F}}}
+\newcommand{\ZZ}{\ensuremath{\mathbb{Z}}}
+\newcommand{\dblbrk}[1]{\ensuremath{\lbrack\!\lbrack #1 \rbrack\!\rbrack}}
+\newcommand{\code}[1]{\dblbrk{#1}}
+\newcommand{\FOM}{\ensuremath{\mathrm{FOM}}}
+\begin{document}
+
+\title{Supplemental Material:\\Evolutionary Discovery of Bivariate Bicycle Codes\\with LLM-Guided Search}
+
+\author{Juan Cruz-Benito}
+\affiliation{IBM Research, IBM T. J. Watson Research Center, NY, USA}
+\author{Andrew W. Cross}
+\affiliation{IBM Research, IBM T. J. Watson Research Center, NY, USA}
+\author{David Kremer}
+\affiliation{IBM Research, IBM T. J. Watson Research Center, NY, USA}
+\author{Ismael Faro}
+\affiliation{IBM Research, IBM T. J. Watson Research Center, NY, USA}
+
+\date{\today}
+
+\maketitle
+
+\tableofcontents
+
+This Supplemental Material provides technical details, complete data tables, and extended analyses supporting the main text.
+Section references to the main text use the format ``main text Sec.~X\,Y'' and table references use ``main text Table~N.''
+
+%% =====================================================================
+\section{Complete CSS code catalog}
+\label{sm:css_catalog}
+
+Tables~\ref{tab:cat144}--\ref{tab:cat360} list all 225 Calderbank--Shor--Steane (CSS)~\cite{calderbank1996good,steane1996multiple} polynomial representations (corresponding to 97 distinct codes after BLISS Tanner-graph deduplication~\cite{junttila2007engineering}), sorted by $\FOM = kd^2/n$ within each block length, where $d$ is the retained verified distance---MILP exact for Campaigns~1--3, incumbent upper bounds for some Campaign~4 codes, and the tighter BP-OSD bound for the two marked $n=360$ rows (main text Sec.~V\,B).
+Within each table, codes sharing the same equivalence class (column ``Cl.'') are different polynomial representations of the same code.
+The deduplication collapses $n = 144$ from 50 to 16 distinct codes, $n = 288$ from 98 to 49, and $n = 360$ from 77 to 34 (99 total; the 97 reported as ``distinct codes'' excludes two Bravyi et al.\ codes for which Campaign~4 found additional polynomial representations).
+
+The three rightmost decoder columns report 150k-trial BP-OSD upper bounds per decoder configuration; bold entries mark values that match the retained distance~$d$ (for exact rows, BP-OSD found the true minimum-weight logical; for incumbent rows, it matched the current upper bound).
+Rows with no bold entries indicate codes where all three decoders exceeded the retained distance bound.
+
+Pattern abbreviations: UV = univariate ($A = f(y)$, $B = g(x)$, or vice versa; HGP of low-distance cyclic codes), XY = $x/y$-swap, SD = $A = B$ (identical polynomials; not the standard $C \subseteq C^\perp$ self-duality), MX = mixed-monomial (terms with both $x$ and $y$), DM = diagonal-mixed ($1 + x^a y^a + x^b y^b$), O = other.
+Campaign abbreviations: F = Campaign~1 (Flash), E = Campaigns~2--3 (Ensemble), A = Campaign~4 (Ansatz); ``E,A'' or ``F,A'' indicates independent discovery by both.
+
+\textbf{Check weight.}
+Campaigns~1--3 (F, E) produce trinomial polynomials exclusively, yielding weight-6 stabilizers.
+Campaign~4 (A) codes have varying check weights depending on the number of polynomial terms: the stabilizer weight equals the sum of terms in~$A$ and~$B$ (e.g., 3+3 = weight-6, 4+4 = weight-8, 5+5 = weight-10).
+In the tables below, Campaign~4 rows with $\geq 4$-term polynomials have weight~$> 6$; the polynomial columns make the term count explicit.
+
+% NOTE: css_catalog_tables.tex contains Tables cat144, cat288, cat360
+% extracted from the report's Appendix E. See the repository for this file.
+\input{css_catalog_tables}
+
+%% =====================================================================
+\section{Complete non-CSS PBB code catalog}
+\label{sm:pbb_catalog}
+
+Tables~\ref{tab:pbb_cat36}--\ref{tab:pbb_cat360} list all 368 BLISS-unique non-CSS PBB codes from Campaign~5, sorted by $\FOM = kd^2/n$ descending within each block length.
+Each code is defined by four polynomials $(A, B, C, D) \in R = \FF_2[x,y]/(x^\ell{-}1, y^m{-}1)$; when $C = D = 0$ the code reduces to a CSS BB code.
+The distance $d$ is the MILP value; $\leq$ indicates an incumbent upper bound (otherwise distances are exact, with all logicals proven optimal).
+The catalog spans seven lattices: $(3,6)$ and $(6,3)$ at $n = 36$, $(6,6)$ at $n = 72$, $(9,6)$ at $n = 108$, $(12,6)$ at $n = 144$, $(15,6)$ at $n = 180$, and $(30,6)$ at $n = 360$.
+
+\input{pbb_catalog_tables}
+
+%% =====================================================================
+\section{Per-decoder comparison statistics}
+\label{sm:decoders}
+
+Table~\ref{tab:decoder_rates} breaks down the fraction of Campaigns~1--3 trinomial codes for which each decoder configuration found the global minimum distance, stratified by encoding rate $k/n$.
+OSD-CS$_{10}$ configurations consistently outperform OSD$_0$, with the advantage most pronounced at high encoding rates ($k/n > 15\%$).
+Among all 154 Campaigns~1--3 polynomial representations, OSD$_0$/product-sum found the global minimum for only 49 (31.8\%), compared to 90 (58.4\%) for OSD-CS$_{10}$/product-sum and 100 (64.9\%) for OSD-CS$_{10}$/minimum-sum.
+The mean gap between the OSD$_0$ minimum and the global minimum was 3.8 distance points (median 4, maximum 18).
+
+These findings directly support the recommendation in the main text (Sec.~VI\,E) that distance verification should always employ multiple decoder configurations.
+
+\begin{table*}[h]
+\centering
+\caption{Fraction of codes for which each decoder found the global minimum $d$, by encoding rate $k/n$.  ``Sole disc.'' counts codes where \emph{only} that decoder found $d$ across 50{,}000 trials.}
+\label{tab:decoder_rates}
+\begin{tabular}{lcccc}
+\toprule
+$k/n$ & Codes & OSD$_0$/sp & CS$_{10}$/sp & CS$_{10}$/ms \\
+\midrule
+$<5\%$ & 8 & 2 (25\%) & 5 (62\%) & 8 (100\%) \\
+$5$--$10\%$ & 56 & 22 (39\%) & 34 (61\%) & 36 (64\%) \\
+$10$--$15\%$ & 64 & 18 (28\%) & 35 (55\%) & 39 (61\%) \\
+$>15\%$ & 26 & 7 (27\%) & 16 (62\%) & 17 (65\%) \\
+\midrule
+All & 154 & 49 (32\%) & 90 (58\%) & 100 (65\%) \\
+Sole disc. & --- & 14 & 37 & 45 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% =====================================================================
+\section{BP-OSD per-batch analysis}
+\label{sm:per_batch}
+
+\subsection{Per-batch distance distributions}
+
+Figure~\ref{fig:sm_per_batch} shows the full per-batch distance distributions for five codes under the 150{,}000-trial multi-decoder protocol, broken down by decoder configuration (10 batches of 5{,}000 trials each).
+These codes span the range from $d = 2$ to $d = 12$ (MILP exact), with the gross code as a stable control.
+Red dashed lines mark the global minimum (verified bound).
+
+The gross code ($k = 12$) returns $d = 12$ in all 30 batches with zero variance, confirming protocol soundness.
+In contrast, all four higher-$k$ codes exhibit large inter-batch variance---e.g., the $\code{288,32,4}$ code (MILP $d = 4$) ranges from $d_{\text{BP}} = 18$ to $44$ across batches, a $4.5$--$11\times$ overestimate.
+Decoder choice matters: OSD-CS$_{10}$/minimum-sum consistently produces lower medians and tighter bounds than OSD$_0$ for all four higher-$k$ codes.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/per_batch_by_decoder.pdf}
+\caption{Per-batch distance distributions under the 150{,}000-trial multi-decoder protocol.
+Red dashed lines show the global minimum across all 30~batches.
+The gross code ($k = 12$) is perfectly stable; all four higher-$k$ codes show inter-batch variance.
+The three evolution-highlighted codes ($d_{\text{MILP}} = 2, 4, 6$) show dramatic overestimation; even the $\code{288,24,12}$ ($d_{\text{MILP}} = 12$; a direct sum of two gross codes) has OSD$_0$ medians $\approx 2.4\times$ the true distance, with only 2 of 30 batches finding the exact value.}
+\label{fig:sm_per_batch}
+\end{figure*}
+
+\subsection{Per-batch statistics}
+
+Table~\ref{tab:per_batch_stats} reports the full per-batch statistics for five representative codes under a second independent 150{,}000-trial run.
+MILP exact distances are: $d = 2$ for $\code{360,40}$ at $(15,12)$, $d = 4$ for $\code{288,32}$ at $(24,6)$, $d = 6$ for $\code{144,24}$ at $(12,6)$, $d = 12$ for $\code{288,24}$ at $(12,12)$, and $d = 12$ for the gross code.
+
+\begin{table*}[t]
+\centering
+\caption{Per-batch distance statistics under the 150{,}000-trial protocol (second independent run).
+Each row reports 10~independent batches of 5{,}000 trials per decoder configuration.
+Q1/Med/Q3 = 25th/50th/75th percentiles.
+The gross code shows perfect stability; high-$k$ codes show dramatic overestimation vs.\ MILP exact distances.}
+\label{tab:per_batch_stats}
+\small
+\begin{tabular}{llcccccc}
+\toprule
+Code & Decoder & Min & Q1 & Med & Q3 & Max & Mean $\pm$ Std \\
+\midrule
+\multirow{3}{*}{$\code{144,12,12}$~\cite{bravyi2024high}}
+  & OSD$_0$/PS    & 12 & 12 & 12 & 12 & 12 & $12.0 \pm 0.0$ \\
+  & CS$_{10}$/PS  & 12 & 12 & 12 & 12 & 12 & $12.0 \pm 0.0$ \\
+  & CS$_{10}$/MS  & 12 & 12 & 12 & 12 & 12 & $12.0 \pm 0.0$ \\
+\midrule
+\multirow{3}{*}{$\code{360,40,2}$}
+  & OSD$_0$/PS    & 18 & 28 & 30 & 30 & 34 & $29.0 \pm 4.0$ \\
+  & CS$_{10}$/PS  & 24 & 26 & 29 & 31 & 32 & $28.6 \pm 2.8$ \\
+  & CS$_{10}$/MS  & 18 & 24 & 26 & 28 & 34 & $26.0 \pm 4.2$ \\
+\midrule
+\multirow{3}{*}{$\code{288,32,4}$}
+  & OSD$_0$/PS    & 30 & 32 & 39 & 42 & 44 & $37.8 \pm 5.5$ \\
+  & CS$_{10}$/PS  & 26 & 30 & 32 & 33 & 34 & $31.4 \pm 2.5$ \\
+  & CS$_{10}$/MS  & 18 & 24 & 26 & 27 & 30 & $25.0 \pm 3.5$ \\
+\midrule
+\multirow{3}{*}{$\code{144,24,6}$}
+  & OSD$_0$/PS    & 12 & 12 & 17 & 18 & 20 & $15.8 \pm 2.9$ \\
+  & CS$_{10}$/PS  &  8 & 12 & 14 & 15 & 16 & $13.6 \pm 2.3$ \\
+  & CS$_{10}$/MS  &  8 & 12 & 12 & 14 & 14 & $12.4 \pm 1.7$ \\
+\midrule
+\multirow{3}{*}{$\code{288,24,12}$}
+  & OSD$_0$/PS    & 24 & 26 & 29 & 30 & 34 & $28.6 \pm 3.0$ \\
+  & CS$_{10}$/PS  & 12 & 22 & 24 & 25 & 26 & $21.8 \pm 5.1$ \\
+  & CS$_{10}$/MS  & 16 & 16 & 21 & 23 & 28 & $20.6 \pm 3.9$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Extended verification at 1{,}500{,}000 trials}
+
+To stress-test the 150k-trial bounds, we ran an extended protocol at $10\times$ depth: 3~decoders $\times$ 10~batches $\times$ 50{,}000~trials $= 1{,}500{,}000$ total trials per code, on three headline codes plus the gross code as a control (Table~\ref{tab:extended}).
+
+\begin{table*}[h]
+\centering
+\caption{Extended verification at 1{,}500{,}000 trials per code, with MILP exact distances for comparison.
+$d_{150\text{k}}$: 150k-trial protocol bound.
+$d_{1.5\text{M}}$: extended bound.
+$d_{\text{MILP}}$: exact distance via MILP.
+Even at $10\times$ depth, BP-OSD overestimates persist.
+The $\code{144,32,2}$ code has $A = B$; its $d = 2$ is proven exactly (main text Appendix~D, Theorem~1).}
+\label{tab:extended}
+\footnotesize
+\begin{tabular}{lccccccc}
+\toprule
+Code & $(\ell,m)$ & $k$ & $d_{150\text{k}}$ & $d_{1.5\text{M}}$ & $d_{\text{MILP}}$ & Batches & $\FOM_{\text{MILP}}$ \\
+\midrule
+$\code{144,12,12}$ & $(12,6)$ & 12 & 12 & 12 & 12 & 30/30 & 12.0 \\
+$\code{360,40,2}$ & $(15,12)$ & 40 & 24 & 6 & 2 & 1/30 & 0.4 \\
+$\code{288,32,4}$ & $(24,6)$ & 32 & 22 & 12 & 4 & 1/30 & 1.8 \\
+$\code{144,32,2}$ & $(12,6)$ & 32 & 14 & 2 & 2 & 1/30 & 0.9 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The gross code returned $d = 12$ in every batch, confirming that low-rate codes have stable BP-OSD bounds.
+All three high-$k$ codes had bounds tightened: $d \leq 6$ for $\code{360,40}$ (MILP: $d = 2$), $d \leq 12$ for $\code{288,32}$ (MILP: $d = 4$), and $d = 2$ for $\code{144,32}$ (MILP: $d = 2$, proven exactly by main text Appendix~D, Theorem~1).
+The $10\times$ deeper protocol correctly identified the \emph{direction} of the bias but still overestimated true distances by $3\times$, demonstrating that even million-trial BP-OSD protocols cannot substitute for exact distance computation.
+
+The $d = 2$ result for the $A = B$ code is now \emph{proven exact}: all BB codes with $A = B$ and $k > 0$ have $d = 2$, because the identical column blocks of $H_Z = [A^\top | A^\top]$ produce $\ell m$ weight-2 vectors in $\ker(H_Z)$, exactly $k/2$ of which are independent nontrivial logicals.
+The fact that 29 of 30 batches \emph{failed} to find this weight-2 logical---despite 72~independent weight-2 logicals existing---is a cautionary demonstration of BP-OSD's unreliability.
+
+%% =====================================================================
+\section{Distance tightening across Campaigns~1--3}
+\label{sm:tightening}
+
+Table~\ref{tab:decoder_comparison_full} shows representative distance tightening examples from the Campaign~1 codes when moving from 60{,}000 to 150{,}000 trials under the multi-decoder protocol.
+This data supplements Fig.~4 in the main text.
+
+\begin{table*}[t]
+\centering
+\caption{Impact of verification protocol rigor on distance bounds (Campaign~1 codes).
+$\Delta d$ is the reduction in the distance upper bound.
+MILP exact distances confirm that even the 150k bounds are gross overestimates.}
+\label{tab:decoder_comparison_full}
+\begin{tabular}{lcccr}
+\toprule
+Code & $d_{\leq}$ (60k) & $d_{\leq}$ (150k) & $\Delta d$ & $\Delta\FOM_{\text{BP}}$ \\
+\midrule
+$\code{360,40}$ & 20 & 20 & 0 & 0.0 \\
+$\code{360,32}$ & 20 & 16 & $-4$ & $-12.8$ \\
+$\code{288,24}$ & 20 & 12 & $-8$ & $-21.3$ \\
+$\code{288,32}$ & 16 & 12 & $-4$ & $-12.4$ \\
+$\code{144,24}$ & 12 & 8 & $-4$ & $-13.3$ \\
+$\code{144,32}$ & 10 & 6 & $-4$ & $-14.2$ \\
+$\code{360,32}$ & 16 & 8 & $-8$ & $-17.1$ \\
+$\code{288,32}$ & 24 & 20 & $-4$ & $-19.6$ \\
+$\code{288,32}$ & 14 & 10 & $-4$ & $-10.7$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% =====================================================================
+\section{Univariate code families}
+\label{sm:univariate}
+
+Table~\ref{tab:uv_families} lists the top univariate (HGP of low-distance cyclic codes~\cite{eberhardt2024pruning}) polynomial families identified across all campaigns, showing how the same polynomial pair yields different parameters at different lattice dimensions.
+Of the 154 Campaigns~1--3 trinomial representations, 87 (57\%) are univariate; after BLISS deduplication, these correspond to 12 distinct codes.
+Multiple univariate families achieve $k = 40$ (the highest among trinomial codes; Campaign~4's mixed-monomial codes reach $k = 54$ via a factored-product generalization).
+MILP exact distance computation reveals that \emph{every} univariate code has $d \in \{2, 4\}$.
+By the Tillich--Z\'emor formula $d = \min(d_1, d_2, d_1^\top, d_2^\top)$~\cite{tillich2014quantum}, the BB distance is bounded by the smallest distance among the four component cyclic codes $\ker H_A$, $\ker H_B$, $\ker H_A^\top$, $\ker H_B^\top$ (for palindromic check polynomials as here, $H^\top = H$, so the four-way min collapses to $\min(d_A, d_B)$); low-weight quotients $(y^m{-}1)/A$ or $(x^\ell{-}1)/B$ force this min to be small (typically 2 or 4), and the odd weight of trinomial check polynomials forces all four component distances to be even, ruling out $d = 3$.
+See main text Sec.~VI\,A for the derivation.
+The FOM collapse is dramatic: the top-ranked code drops from $\FOM_{\text{BP}} = 64.0$ to $\FOM_{\text{MILP}} = 0.4$.
+
+\begin{table*}[t]
+\centering
+\caption{Top univariate families ($A = f(y)$, $B = g(x)$, or vice versa; equivalent to HGP of low-distance cyclic codes~\cite{eberhardt2024pruning}).
+Rows grouped by polynomial pair; sorted by $\FOM_{\text{BP}}$ descending (the metric available during evolution).
+All univariate codes have $d_{\text{MILP}} \leq 4$, regardless of BP-OSD estimate (up to $12\times$ overestimation).}
+\label{tab:uv_families}
+\begin{tabular}{llccccccccc}
+\toprule
+$A(y)$ & $B(x)$ & $(\ell,m)$ & $n$ & $k$ & $d_{\text{MILP}}$ & $\FOM_{\text{MILP}}$ & $d_{\text{BP}}$ & $\FOM_{\text{BP}}$ & Ratio \\
+\midrule
+$1{+}y^{10}{+}y^{11}$ & $1{+}x^{5}{+}x^{10}$ & $(15,12)$ & 360 & 40 & 2 & 0.4 & 24 & 64.0 & 12$\times$ \\
+\midrule
+$1{+}y{+}y^{2}$ & $1{+}x^{5}{+}x^{25}$ & $(30,6)$ & 360 & 40 & 4 & 1.8 & 24 & 64.0 & 6$\times$ \\
+\midrule
+$1{+}y^{2}{+}y^{7}$ & $1{+}x^{5}{+}x^{10}$ & $(15,12)$ & 360 & 40 & 2 & 0.4 & 22 & 53.8 & 11$\times$ \\
+\midrule
+$1{+}y{+}y^{2}$ & $1{+}x^{5}{+}x^{10}$ & $(15,12)$ & 360 & 40 & 2 & 0.4 & 20 & 44.4 & 10$\times$ \\
+ & & $(30,6)$ & 360 & 40 & 4 & 1.8 & 20 & 44.4 & 5$\times$ \\
+\midrule
+$1{+}y{+}y^{2}$ & $1{+}x^{20}{+}x^{25}$ & $(30,6)$ & 360 & 40 & 4 & 1.8 & 20 & 44.4 & 5$\times$ \\
+\midrule
+$1{+}y{+}y^{5}$ & $1{+}x^{5}{+}x^{10}$ & $(15,12)$ & 360 & 40 & 2 & 0.4 & 18 & 36.0 & 9$\times$ \\
+ & & $(30,6)$ & 360 & 40 & 4 & 1.8 & 20 & 44.4 & 5$\times$ \\
+\midrule
+$1{+}y^{4}{+}y^{5}$ & $1{+}x^{5}{+}x^{10}$ & $(15,12)$ & 360 & 40 & 2 & 0.4 & 20 & 44.4 & 10$\times$ \\
+ & & $(30,6)$ & 360 & 40 & 4 & 1.8 & 20 & 44.4 & 5$\times$ \\
+\midrule
+$1{+}y^{4}{+}y^{5}$ & $1{+}x^{20}{+}x^{25}$ & $(30,6)$ & 360 & 40 & 4 & 1.8 & 20 & 44.4 & 5$\times$ \\
+\midrule
+$1{+}y{+}y^{5}$ & $1{+}x^{5}{+}x^{25}$ & $(30,6)$ & 360 & 40 & 4 & 1.8 & 20 & 44.4 & 5$\times$ \\
+\midrule
+$1{+}y{+}y^{11}$ & $1{+}x^{5}{+}x^{10}$ & $(15,12)$ & 360 & 40 & 2 & 0.4 & 18 & 36.0 & 9$\times$ \\
+\midrule
+$1{+}y^{4}{+}y^{11}$ & $1{+}x^{5}{+}x^{10}$ & $(15,12)$ & 360 & 40 & 2 & 0.4 & 18 & 36.0 & 9$\times$ \\
+\midrule
+$1{+}y{+}y^{2}$ & $1{+}x^{4}{+}x^{18}$ & $(30,6)$ & 360 & 32 & 4 & 1.4 & 20 & 35.6 & 5$\times$ \\
+\midrule
+$1{+}y^{2}{+}y^{4}$ & $1{+}x^{16}{+}x^{19}$ & $(30,6)$ & 360 & 32 & 2 & 0.4 & 20 & 35.6 & 10$\times$ \\
+\midrule
+$1{+}y{+}y^{5}$ & $1{+}x^{4}{+}x^{8}$ & $(12,6)$ & 144 & 32 & 2 & 0.9 & 12 & 32.0 & 6$\times$ \\
+ & & $(12,12)$ & 288 & 32 & 2 & 0.4 & 14 & 21.8 & 7$\times$ \\
+ & & $(24,6)$ & 288 & 32 & 4 & 1.8 & 12 & 16.0 & 3$\times$ \\
+\midrule
+$1{+}y{+}y^{2}$ & $1{+}x^{4}{+}x^{8}$ & $(12,6)$ & 144 & 32 & 2 & 0.9 & 6 & 8.0 & 3$\times$ \\
+ & & $(12,12)$ & 288 & 32 & 2 & 0.4 & 12 & 16.0 & 6$\times$ \\
+ & & $(24,6)$ & 288 & 32 & 4 & 1.8 & 16 & 28.4 & 4$\times$ \\
+\midrule
+$1{+}y^{8}{+}y^{10}$ & $1{+}x^{2}{+}x^{4}$ & $(6,12)$ & 144 & 32 & 2 & 0.9 & 6 & 8.0 & 3$\times$ \\
+ & & $(12,12)$ & 288 & 32 & 4 & 1.8 & 16 & 28.4 & 4$\times$ \\
+\midrule
+$1{+}y{+}y^{5}$ & $1{+}x^{4}{+}x^{20}$ & $(24,6)$ & 288 & 32 & 4 & 1.8 & 16 & 28.4 & 4$\times$ \\
+\midrule
+$1{+}y{+}y^{2}$ & $1{+}x^{16}{+}x^{20}$ & $(24,6)$ & 288 & 32 & 4 & 1.8 & 16 & 28.4 & 4$\times$ \\
+\midrule
+$1{+}y^{5}{+}y^{10}$ & $1{+}x^{5}{+}x^{10}$ & $(15,12)$ & 360 & 40 & 2 & 0.4 & 16 & 28.4 & 8$\times$ \\
+\midrule
+$1{+}y^{7}{+}y^{11}$ & $1{+}x^{5}{+}x^{10}$ & $(15,12)$ & 360 & 40 & 2 & 0.4 & 16 & 28.4 & 8$\times$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% =====================================================================
+\section{Full code capacity simulation data}
+\label{sm:threshold}
+
+This section presents the complete numerical results of the code capacity simulation summarized in the main text (Sec.~VI\,D).
+Tables~\ref{tab:threshold_full} and~\ref{tab:per_qubit_full} cover six CSS codes (five weight-6 BB and one weight-8) at all 12 tested error rates; Table~\ref{tab:threshold_full_extra} adds two additional CSS codes ($\code{288,50,8}$ and $\code{144,8,12}$).
+Tables~\ref{tab:threshold_noncss_full} and~\ref{tab:per_qubit_noncss_full} cover five non-CSS PBB codes alongside the CSS gross code baseline under $X$-only noise.
+Table~\ref{tab:threshold_depolarizing_full} presents the same non-CSS codes under depolarizing noise; the table caption notes the decoder configuration and that, like the main text Sec.~VI\,D depolarizing data, this is a decoder-mismatched threshold (iid X/Z BP-OSD prior on the depolarizing channel) rather than the optimal depolarizing threshold.
+
+\paragraph{Simulation protocol.}
+Two noise channels are simulated with separate decoder configurations.
+For the X-only tables (Tables~\ref{tab:threshold_full}--\ref{tab:per_qubit_noncss_full}): independent $X$ errors at rate~$p$ on each of~$n$ qubits, decoded with BP-OSD on $H_z$ with an iid prior of marginal rate~$p$ on $n$ columns.
+For Table~\ref{tab:threshold_depolarizing_full}: the depolarizing channel (each qubit independently gets $X$, $Y$, or $Z$ with probability $p/3$), decoded with BP-OSD on the symplectic check matrix $[H_z \mid H_x]$ with iid bit-flip priors at marginal rate $2p/3$ on each of the $2n$ columns.
+This iid prior is mismatched with respect to the depolarizing channel (it does not model the $X$/$Z$ correlation $P(e_x{=}1, e_z{=}1) = p/3$ induced by $Y$ errors); see main text Sec.~VI\,D and the table caption.
+All decoders use OSD-CS order~7, product-sum, 20~BP iterations~\cite{panteleev2021degenerate,roffe2020decoding}.
+Block LER: fraction of 100{,}000 shots with $\geq 1$ logical error among $k$~qubits.
+Per-logical-qubit rate: $p_L = 1 - (1 - \text{LER})^{1/k}$.
+Wilson 95\% CIs $\leq 0.06$~pp for LER~$\leq 1\%$; entries reported as $0.00$ have upper bounds $< 0.01\%$.
+
+\begin{table*}[t]
+\centering
+\caption{Code capacity simulation: block logical error rate (LER, \%) vs.\ physical error rate~$p$ for six CSS codes (five weight-6 BB and one weight-8$^\dagger$; 100{,}000 shots per point).
+Bold entries indicate block LER~$> p$.
+$^\dagger$Campaign~4 code (weight-8 stabilizers; MILP incumbent $d \leq 14$; BP-OSD 300k confirms $d = 14$).
+See Table~\ref{tab:threshold_full_extra} for two additional CSS codes.}
+\label{tab:threshold_full}
+\small
+\begin{tabular}{r|cc|cc|cc|cc|cc|cc}
+\toprule
+& \multicolumn{2}{c|}{$\code{144,12,12}$~\cite{bravyi2024high}} & \multicolumn{2}{c|}{$\code{288,24,12}$} & \multicolumn{2}{c|}{$\code{288,16,12}$} & \multicolumn{2}{c|}{$\code{360,16,{\leq}14}$} & \multicolumn{2}{c|}{$\code{360,20,{\leq}14}$$^\dagger$} & \multicolumn{2}{c}{$\code{144,24,6}$} \\
+$p$ (\%) & LER & Unc. & LER & Unc. & LER & Unc. & LER & Unc. & LER & Unc. & LER & Unc. \\
+\midrule
+0.2 & 0.00 & 2.37 & 0.00 & 4.69 & 0.00 & 3.15 & 0.00 & 3.15 & 0.00 & 3.92 & 0.00 & 4.69 \\
+0.5 & 0.00 & 5.84 & 0.01 & 11.33 & 0.01 & 7.71 & 0.01 & 7.71 & 0.00 & 9.54 & 0.02 & 11.33 \\
+0.8 & 0.01 & 9.19 & 0.04 & 17.53 & 0.08 & 12.06 & 0.07 & 12.06 & 0.01 & 14.84 & 0.10 & 17.53 \\
+1.0 & 0.03 & 11.36 & 0.07 & 21.43 & 0.13 & 14.85 & 0.15 & 14.85 & 0.02 & 18.21 & 0.27 & 21.43 \\
+1.5 & 0.08 & 16.59 & 0.19 & 30.42 & 0.41 & 21.48 & 0.43 & 21.48 & 0.04 & 26.09 & 0.85 & 30.42 \\
+2.0 & 0.15 & 21.53 & 0.36 & 38.42 & 0.85 & 27.62 & 0.84 & 27.62 & 0.12 & 33.24 & \textbf{2.11} & 38.42 \\
+3.0 & 0.49 & 30.62 & 0.98 & 51.86 & 1.69 & 38.57 & 1.69 & 38.57 & 0.60 & 45.62 & \textbf{7.22} & 51.86 \\
+4.0 & 1.28 & 38.73 & 2.66 & 62.46 & 2.55 & 47.96 & 2.98 & 47.96 & 2.38 & 55.80 & \textbf{16.77} & 62.46 \\
+5.0 & 3.70 & 45.96 & \textbf{7.28} & 70.80 & 4.18 & 55.99 & \textbf{5.27} & 55.99 & \textbf{7.95} & 64.15 & \textbf{28.97} & 70.80 \\
+6.0 & \textbf{8.61} & 52.41 & \textbf{16.77} & 77.35 & \textbf{7.45} & 62.84 & \textbf{10.99} & 62.84 & \textbf{20.10} & 70.99 & \textbf{43.56} & 77.35 \\
+7.0 & \textbf{16.99} & 58.14 & \textbf{31.69} & 82.48 & \textbf{14.66} & 68.69 & \textbf{21.95} & 68.69 & \textbf{38.50} & 76.58 & \textbf{57.89} & 82.48 \\
+8.0 & \textbf{28.76} & 63.23 & \textbf{50.06} & 86.48 & \textbf{27.73} & 73.66 & \textbf{38.70} & 73.66 & \textbf{60.29} & 81.13 & \textbf{70.68} & 86.48 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Per-logical-qubit error rate $p_L = 1{-}(1{-}\text{LER})^{1/k}$ (\%) for the six CSS codes in Table~\ref{tab:threshold_full}.
+All six codes achieve $p_L < p$ at every tested rate, confirming genuine per-qubit error suppression.
+$^\dagger$Campaign~4 code (weight-8 stabilizers).}
+\label{tab:per_qubit_full}
+\footnotesize
+\begin{tabular}{r|c|c|c|c|c|c}
+\toprule
+$p$ (\%) & $\code{144,12,12}$ ($k{=}12$) & $\code{288,24,12}$ ($k{=}24$) & $\code{288,16,12}$ ($k{=}16$) & $\code{360,16,{\leq}14}$ ($k{=}16$) & $\code{360,20,{\leq}14}$$^\dagger$ ($k{=}20$) & $\code{144,24,6}$ ($k{=}24$) \\
+\midrule
+0.2 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+0.5 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+0.8 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+1.0 & ${<}0.01$ & ${<}0.01$ & 0.01 & 0.01 & ${<}0.01$ & 0.01 \\
+1.5 & 0.01 & 0.01 & 0.03 & 0.03 & ${<}0.01$ & 0.04 \\
+2.0 & 0.01 & 0.01 & 0.05 & 0.05 & 0.01 & 0.09 \\
+3.0 & 0.04 & 0.04 & 0.11 & 0.11 & 0.03 & 0.31 \\
+4.0 & 0.11 & 0.11 & 0.16 & 0.19 & 0.12 & 0.76 \\
+5.0 & 0.31 & 0.31 & 0.27 & 0.34 & 0.41 & 1.42 \\
+6.0 & 0.75 & 0.76 & 0.48 & 0.73 & 1.12 & 2.35 \\
+7.0 & 1.54 & 1.58 & 0.99 & 1.54 & 2.40 & 3.54 \\
+8.0 & 2.79 & 2.85 & 2.01 & 3.01 & 4.51 & 4.98 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Code capacity simulation: block LER (\%) and per-logical-qubit rate $p_L$ (\%) for two additional CSS codes (100{,}000 shots per point).
+Bold entries indicate block LER~$> p$.
+$^\ddagger$Campaign~4 code (weight-8 stabilizers, cross-factored).}
+\label{tab:threshold_full_extra}
+\small
+\begin{tabular}{r|ccc|ccc}
+\toprule
+& \multicolumn{3}{c|}{$\code{288,50,8}^{\ddagger}$} & \multicolumn{3}{c}{$\code{144,8,12}$} \\
+$p$ (\%) & LER & $p_L$ & Unc. & LER & $p_L$ & Unc. \\
+\midrule
+0.2 & 0.00 & ${<}0.01$ & 9.53 & 0.00 & ${<}0.01$ & 1.59 \\
+0.5 & 0.02 & ${<}0.01$ & 22.17 & 0.00 & ${<}0.01$ & 3.93 \\
+0.8 & 0.08 & ${<}0.01$ & 33.08 & 0.01 & ${<}0.01$ & 6.22 \\
+1.0 & 0.13 & ${<}0.01$ & 39.50 & 0.01 & ${<}0.01$ & 7.73 \\
+1.5 & 0.48 & 0.01 & 53.03 & 0.05 & 0.01 & 11.39 \\
+2.0 & 1.22 & 0.02 & 63.58 & 0.08 & 0.01 & 14.92 \\
+3.0 & \textbf{4.71} & 0.10 & 78.19 & 0.29 & 0.04 & 21.63 \\
+4.0 & \textbf{12.74} & 0.27 & 87.01 & 0.91 & 0.11 & 27.86 \\
+5.0 & \textbf{27.20} & 0.63 & 92.31 & 2.72 & 0.34 & 33.66 \\
+6.0 & \textbf{46.27} & 1.23 & 95.47 & \textbf{6.44} & 0.83 & 39.04 \\
+7.0 & \textbf{65.92} & 2.13 & 97.34 & \textbf{13.13} & 1.74 & 44.04 \\
+8.0 & \textbf{81.28} & 3.30 & 98.45 & \textbf{23.07} & 3.23 & 48.68 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Code capacity simulation ($X$-only noise): block LER (\%) for five non-CSS PBB codes and the CSS gross code baseline (100{,}000 shots).
+Bold entries indicate block LER~$> p$.}
+\label{tab:threshold_noncss_full}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{r|cc|cc|cc|cc|cc|cc}
+\toprule
+& \multicolumn{2}{c|}{$\code{144,12,12}$~\cite{bravyi2024high} (CSS)} & \multicolumn{2}{c|}{$\code{144,12,12}$ PBB} & \multicolumn{2}{c|}{$\code{72,4,8}$ PBB} & \multicolumn{2}{c|}{$\code{108,8,10}$ PBB} & \multicolumn{2}{c|}{$\code{360,12,{\leq}20}$ PBB} & \multicolumn{2}{c}{$\code{360,12,{\leq}24}$ PBB} \\
+$p$ (\%) & LER & Unc. & LER & Unc. & LER & Unc. & LER & Unc. & LER & Unc. & LER & Unc. \\
+\midrule
+0.2 & 0.00 & 2.37 & 0.00 & 2.37 & 0.00 & 0.80 & 0.00 & 1.59 & 0.00 & 2.37 & 0.00 & 2.37 \\
+0.5 & 0.00 & 5.84 & 0.01 & 5.84 & 0.00 & 1.99 & 0.00 & 3.93 & 0.00 & 5.84 & 0.00 & 5.84 \\
+0.8 & 0.01 & 9.19 & 0.01 & 9.19 & 0.00 & 3.16 & 0.00 & 6.22 & 0.00 & 9.19 & 0.00 & 9.19 \\
+1.0 & 0.03 & 11.36 & 0.02 & 11.36 & 0.00 & 3.94 & 0.00 & 7.73 & 0.00 & 11.36 & 0.00 & 11.36 \\
+1.5 & 0.08 & 16.59 & 0.08 & 16.59 & 0.00 & 5.87 & 0.00 & 11.39 & 0.00 & 16.59 & 0.00 & 16.59 \\
+2.0 & 0.15 & 21.53 & 0.21 & 21.53 & 0.00 & 7.76 & 0.00 & 14.92 & 0.00 & 21.53 & 0.00 & 21.53 \\
+3.0 & 0.49 & 30.62 & 0.76 & 30.62 & 0.01 & 11.47 & 0.01 & 21.63 & 0.00 & 30.62 & 0.01 & 30.62 \\
+4.0 & 1.28 & 38.73 & 2.07 & 38.73 & 0.02 & 15.07 & 0.02 & 27.86 & 0.01 & 38.73 & 0.02 & 38.73 \\
+5.0 & 3.70 & 45.96 & 4.29 & 45.96 & 0.04 & 18.55 & 0.05 & 33.66 & 0.04 & 45.96 & 0.04 & 45.96 \\
+6.0 & \textbf{8.61} & 52.41 & \textbf{7.51} & 52.41 & 0.07 & 21.93 & 0.12 & 39.04 & 0.15 & 52.41 & 0.16 & 52.41 \\
+7.0 & \textbf{16.99} & 58.14 & \textbf{11.64} & 58.14 & 0.15 & 25.19 & 0.25 & 44.04 & 0.39 & 58.14 & 0.37 & 58.14 \\
+8.0 & \textbf{28.76} & 63.23 & \textbf{16.61} & 63.23 & 0.22 & 28.36 & 0.51 & 48.68 & 0.93 & 63.23 & 0.90 & 63.23 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Per-logical-qubit error rate $p_L = 1{-}(1{-}\text{LER})^{1/k}$ (\%) for the non-CSS PBB codes in Table~\ref{tab:threshold_noncss_full} ($X$-only noise).
+All six codes achieve $p_L < p$ at every tested rate.
+The two $n=360$ codes have identical per-qubit rates at displayed precision since both have $k=12$ and their $X$-only LER values agree to within rounding.}
+\label{tab:per_qubit_noncss_full}
+\tiny
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{r|c|c|c|c|c|c}
+\toprule
+$p$ (\%) & $\code{144,12,12}$ CSS ($k{=}12$) & $\code{144,12,12}$ PBB ($k{=}12$) & $\code{72,4,8}$ PBB ($k{=}4$) & $\code{108,8,10}$ PBB ($k{=}8$) & $\code{360,12,{\leq}20}$ PBB ($k{=}12$) & $\code{360,12,{\leq}24}$ PBB ($k{=}12$) \\
+\midrule
+0.2 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+0.5 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+0.8 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+1.0 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+1.5 & 0.01 & 0.01 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+2.0 & 0.01 & 0.02 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+3.0 & 0.04 & 0.06 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+4.0 & 0.11 & 0.17 & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ & ${<}0.01$ \\
+5.0 & 0.31 & 0.36 & 0.01 & 0.01 & ${<}0.01$ & ${<}0.01$ \\
+6.0 & 0.75 & 0.65 & 0.02 & 0.01 & 0.01 & 0.01 \\
+7.0 & 1.54 & 1.03 & 0.04 & 0.03 & 0.03 & 0.03 \\
+8.0 & 2.79 & 1.50 & 0.06 & 0.06 & 0.08 & 0.08 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Code capacity simulation (depolarizing channel, decoded with iid X/Z BP-OSD prior): block LER (\%) for five non-CSS PBB codes and the CSS gross code baseline (100{,}000 shots).
+Sampler: each qubit independently gets $X$, $Y$, or $Z$ with probability $p/3$.
+Decoder: BP-OSD on the symplectic check matrix $[H_z \mid H_x]$ with iid bit-flip priors at marginal rate $2p/3$ on each of the $2n$ columns; this iid prior is mismatched with respect to the depolarizing channel (see main text Sec.~VI\,D), so the reported LERs are a lower bound on the optimal depolarizing threshold rather than the optimal threshold itself.
+Bold entries indicate block LER~$> p$.
+Under depolarizing noise, the CSS and PBB $\code{144,12,12}$ achieve nearly identical LER at all tested rates---a comparison that is decoder-dependent.
+Both $n=360$ PBB codes achieve LER~$<p$ throughout: the top-FOM $\code{360,12,{\leq}24}$ reaches $4.52\%$ and the lower-FOM $\code{360,12,{\leq}20}$ reaches $4.97\%$ at $p=8\%$, with a small crossover in which the lower-FOM code is marginally better at low $p$ ($p \leq 4\%$) and the higher-FOM code is better at high $p$ ($p \geq 5\%$).}
+\label{tab:threshold_depolarizing_full}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{r|cc|cc|cc|cc|cc|cc}
+\toprule
+& \multicolumn{2}{c|}{$\code{144,12,12}$~\cite{bravyi2024high} (CSS)} & \multicolumn{2}{c|}{$\code{144,12,12}$ PBB} & \multicolumn{2}{c|}{$\code{72,4,8}$ PBB} & \multicolumn{2}{c|}{$\code{108,8,10}$ PBB} & \multicolumn{2}{c|}{$\code{360,12,{\leq}20}$ PBB} & \multicolumn{2}{c}{$\code{360,12,{\leq}24}$ PBB} \\
+$p$ (\%) & LER & Unc. & LER & Unc. & LER & Unc. & LER & Unc. & LER & Unc. & LER & Unc. \\
+\midrule
+0.2 & 0.00 & 2.37 & 0.00 & 2.37 & 0.00 & 0.80 & 0.00 & 1.59 & 0.00 & 2.37 & 0.00 & 2.37 \\
+0.5 & 0.00 & 5.84 & 0.01 & 5.84 & 0.00 & 1.99 & 0.00 & 3.93 & 0.00 & 5.84 & 0.01 & 5.84 \\
+0.8 & 0.01 & 9.19 & 0.01 & 9.19 & 0.00 & 3.16 & 0.01 & 6.22 & 0.03 & 9.19 & 0.05 & 9.19 \\
+1.0 & 0.03 & 11.36 & 0.02 & 11.36 & 0.01 & 3.94 & 0.01 & 7.73 & 0.05 & 11.36 & 0.08 & 11.36 \\
+1.5 & 0.09 & 16.59 & 0.07 & 16.59 & 0.01 & 5.87 & 0.03 & 11.39 & 0.15 & 16.59 & 0.19 & 16.59 \\
+2.0 & 0.13 & 21.53 & 0.14 & 21.53 & 0.05 & 7.76 & 0.07 & 14.92 & 0.27 & 21.53 & 0.35 & 21.53 \\
+3.0 & 0.37 & 30.62 & 0.34 & 30.62 & 0.25 & 11.47 & 0.18 & 21.63 & 0.70 & 30.62 & 0.81 & 30.62 \\
+4.0 & 0.71 & 38.73 & 0.67 & 38.73 & 0.69 & 15.07 & 0.49 & 27.86 & 1.24 & 38.73 & 1.27 & 38.73 \\
+5.0 & 1.27 & 45.96 & 1.40 & 45.96 & 1.80 & 18.55 & 1.05 & 33.66 & 1.89 & 45.96 & 1.82 & 45.96 \\
+6.0 & 2.69 & 52.41 & 2.64 & 52.41 & 3.73 & 21.93 & 2.32 & 39.04 & 2.59 & 52.41 & 2.40 & 52.41 \\
+7.0 & 5.15 & 58.14 & 5.22 & 58.14 & 6.63 & 25.19 & 4.56 & 44.04 & 3.58 & 58.14 & 3.22 & 58.14 \\
+\textbf{8.0} & \textbf{9.43} & 63.23 & \textbf{9.29} & 63.23 & \textbf{10.47} & 28.36 & \textbf{8.38} & 48.68 & 4.97 & 63.23 & 4.52 & 63.23 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% =====================================================================
+\section{Utility stratification of the catalog}
+\label{sm:utility}
+
+Not all 465 distinct codes are useful for error correction.
+We stratify the combined catalog by practical relevance.
+
+Among the 97 CSS codes, the MILP-verified distance distribution spans $d = 2$ (the $A = B$ and some univariate codes) through $d = 14$.
+Among the Campaigns~1--3 trinomial portion of the catalog, 13 $(n, k, d)$ parameter triples have $d \geq 6$ (the $x/y$-swap and select mixed-monomial families); Campaign~4's mixed-monomial search expands this to 41 distinct triples with $d \geq 6$ across the full CSS catalog.
+The CSS codes with $\FOM \geq 6.0$---a threshold above which codes offer meaningful error-correction advantage over the uncoded rate---number 5 parameter triples at Campaigns~1--3 block lengths (including the $\code{288,24,12}$ at $\FOM = 12.0$, which is a direct sum of two gross codes; see main text Sec.~VI\,A) and 29 additional $(n,k,d)$ triples reached only by Campaign~4 (34 distinct CSS triples in total at $\FOM \geq 6$).
+
+In contrast, all 368 non-CSS PBB codes have $d \geq 6$ by construction: Campaign~5's adaptive pipeline rejected $d \leq 4$ codes during evolution.
+Of these, 108 distinct codes have $\FOM \geq 6.0$, 53 have $\FOM \geq 8.0$, and 25 match or exceed $\FOM = 12.0$.
+
+The most practically relevant codes---those with $d \geq 8$ and $\FOM \geq 6.0$---span 50 distinct $(n,k,d)$ parameter triples across both catalogs (30 CSS, 24 non-CSS, with 4 shared between the two catalogs); a representative subset is consolidated in main text Table~V.
+
+%% =====================================================================
+\section{Additional comparison and novelty details}
+\label{sm:comparison}
+
+\subsection{Novelty assessment}
+\label{sm:novelty}
+
+The published inventory of weight-6 BB codes at the block lengths we study ($n = 144$, $288$, $360$) is small: one code each from Bravyi et al.~\cite{bravyi2024high}.
+Weight-8 codes have been reported at $n = 144$ by Symons et al.~\cite{symons2025covering} ($\code{144,14,14}$, $\FOM = 19.1$, covering graphs) and Liang and Chen~\cite{liang2025selfdual} ($\code{144,6,14}$, $\FOM = 8.2$, self-dual).
+Among the most comprehensive systematic searches is Liang et al.~\cite{liang2025generalized}, who enumerate all weight-6 generalized toric codes of a canonical 3-term form $f = 1{+}x{+}x^a y^b$ for $n \leq 400$; at $n = 288$ they report only the $\code{288,12,18}$.
+Our $x/y$-swap codes do \emph{not} fall within their canonical form (which requires one monomial to be the identity and a second to be $x$), though a subset may be equivalent under coordinate transformations of the underlying $\ZZ_\ell \times \ZZ_m$ group (e.g., $x \mapsto x^a$ for $a$ coprime to $\ell$, or swapping $x$ and $y$ when $\ell = m$).
+Lin and Pryadko~\cite{lin2024abelian} provide a comprehensive enumeration of 2BGA codes (including nonabelian groups) with weight~$\leq 8$ for $n \leq 100$; this database is complementary to ours but does not include the block lengths considered here.
+
+To our knowledge, two of our 99 CSS equivalence classes match previously reported codes: the gross code $\code{144,12,12}$ and the $\code{360,12,{\leq}24}$ (both~\cite{bravyi2024high}; Campaign~4 rediscovered these through mixed-monomial representations).
+The remaining 97 classes do not appear in prior work, including all codes at non-standard factorizations---$(18,8)$, $(16,9)$, $(24,6)$ for $n = 288$; $(15,12)$ for $n = 360$---and all high-rate codes with $k \geq 16$ at $n = 288$.
+
+We note that unreported codes may exist in unpublished search databases (e.g., from industrial groups); our novelty claim is based on a review of 25+ papers and 6 public code repositories through March~2026, and we have not had access to unpublished search data.
+
+\subsection{Weight-8 comparison}
+\label{sm:weight8}
+
+Weight-8 codes have eight nonzero entries per row of $H_X$ and $H_Z$, compared to six for weight-6 codes.
+Under standard depth-optimal syndrome-extraction circuits, this corresponds to eight controlled-NOT (CNOT) layers per syndrome-extraction cycle versus six (a 33\% increase in circuit depth per cycle), placing weight-8 codes in a different hardware-complexity regime.
+At $n = 144$, the weight-8 $\code{144,14,14}$~\cite{symons2025covering} achieves $\FOM = 19.1$, $1.6\times$ our highest weight-6 $\FOM = 12.0$.
+Whether the FOM advantage compensates for the increased per-cycle depth depends on the noise model and circuit schedule; a full circuit-level comparison is left to future work.
+
+%% =====================================================================
+\section{Campaign details}
+\label{sm:campaigns}
+
+\subsection{Evolution dynamics}
+
+\paragraph{Campaign~1 (Gemini~3 Flash Preview, 100 iterations, ${\sim}$US\$15 LLM inference).}
+The population of 100 programs across 3 islands reached 79 of 100 occupied MAP-Elites niches at convergence.
+The highest-scoring program (combined score 327.0) was found at iteration~83, at generation depth~5, growing from 4~strategies and 230~lines (seed) to 7~strategies and 292~lines with the addition of a univariate strategy.
+Nine codes were subjected to full verification.
+
+\paragraph{Campaign~2 (3-model ensemble, 251 iterations, ${\sim}$US\$25 LLM inference).}
+The seed solution incorporated five Campaign~1 codes into its known-code table.
+Nine improvements were recorded over the seed, with the largest gain ($+39.3$ points) at iteration~3.
+Highest combined score: 348.6 ($+6.6\%$ over Campaign~1).
+Manually stopped after 251 iterations.
+
+\paragraph{Campaign~3 (3-model ensemble, 500 iterations, ${\sim}$US\$50 LLM inference).}
+Population 1{,}000 across 5 islands; highest-scoring program (score 354.4) at iteration~462.
+The last ${\sim}275$ iterations produced only one marginal improvement ($+1.2\%$), indicating saturation.
+145 unique codes not found in Campaign~1.
+
+\paragraph{Campaign~4 (Ansatz, 300 iterations, ${\sim}$US\$47 LLM inference).}
+24 parallel evaluation workers on a 64-core server.
+All 1{,}188 codes passing evolutionary fitness filters were MILP-verified; top~39 re-verified with extended budgets (3{,}000\,s per logical, 72{,}000\,s total); top~6 subjected to 300{,}000-trial BP-OSD attacks.
+45 distinct codes from structural families not present in~\cite{bravyi2024high}.
+Campaign~4 independently rediscovered the gross code through six mixed-monomial representations.
+
+\paragraph{Campaign~5 (PBB, 500 iterations, ${\sim}$US\$100 LLM inference).}
+352 productive evaluations of 500 total iterations; 18{,}588 candidate 4-tuples evaluated across 7 lattices.
+149 PBB catalog entries deep-verified by MILP (timeouts up to 14{,}400\,s per logical, up to a 60-worker pool); 63 exact outcomes, 33 downward distance corrections identified.
+The lattice selection was constrained by MILP runtime: the symplectic formulation is ${\sim}4\times$ slower per logical than CSS, limiting practical verification to the $m \leq 6$ lattice set and excluding the larger-$m$ CSS lattices $(12,12)$ and $(15,12)$.
+
+\paragraph{Total cost.}
+The five evolutionary campaigns sum to ${\sim}$US\$237 in LLM inference (per-campaign breakdown above) over ${\sim}140$\,h of wall-clock time (sum of the campaign rows in main text Table~I: $5 + 9.5 + 21 + 92 + 11 = 138.5$\,h); this budget includes the in-loop MILP verification performed by each campaign's evaluator, of which Campaign~4's 92\,h itself absorbs ${\sim}20$\,h ($72{,}000$\,s) of top-code re-verification at $3{,}000$\,s per logical.
+The headline ${\sim}$US\$400 figure cited in the abstract additionally covers the ablation arms of main text Sec.~VI\,F (random search at $10^3$ and $10^4$/lattice plus the GA/GA-G arms over 5~seeds each, ${\sim}$US\$70 combined) and exploratory/failed runs (re-tries on flaky API responses, abandoned config sweeps, ${\sim}$US\$90); see the caption of main text Table~I for the same itemization.
+The Campaign~5 deep MILP audit on 149 PBB catalog entries (timeouts up to $14{,}400$\,s per logical, up to a 60-worker pool on a 64-core server) is a post-evolution verification step run on a separate machine and is reported \emph{on top of} the ${\sim}140$\,h evolution wall-clock figure rather than within it.
+Across all components, MILP verification---not LLM inference---is the dominant compute cost.
+
+\subsection{Fitness trajectory}
+
+Figure~\ref{fig:sm_trajectory} shows the fitness trajectories of Campaigns~1--3 (trinomial search).
+The $y$-axis shows the combined score: the sum of highest credible $\FOM = kd^2/n$ values across all evaluated lattices, with trust filtering on $d/\sqrt{n}$ (main text Sec.~V\,D).
+The combined score uses BP-OSD distance estimates that are severe overestimates for high-$k$ codes; consequently, the fitness trajectory primarily reflects $k$-optimization rather than true FOM improvement.
+The deterministic $k$-only metric $\Sigma_k$ (main text Sec.~VI\,F) provides a robust assessment of search effectiveness.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_fitness_trajectory.pdf}
+\caption{Fitness trajectories of Campaigns~1--3.
+\emph{Left:} Campaign~1 (Gemini~3 Flash, 100 iterations).
+\emph{Center:} Campaign~2 (3-model ensemble, 251 iterations, early-stopped).
+\emph{Right:} Campaign~3 (3-model ensemble, 500 iterations, population 1{,}000).
+Blue dots: per-iteration combined scores; red step line: running maximum.
+All campaigns start from the same seed (score~194).
+Campaign~3 saturates after ${\sim}225$ iterations.
+Campaign~4 used a different evaluation pipeline and is not shown.}
+\label{fig:sm_trajectory}
+\end{figure*}
+
+\subsection{Cross-campaign analysis}
+
+The ensemble campaigns (2 and 3) collectively produced 145 unique verified codes not found in Campaign~1, including the highest-$k$ trinomial codes: the $\code{360,40,2}$ ($k = 40$), the $\code{288,32,4}$ ($k = 32$), and the $A = B$ $\code{144,32,2}$ ($k = 32$; $d = 2$ by main text Appendix~D, Theorem~1).
+Campaign~4's mixed-monomial generalization later surpasses these encoding dimensions, reaching $k = 54$ via factored-product structures.
+Campaign~4 added 45 distinct codes from structural families not present in prior catalogs, with only one polynomial-pair overlap with the Campaign~1--3 catalog: the $\code{288,24,12}$ at $(12,12)$.
+
+Campaigns~2--3 differed from Campaign~1 in three dimensions simultaneously: mutation model, iteration count, and population size.
+Campaign~2 (ensemble, pop=100, 251 iterations) achieved $\Sigma_k = 464$, \emph{below} Campaign~1's $704$ despite more iterations and model diversity---suggesting that ensemble mutations may produce less focused variation at small population sizes.
+Only Campaign~3 (pop=1{,}000, 500 iterations) matched Campaign~1's $\Sigma_k$ and yielded additional codes.
+The most parsimonious explanation is that population size and iteration count are the primary drivers; a controlled experiment varying only model configuration would be needed to isolate any ensemble contribution.
+
+%% =====================================================================
+\section{Ablation methodology}
+\label{sm:ablation}
+
+This section supplements the ablation study presented in the main text (Sec.~VI\,F and Appendix~B) with methodological details.
+
+\paragraph{Arms.}
+Eight arms evaluated on the same 8 Stage-2 lattices:
+(1) hand-crafted seed generator;
+(2) uniform random trinomials at $10^3$/lattice (single seed);
+(3) uniform random at $10^4$/lattice (5 independent seeds, 80{,}000 total per seed);
+(4) genetic algorithm (GA) with tournament selection (size~5), single-point polynomial crossover, exponent mutation, 10\% elitism, population~200, $10^4$ evaluations per lattice (5~seeds);
+(5) GA operating on the same ansatz representation as the LLM (``GA-G''), with abstract syntax tree (AST)-level mutations on integer literals, loop bounds, and strategy blocks, tournament selection (size~5), strategy-block crossover, population~100, 30~generations, ${\sim}2{,}800$ evaluations per seed (5~seeds, ${\sim}14{,}000$ total);
+and (6--8) the highest-fitness evolved ansätze from Campaigns~1--3.
+
+\paragraph{GA-G mutation operators.}
+The ansatz GA uses six AST-level operators:
+(i) changing integer literals ($\pm 1$, $\pm 2$, or random);
+(ii) modifying loop bounds;
+(iii) duplicating a strategy block with perturbed constants;
+(iv) removing a strategy block;
+(v) splicing a new strategy from a template library ($x/y$-swap, perturbation, univariate);
+(vi) swapping block order.
+Crucially, GA-G \emph{cannot} create entirely new strategy branches: it shuffles and parameterizes existing code structure, whereas the LLM can invent qualitatively new patterns from scratch.
+
+\paragraph{Degenerate code verification.}
+Exhaustive verification of the exponent-tuple GA across all 5~seeds and 8~lattices (9{,}832 unique codes) confirms that at every lattice where Campaign~1 found codes, every GA code exceeding the per-lattice $\max\{k\}$ has $d \leq 2$ via explicit weight-2 logical operators ($k/n = 2/3$ in all 11~cases).
+The per-lattice breakdown: 6~codes at $(12,6)$, 1~at $(6,12)$, 1~at $(12,12)$, and 3~at $(24,6)$.
+One of these 11 has $A = B$, for which $d = 2$ is proven; the others share common polynomial factors or other algebraic degeneracies producing $k/n = 2/3$.
+
+At $(16,9)$ and $(18,8)$---where all evolved ansätze fail---the exponent-tuple GA finds genuine $d \geq 3$ codes.
+MILP verification of 10 codes with the highest $k$ ($k = 32$--$64$) at these lattices yields $d = 4$--$6$ (all proven exact) and $\FOM \leq 4.0$, a factor of $3$ below the LLM's $\FOM = 12.0$ and below every Bravyi et al.\ baseline.
+
+GA-G reaches $k = n/2$ at six of eight lattices in every seed and at all eight across the union of seeds, producing codes with $d \leq 2$.
+Its low variance ($\pm 22$ vs.\ $\pm 142$ for the exponent-tuple GA) reflects rapid convergence to $k = n/2$ attractors within ${\sim}10$ generations.
+
+%% =====================================================================
+\section{MILP formulation details}
+\label{sm:milp}
+
+\subsection{CSS distance formulation}
+
+Following Bravyi et al.~\cite{bravyi2024high}, we formulate the problem of finding a minimum-weight $X$-type logical operator for the $j$-th logical qubit as:
+\begin{align}
+\min \quad & \sum_{i=1}^{n} x_i \label{eq:milp_obj}\\
+\text{s.t.} \quad & H_Z \mathbf{x} \equiv \mathbf{0} \pmod{2}, \label{eq:milp_commute}\\
+& \langle \mathbf{x}, \bar{Z}_j \rangle \equiv 1 \pmod{2}, \label{eq:milp_anticommute}\\
+& x_i \in \{0,1\}, \quad i = 1, \ldots, n, \label{eq:milp_binary}
+\end{align}
+where $\bar{Z}_j$ is the $j$-th independent $Z$-logical operator.
+The mod-2 constraints~\eqref{eq:milp_commute}--\eqref{eq:milp_anticommute} are linearized using integer slack variables: for each row constraint $\sum_i a_i x_i \equiv b \pmod{2}$, we introduce $s \in \ZZ_{\geq 0}$ and replace with $\sum_i a_i x_i - 2s = b$.
+The $Z$-type distance is computed analogously by swapping the roles of $H_X$ and $H_Z$; the code distance is $d = \min(d_X, d_Z)$.
+
+We use HiGHS~\cite{huangfu2018highs} via \texttt{scipy.optimize.milp}~\cite{virtanen2020scipy}.
+A solution is \emph{exact} when HiGHS reports MIP gap~$= 0$ (proven optimal); otherwise the incumbent solution provides a valid upper bound.
+For BB codes, $d_X = d_Z$ because the polynomial involution $x \mapsto x^{-1},\, y \mapsto y^{-1}$ exchanges the roles of $H_X$ and $H_Z$; we compute both as a consistency check.
+
+\subsection{Non-CSS symplectic formulation}
+
+A Pauli operator on $n$ qubits has symplectic representation $(\mathbf{a} \mid \mathbf{b}) \in \FF_2^{2n}$, where $a_i, b_i \in \{0,1\}$ encode the X- and Z-content on qubit~$i$.
+We write $\bar{L}_j \in \FF_2^{2n}$ for a representative of the $j$-th independent logical Pauli operator (obtained from \texttt{qldpc}'s symplectic Gaussian elimination), and $\langle \cdot, \cdot \rangle_{\text{symp}}$ for the symplectic inner product.
+For non-CSS codes, minimum-weight logical operators are measured in \emph{symplectic} weight: $P = X^{\mathbf{a}} Z^{\mathbf{b}}$ has symplectic weight $|\{i : a_i \neq 0 \text{ or } b_i \neq 0\}|$.
+The MILP formulation minimizes this weight:
+\begin{align}
+\min \quad & \sum_{i=1}^{n} w_i \\
+\text{s.t.} \quad & H \cdot (\mathbf{a} \mid \mathbf{b})^\top \equiv \mathbf{0} \pmod{2}, \\
+& \langle (\mathbf{a} \mid \mathbf{b}), \bar{L}_j \rangle_{\text{symp}} \equiv 1 \pmod{2}, \\
+& w_i \geq a_i, \quad w_i \geq b_i, \quad w_i \leq a_i + b_i, \\
+& a_i, b_i, w_i \in \{0,1\},
+\end{align}
+where $w_i = a_i \lor b_i$ is enforced by the standard linear encoding of the binary OR constraint $w_i \geq a_i$, $w_i \geq b_i$, $w_i \leq a_i + b_i$ (the convex hull of the four feasible $(a_i, b_i, w_i) \in \{0,1\}^3$ triples; tight at integer points), and $H \in \FF_2^{m \times 2n}$ is the symplectic-flipped stabilizer matrix: each row encodes a stabilizer $(s_X \mid s_Z)$ in the order $(s_Z \mid s_X)$ so that the ordinary matrix-vector product $H \cdot (\mathbf{a} \mid \mathbf{b})^\top$ computes the column of symplectic inner products and $H \cdot (\mathbf{a} \mid \mathbf{b})^\top \equiv \mathbf{0}$ enforces pairwise commutation.
+We use the X-first convention for the symplectic vector $(\mathbf{a} \mid \mathbf{b}) \in \FF_2^{2n}$ (so $a_i$ is the X-content and $b_i$ the Z-content on qubit~$i$); the row-flip $(s_Z \mid s_X)$ is dictated by this choice, since the symplectic inner product of $(s_X \mid s_Z)$ with $(\mathbf{a} \mid \mathbf{b})$ is $s_X \!\cdot \mathbf{b} + s_Z \!\cdot \mathbf{a}$, which equals the dot product of the flipped row $(s_Z \mid s_X)$ with $(\mathbf{a} \mid \mathbf{b})$. Some references adopt the opposite (Z-first) convention; the row ordering of $H$ flips accordingly. For PBB codes specifically, this commutativity reduces to the explicit condition $A C^\top + B D^\top$ symmetric over $\FF_2$ (main text Sec.~III\,B; \texttt{evaluation/pbb\_code.py}).
+At fixed code parameters $n$, the symplectic formulation uses $3n$ binary variables (one each for $a_i$, $b_i$, $w_i$) versus $n$ for the CSS X-distance MILP, and we measure ${\sim}4\times$ longer per-logical solve time on matched codes.
+
+\subsection{Validation and optimality audits}
+
+The MILP formulation was validated on the Bravyi et al.\ baselines $\code{72,12,6}$ and $\code{144,12,12}$~\cite{bravyi2024high}, both confirmed exactly with HiGHS proving optimality (MIP gap~$= 0$) for every logical operator.
+MILP solves in seconds for low-$d$ codes and minutes for $d = 12$ codes.
+
+For codes with $d = 2$ (including all $A = B$ codes), the solver finds weight-2 feasible solutions in under one second; combined with the lower bound $d \geq 2$ from the trinomial column-weight structure, this establishes $d = 2$ exactly.
+For $d \leq 4$ univariate codes, all MILP instances achieve proven optimality within seconds.
+
+For the strongest distance results in the CSS catalog ($d = 12$ and $d = 14$), we conducted a dedicated optimality audit with 300\,s per-logical timeouts:
+the gross code $\code{144,12,12}$ (24 logicals, 13\,min total),
+the $\code{288,24,12}$ (48 logicals, 29\,min),
+and the $\code{288,16,12}$ (32 logicals, 80\,min) all achieved proven optimality (MIP gap~$= 0$) for every logical operator; these distances are therefore exact.
+For the $\code{360,16,{\leq}14}$ ($n = 360$), the solver found weight-14 solutions for all 32 logicals and proved optimality for 7; the remaining 25 returned incumbents at weight~14 or~16 within the 300\,s timeout.
+Since the minimum weight across all logicals is~14, $d \leq 14$ is established; the 7 logicals with proven weight-14 optima confirm that no lower distance is missed on those operators, and no logical returned a weight below~14.
+The full per-logical audit data are included in the public repository.
+
+For Campaign~4, all 1{,}188 codes passing evolutionary fitness filters were MILP-verified with 120--600\,s per-logical timeouts.
+The top~39 codes were re-verified with extended budgets (3{,}000\,s per logical, 72{,}000\,s total).
+For Campaign~5 non-CSS codes, 149 PBB catalog entries underwent deep MILP verification (timeouts up to 14{,}400\,s per logical, up to a 60-worker pool on a 64-core server), producing 63 exact outcomes and identifying 33 downward distance corrections.
+
+\bibliography{references}
+
+\end{document}
