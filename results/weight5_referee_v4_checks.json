@@ -6550,15 +6550,15 @@
       },
       "solver": "scipy.optimize.milp using the HiGHS backend",
       "source": {
-        "bytes": 21249,
+        "bytes": 21292,
         "path": "evaluation/distance_milp.py",
-        "sha256": "6f7430ec16ffb862b06a8669a16f849ccf65eaba77d0c30c4e1b87521ac97bff"
+        "sha256": "ad997df2188395e4b66f7c96fa14cc88b247a602574860103d95d05f4472957b"
       },
       "source_lines": {
-        "css_success_rule": 137,
-        "solver_import": 26,
-        "symplectic_or_x": 397,
-        "symplectic_or_z": 406
+        "css_success_rule": 138,
+        "solver_import": 27,
+        "symplectic_or_x": 399,
+        "symplectic_or_z": 408
       }
     },
     "retention": {

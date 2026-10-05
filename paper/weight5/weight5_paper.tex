@@ -605,7 +605,7 @@ The exact connected CSS constructions classified below share a common
 quotient-character structure.  Writing the lattice translation group
 additively, let
 $G=\mathbb Z_\ell\times\mathbb Z_m$ and let
-$\phi:G\to\mathbb Z_q$ be a nonzero homomorphism.  For a primitive
+$\phi:G\to\mathbb Z_q$ be a surjective homomorphism.  For a primitive
 $q$th root of unity $\omega$ in an extension field of $\FF_2$, evaluate a
 monomial by
 \begin{equation}
@@ -635,6 +635,22 @@ binomial.  These rules generate the order-three and order-seven strata before
 any distance calculation; direct rank calculation still determines
 multiplicity and the resulting $k$.
 
+No analogous order-five stratum can exist.  Because $2$ has multiplicative
+order four modulo five, a primitive fifth root $\omega$ has minimal polynomial
+$\Phi_5(z)=1+z+z^2+z^3+z^4$ over $\FF_2$.  Under a surjective
+$\phi:G\to\mathbb Z_5$, the trinomial evaluates to $t(\omega)$, where
+$t(z)=z^{r_1}+z^{r_2}+z^{r_3}$ is reduced in $\FF_2[z]/(z^5-1)$ and
+$r_i\in\mathbb Z_5$ are the images of its three exponents.  If two residues
+coincide, those terms cancel and $t$ is a single monomial; otherwise $t$ has
+exactly three terms.  In either case $t$ is nonzero of degree at most four, so
+$t(\omega)=0$ would force $t=\Phi_5$, which has five terms.  Hence the trinomial
+of a weight-five $2+3$ code never vanishes on an order-five character, for any
+lattice.  The same argument excludes every prime $q\geq5$ for which $2$ is a
+primitive root modulo $q$ ($q=5,11,13,\ldots$), since $\Phi_q$ is then
+irreducible with $q$ terms.  The argument does not apply to the orders that
+occur: $\Phi_3$ is itself a trinomial, and $\Phi_7$ and $\Phi_{15}$ each
+factor over $\FF_2$ into two trinomials.
+
 There is also a simple restriction specific to the $2+3$ support split.  For
 an abelian BB code, $k/2$ is the dimension of the common kernel of the two
 regular-representation blocks.  If that kernel were one-dimensional, its
@@ -659,6 +675,24 @@ Table~\ref{tab:algebraic} identifies five exact constructions over cyclic
 ambient groups as members of the known cyclic GB/coprime-BB subclass.  The two
 constructions over noncyclic ambient groups share the same order-three quotient
 mechanism, connecting all seven through a common design rule.
+
+For connected $2+3$ presentations over cyclic ambient groups, $h$ is
+necessarily squarefree.  Translating each polynomial by a monomial changes
+neither $h$ nor connectivity, so write the binomial as $1+z^e$ and the
+trinomial as $1+z^f+z^g$ with $0<f<g<L$.  Suppose an irreducible $p$ satisfies
+$p^2\mid h$.  Since $h=\gcd(z^L-1,\,1+z^e,\,1+z^f+z^g)$, $p^2$ divides each of
+the three polynomials individually, hence so does $p$; a repeated
+irreducible factor of a polynomial also divides its formal derivative, so $p$
+divides the formal derivatives of $z^L-1$, $1+z^e$, and $1+z^f+z^g$, and
+$p\neq z$ because $z\nmid z^L-1$.  The first two conditions force $L$ and $e$
+to be even.  If exactly one of $f$ and
+$g$ were odd, $p$ would divide a monomial; if both were odd, $p$ would divide
+$z^{f-1}(1+z^{g-f})$, hence $1+z^{g-f}$, and therefore
+$1+z^f(1+z^{g-f})\equiv1\pmod p$.  Both cases are impossible, so $e$, $f$,
+$g$, and $L$ are all even.  Both translated supports then lie in the
+index-two subgroup $2\mathbb Z_L$, each check acts on a single coset of
+$2\mathbb Z_L$ in both blocks, and the Tanner graph splits into two parity
+components, contradicting connectivity.
 
 \begin{table*}[t]
 \centering
@@ -750,26 +784,28 @@ these counts as structural coverage statistics for the stratum rather than as
 performance estimates.
 
 Low-order quotient characters appear throughout the sampled lattices, not only
-among the leading codes.  Enumerating every nonzero homomorphism to
+among the leading codes.  Enumerating every surjective homomorphism to
 $\mathbb Z_3$, $\mathbb Z_5$, $\mathbb Z_7$, and $\mathbb Z_{15}$ yields an
 order-three certificate in 298 of the 329 connected CSS
 presentation classes and an order-seven certificate in 21; two classes have both.
-No class has an order-five certificate.  Thus 317 of 329 classes lie in those
+As the argument above requires, no class has an order-five certificate.
+Thus 317 of 329 classes lie in those
 two
 low-order strata.  The remaining 12 are precisely classes with cyclic
 presentations and one of
 the two primitive order-15 quartic factors.  Hence all 329 connected CSS
 classes fall into order-three, order-seven, or order-15 cyclotomic-kernel
-strata; the absence of an order-five stratum is an empirical result of this
-finite character and gcd calculation.  No order-15 class appears among the selected
+strata.  No order-15 class appears among the selected
 high-distance exact constructions.  Of the 215 connected classes with a
 coprime lattice presentation, the exact cyclic gcd, including multiplicity, is
 $z^2+z+1$ for 182 classes, one of the two primitive order-seven cubics for 19,
 one of the two primitive order-15 quartics for 12, and the product of the
 order-three factor with an order-seven cubic for two.  The remaining 114
 classes are presented over noncyclic ambient groups, and all have an order-three
-quotient certificate.  Every observed cyclic gcd is squarefree; this is a
-computed fact, not an assumption of Eq.~\eqref{eq:cyclic-kernel-dimension}.
+quotient certificate.  Every computed cyclic gcd is squarefree, as the
+connectivity argument above requires; because the gcds were computed with
+multiplicity, this agreement is an independent check rather than an assumption
+of Eq.~\eqref{eq:cyclic-kernel-dimension}.
 The calculation can be reproduced using code in the qcode-discovery
 repository~\cite{cruzbenito2026qcode}.
 
@@ -1468,6 +1504,10 @@ equivalence testing, and circuit-level evaluation.
 
 % Intentional author-approved disclosure; retain in future revisions.
 \section*{Acknowledgments}
+
+The author thanks Andrew W.\ Cross and David Kremer for insightful
+discussions during the conceptualization of this work and for their
+comments throughout the drafting process.
 
 OpenAI GPT-5.6 Sol (via Codex) and Anthropic Claude Opus 5 (via Claude Code)
 assisted with manuscript drafting and data analysis.  The author takes

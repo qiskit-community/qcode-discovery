@@ -356,14 +356,21 @@ def evaluate_candidate_milp(
     milp_total_timeout: int = 120,
     milp_early_stop: int = 4,
 ) -> dict:
-    """Evaluate a BB code candidate using MILP for exact distance.
+    """Evaluate a BB code candidate using MILP for distance bounds.
 
     Simplified 3-stage cascade (vs 5-stage BP-OSD cascade):
       1. Validate + build + compute k  (microseconds)
       2. Quick k-only return if quick=True  (microseconds)
-      3. MILP exact distance  (sub-second for d≤4, seconds to minutes for d≥6)
+      3. MILP distance  (sub-second for d≤4, seconds to minutes for d≥6)
 
-    All distances are exact -- no trust ratio filtering needed.
+    Every MILP incumbent is a valid upper bound (``distance_trusted=True``
+    unconditionally -- unlike the BP-OSD cascade, no trust-ratio filtering
+    is needed for that part), but ``d_is_exact`` is only True when every
+    logical objective was solved to proven optimality; check
+    ``result["d_is_exact"]`` (equivalently ``milp_details["exact"]``), not
+    the ``stage`` name, to tell an exact result from an upper bound. A
+    timeout with no incumbent at all (``stage=="milp_promising_timeout"``)
+    yields no distance whatsoever -- see the all-timeout branch below.
 
     Args:
         ell: Cyclic group order for x.
@@ -410,7 +417,7 @@ def evaluate_candidate_milp(
         result["stage"] = "symplectic_low_d"
         return result
 
-    # Stage 3: MILP exact distance
+    # Stage 3: MILP distance
     d, details = compute_distance_milp(
         code,
         timeout_per_logical=milp_timeout_per_logical,
@@ -422,15 +429,21 @@ def evaluate_candidate_milp(
 
     if details.get("all_timeout"):
         # No feasible solution at all -- solver couldn't even find an
-        # incumbent.  d > early_stop is a valid lower bound, but we have
-        # NO upper bound.  Don't report phantom FOM from a lower bound;
-        # it would inflate combined_score with fictitious values.
+        # incumbent.  A timeout certifies neither an upper nor a lower
+        # bound on d; it is not even weak evidence that d > early_stop,
+        # since a timeout can happen for reasons unrelated to distance
+        # (e.g. a hard search landscape).  The value below is a search
+        # scheduling hint only -- how long this candidate resisted a quick
+        # refutation, used to prioritize follow-up, not a bound on d -- and
+        # is recorded under a name that downstream certification code must
+        # not treat as proof.  Don't report phantom FOM; it would inflate
+        # combined_score with fictitious values.
         result["d"] = 0
-        result["d_lower_bound"] = milp_early_stop + 1
+        result["distance_screening_threshold"] = milp_early_stop
         result["d_is_exact"] = False
         result["distance_trusted"] = False
         result["fom"] = 0.0
-        result["score"] = 0.01  # Tiny positive: promising (d > early_stop)
+        result["score"] = 0.01  # Tiny positive: scheduling hint, not a bound on d
         result["stage"] = "milp_promising_timeout"
     else:
         result["d"] = d

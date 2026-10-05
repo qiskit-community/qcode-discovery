@@ -260,6 +260,7 @@ def aggregate_component_bounds(component_bounds: dict) -> tuple[int, int | None]
 # module docstring's "single most important invariant" section.
 EXACT_SOURCE_ALLOWLIST = frozenset({
     "exact_milp",
+    "exact_enumeration",
     "exhaustive_hash",
     "self_dual_proof",
     "webster_proven_exact",
@@ -306,8 +307,15 @@ def exploratory_fom(k: int, n: int, d_upper: int | None) -> float | None:
 # ambiguity resolutions.
 _SOURCE_KIND_BY_LABEL = {
     "exact_milp": "solver_proof",
+    "exact_enumeration": "exhaustive",
     "self_dual_proof": "solver_proof",
-    "milp_infeasible_early_stop": "solver_proof",
+    # Generic placeholder for a solver-proven lower bound, used only by
+    # synthetic tests exercising the "solver_proof" merge/component-label
+    # machinery -- no current producer emits it. (Formerly named
+    # "milp_infeasible_early_stop" after the MILP-timeout-implies-a-lower-
+    # bound inference that turned out to be invalid; renamed since that
+    # inference is not what this placeholder is meant to stand for.)
+    "solver_proven_lower_bound": "solver_proof",
     "webster_proven_exact": "solver_proof",
     "exhaustive_hash": "exhaustive",
     "symplectic_low_d_proof": "solver_proof",
@@ -337,6 +345,27 @@ def source_kind_for_labels(bound_sources: list[str]) -> str:
 _REJECTED_STAGES = frozenset({
     "rejected", "invalid", "construction_error", "k_zero", "k_low",
 })
+
+
+def _milp_sweep_complete(milp_details: dict) -> bool:
+    """Whether the record has explicit evidence every logical was checked.
+
+    Early-stopped MILP runs could historically report ``exact=True`` after
+    checking only some objectives; such a result is an upper bound only.
+    Every current producer of ``milp_details`` (``evaluation/distance_milp.py``)
+    always populates both count fields, so requiring them here does not
+    downgrade any record this codebase writes today -- it only refuses to
+    trust ``exact=True`` from a record that omits the evidence, rather than
+    defaulting an unrecognized shape to "trusted".
+    """
+    checked = milp_details.get("num_logicals_checked")
+    total = milp_details.get("total_logicals")
+    if checked is None or total is None:
+        return False
+    # Equality, not >=: checked > total is a malformed record (more
+    # objectives claimed checked than the sweep even has), and must fail
+    # closed rather than be silently accepted as a complete sweep.
+    return checked == total
 
 
 def build_v2_record(
@@ -370,10 +399,17 @@ def build_v2_record(
     if stage == "self_dual_d2":
         d_lower, d_upper = 2, 2
         derived_sources = ["self_dual_proof"]
-    elif result.get("d_is_exact") is True and stage == "exact":
+    elif result.get("d_is_exact") is True and stage == "exact" and not milp_details:
+        # stage=="exact" is exclusively evaluator.py's brute-force
+        # compute_distance_exact path, which never attaches milp_details --
+        # the `not milp_details` guard is defensive: a record shaped with
+        # both (which no current producer emits) falls through to the MILP
+        # branch below instead of bypassing its sweep-completeness check.
+        # Tagged with its own label (not "exact_milp") because this proof is
+        # exhaustive enumeration, not a MILP solver certificate.
         d_lower = d_upper = d
-        derived_sources = ["exact_milp"]
-    elif milp_details.get("exact") is True:
+        derived_sources = ["exact_enumeration"]
+    elif milp_details.get("exact") is True and _milp_sweep_complete(milp_details):
         d_lower = d_upper = d
         derived_sources = ["exact_milp"]
     elif result.get("d_is_exact") is True and result.get("d_is_upper_bound") is False:
@@ -388,10 +424,13 @@ def build_v2_record(
         # their results.
         d_lower = d_upper = d
         derived_sources = ["exact_milp"] if result.get("milp_exact") else ["exhaustive_hash"]
-    elif "d_lower_bound" in result:
-        d_lower = result["d_lower_bound"]
-        d_upper = d if d > 0 else None
-        derived_sources = ["milp_infeasible_early_stop"]
+    elif stage == "milp_promising_timeout":
+        # The MILP found no feasible solution before timing out.  That proves
+        # nothing about small logicals, so no lower bound (and no witness).
+        # Legacy evaluator records stored d_lower_bound=early_stop+1 here as
+        # if it were certified; it never was.
+        d_lower, d_upper = 0, None
+        derived_sources = []
     elif stage == "symplectic_low_d" and result.get("d_is_exact") is True:
         # Gaussian-elimination proof (BB codes with k>0 have d>=2), not a
         # BP-OSD heuristic -- see module docstring. Must be checked before

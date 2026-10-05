@@ -114,6 +114,22 @@ RUNTIME_VERIFIED_INERT_REVISIONS: dict[str, dict[str, str]] = {
             "rejection path is never exercised and outputs are unaffected"
         ),
     },
+    "evaluation/evaluator.py": {
+        "sha256": "d07a47484f4633dc613884aa231c6dc8b83797748e02e0c22eafc8317affd047",
+        "reason": (
+            "evaluate_candidate_milp's all-timeout branch renamed its "
+            "uncertified d_lower_bound field to distance_screening_threshold, "
+            "dropped the stale +1 from its value (now milp_early_stop itself), "
+            "and expanded the comment explaining it is a search-scheduling "
+            "hint, not weak evidence of a bound on d; the docstring and a "
+            "stage comment were also reworded from 'exact distance' to "
+            "'distance bounds'/'MILP distance' to stop claiming every MILP "
+            "result is exact. The selection/distance stages never call that "
+            "function, this control's MILP stage produced no records, and no "
+            "summary reads the field or these comments, so outputs are "
+            "unaffected"
+        ),
+    },
 }
 
 SMALL_LATTICES = ((6, 10), (9, 9), (10, 9))

@@ -48,6 +48,34 @@ def _v1_result(**overrides) -> dict:
     return base
 
 
+def _lower_bound_only_v2(lower: int, **v1_overrides) -> dict:
+    """A v2 record certifying only ``d>=lower`` (no known upper witness).
+
+    There is no current MILP producer of this shape -- ``ilp_min_weight``
+    only ever minimizes weight (finding an incumbent upper bound or timing
+    out), never proves infeasibility of a bounded sub-problem to certify a
+    lower bound directly (see ``_milp_sweep_complete``'s docstring). This
+    builds the record via the normal derivation path (stage
+    "milp_promising_timeout", which yields d_lower=0/d_upper=None/no
+    sources, so every other passthrough/derived field -- n, k, code_key
+    inputs, etc. -- is still correct) and then overrides the bound fields
+    directly, exercising the merge/display *shape* a sound lower-bound-only
+    producer would emit, without resurrecting that derivation branch in
+    production code.
+    """
+    v2 = build_v2_record(_v1_result(d=0, stage="milp_promising_timeout", **v1_overrides))
+    v2["d_lower"] = lower
+    v2["d_upper"] = None
+    v2["bound_sources"] = ["solver_proven_lower_bound"]
+    v2["d_is_exact"] = is_exact(lower, None, v2["bound_sources"])
+    cf = certified_fom(v2.get("k", 0), v2.get("n", 0), lower)
+    if cf is not None:
+        v2["certified_fom"] = cf
+    else:
+        v2.pop("certified_fom", None)
+    return v2
+
+
 class TestHeuristicFailureNeverRaisesDLower:
     """heuristic failure never raises d_lower."""
 
@@ -144,7 +172,7 @@ class TestMergeConflictsAreQuarantined:
         # inconsistency loaded from disk), to set up a genuine conflict.
         old_v2["d_lower"] = 6
         old_v2["d_upper"] = 3
-        old_v2["bound_sources"] = ["milp_infeasible_early_stop"]
+        old_v2["bound_sources"] = ["solver_proven_lower_bound"]
 
         first = update_pareto_front_v2([old_v2], filepath=filepath)
         assert first["quarantined"] == []  # nothing to conflict with yet
@@ -178,7 +206,7 @@ class TestComponentBoundMergePreservesAllSourceLabels:
         cb1 = empty_component_bounds()
         cb1 = merge_component_bound(
             cb1, "X", 3, None,
-            source_kind="solver_proof", source_label="milp_infeasible_early_stop",
+            source_kind="solver_proof", source_label="solver_proven_lower_bound",
         )
         rec1_v2 = build_v2_record(_v1_result(d=0, stage="rejected"), component_bounds=cb1)
 
@@ -191,7 +219,7 @@ class TestComponentBoundMergePreservesAllSourceLabels:
 
         merged = pareto_v2._merge_records(rec1_v2, rec2_v2)
         x_sources = merged["component_bounds"]["X"]["sources"]
-        assert "milp_infeasible_early_stop" in x_sources
+        assert "solver_proven_lower_bound" in x_sources
         assert "exhaustive_hash" in x_sources
 
 
@@ -207,7 +235,7 @@ class TestComponentBoundMergeDoesNotAccumulateDuplicateLabels:
         cb = empty_component_bounds()
         cb = merge_component_bound(
             cb, "X", 3, None,
-            source_kind="solver_proof", source_label="milp_infeasible_early_stop",
+            source_kind="solver_proof", source_label="solver_proven_lower_bound",
         )
         rec_v2 = build_v2_record(_v1_result(d=0, stage="rejected"), component_bounds=cb)
 
@@ -215,13 +243,13 @@ class TestComponentBoundMergeDoesNotAccumulateDuplicateLabels:
         merged_again = pareto_v2._merge_records(merged, rec_v2)
 
         x_sources = merged_again["component_bounds"]["X"]["sources"]
-        assert x_sources.count("milp_infeasible_early_stop") == 1
+        assert x_sources.count("solver_proven_lower_bound") == 1
 
     def test_distinct_labels_still_both_survive_after_repeated_merge(self):
         cb1 = empty_component_bounds()
         cb1 = merge_component_bound(
             cb1, "X", 3, None,
-            source_kind="solver_proof", source_label="milp_infeasible_early_stop",
+            source_kind="solver_proof", source_label="solver_proven_lower_bound",
         )
         rec1_v2 = build_v2_record(_v1_result(d=0, stage="rejected"), component_bounds=cb1)
 
@@ -236,7 +264,7 @@ class TestComponentBoundMergeDoesNotAccumulateDuplicateLabels:
         merged_again = pareto_v2._merge_records(merged, rec2_v2)
 
         x_sources = merged_again["component_bounds"]["X"]["sources"]
-        assert x_sources.count("milp_infeasible_early_stop") == 1
+        assert x_sources.count("solver_proven_lower_bound") == 1
         assert x_sources.count("exhaustive_hash") == 1
 
 
@@ -319,13 +347,11 @@ class TestExactResultsBypassHeuristicGates:
         # meaning of d_upper=None), not the reconciled lower bound: showing
         # the lower bound as `d` would misrepresent an unwitnessed proof
         # (we only know d>=lower) as if it were an observed distance.
-        lb_result = _v1_result(d=0, d_lower_bound=4, stage="milp_lower_bound")
-        lb_v2 = build_v2_record(lb_result)
+        lb_v2 = _lower_bound_only_v2(4)
         assert lb_v2["d_lower"] == 4
         assert lb_v2["d_upper"] is None
 
-        lb_result_2 = _v1_result(d=0, d_lower_bound=7, stage="milp_lower_bound")
-        lb_v2_2 = build_v2_record(lb_result_2)
+        lb_v2_2 = _lower_bound_only_v2(7)
 
         merged = pareto_v2._merge_records(lb_v2, lb_v2_2)
         assert merged["d_lower"] == 7
@@ -370,7 +396,7 @@ class TestLegacyExactFlagMigratesAsTrulyExact:
         assert v2["d_lower"] == 10
         assert v2["d_upper"] == 10
         assert v2["d_is_exact"] is True
-        assert v2["bound_sources"].count("exact_milp") == 1
+        assert v2["bound_sources"].count("exact_enumeration") == 1
 
 
 class TestExploratoryEntriesCannotEvictCertifiedFronts:
@@ -620,14 +646,12 @@ class TestDominatedRecordsResurfaceAfterDominatorUpgrade:
     def test_dominated_record_reappears_once_dominator_promoted_to_exact(self, tmp_path):
         filepath = tmp_path / "pareto_v2.json"
 
-        record_a = build_v2_record(_v1_result(
-            ell=6, m=6, A_terms=[(1, 0)], B_terms=[(2, 0)],
-            n=72, k=12, d=0, stage="milp_promising_timeout", d_lower_bound=4,
-        ))
-        record_b = build_v2_record(_v1_result(
-            ell=8, m=8, A_terms=[(5, 0)], B_terms=[(3, 0)],
-            n=60, k=12, d=0, stage="milp_promising_timeout", d_lower_bound=5,
-        ))
+        record_a = _lower_bound_only_v2(
+            4, ell=6, m=6, A_terms=[(1, 0)], B_terms=[(2, 0)], n=72, k=12,
+        )
+        record_b = _lower_bound_only_v2(
+            5, ell=8, m=8, A_terms=[(5, 0)], B_terms=[(3, 0)], n=60, k=12,
+        )
 
         def _norm(terms):
             return [tuple(t) for t in terms]
@@ -678,31 +702,94 @@ class TestBuildV2RecordDerivationRules:
         assert v2["d_is_exact"] is True
 
     def test_exact_stage_from_evaluate_candidate(self):
+        # stage=="exact" is evaluator.py's brute-force compute_distance_exact
+        # path -- exhaustive enumeration, not a MILP solver certificate --
+        # so it gets its own provenance label, not "exact_milp".
         result = _v1_result(d=8, d_is_exact=True, distance_trusted=True, stage="exact")
         v2 = build_v2_record(result)
         assert v2["d_lower"] == v2["d_upper"] == 8
-        assert v2["bound_sources"] == ["exact_milp"]
+        assert v2["bound_sources"] == ["exact_enumeration"]
         assert v2["d_is_exact"] is True
 
     def test_milp_details_exact_flag(self):
+        # Every current producer (evaluation/distance_milp.py) always
+        # records num_logicals_checked/total_logicals alongside "exact";
+        # this fixture matches that real shape rather than an
+        # under-specified one, since _milp_sweep_complete now requires
+        # explicit complete-sweep evidence instead of defaulting an
+        # unrecognized shape to "trusted".
         result = _v1_result(
             d=4, d_is_exact=True, distance_trusted=True, stage="milp_low_d",
-            milp_details={"exact": True, "time_s": 1.2},
+            milp_details={
+                "exact": True, "time_s": 1.2,
+                "num_logicals_checked": 4, "total_logicals": 4,
+            },
         )
         v2 = build_v2_record(result)
         assert v2["d_lower"] == v2["d_upper"] == 4
         assert v2["bound_sources"] == ["exact_milp"]
         assert v2["d_is_exact"] is True
 
-    def test_milp_infeasible_early_stop(self):
+    def test_milp_timeout_gives_no_lower_bound(self):
+        # A MILP timeout with no incumbent proves nothing about small
+        # logicals. The original field name was d_lower_bound; the current
+        # evaluator records the same non-evidentiary scheduling hint under
+        # distance_screening_threshold. Neither must ever be read as a
+        # certified bound.
+        for key in ("d_lower_bound", "distance_screening_threshold"):
+            result = _v1_result(
+                d=0, d_is_exact=False, distance_trusted=False,
+                stage="milp_promising_timeout", **{key: 5},
+            )
+            v2 = build_v2_record(result)
+            assert v2["d_lower"] == 0
+            assert v2["d_upper"] is None
+            assert v2["bound_sources"] == []
+            assert v2["d_is_exact"] is False
+
+    def test_early_stopped_milp_exact_flag_is_not_trusted(self):
+        # Early-stopped runs could report exact=True after 1 of 4 objectives.
         result = _v1_result(
-            d=0, d_is_exact=False, distance_trusted=False,
-            stage="milp_promising_timeout", d_lower_bound=5,
+            d=3, stage="milp_low_d",
+            milp_details={"exact": True, "num_logicals_checked": 1,
+                          "total_logicals": 4},
         )
         v2 = build_v2_record(result)
-        assert v2["d_lower"] == 5
-        assert v2["d_upper"] is None
-        assert v2["bound_sources"] == ["milp_infeasible_early_stop"]
+        assert v2["d_lower"] == 0
+        assert v2["d_upper"] == 3
+        assert v2["d_is_exact"] is False
+
+    def test_milp_exact_flag_without_sweep_counts_is_not_trusted(self):
+        # A malformed/legacy-shaped record that omits the count fields
+        # entirely must not be treated as a complete sweep by default --
+        # _milp_sweep_complete requires explicit evidence, not an absence
+        # of contrary evidence.
+        result = _v1_result(
+            d=4, stage="milp_low_d", milp_details={"exact": True},
+        )
+        v2 = build_v2_record(result)
+        assert v2["d_lower"] == 0
+        assert v2["d_upper"] == 4
+        assert v2["d_is_exact"] is False
+
+    def test_incomplete_exact_stage_record_is_not_trusted(self):
+        # A record claiming stage="exact" (the brute-force
+        # compute_distance_exact path) is normally trusted outright -- that
+        # path proves exactness by exhaustive search, unrelated to any MILP
+        # sweep. But stage=="exact" is documented as exclusively that
+        # producer's, which never attaches milp_details; a record shaped
+        # with both (which no current producer emits) is malformed, and
+        # must fall through to the MILP sweep-completeness check rather
+        # than short-circuiting on the stage=="exact" branch just because
+        # d_is_exact/stage happen to be set.
+        result = _v1_result(
+            d=4, d_is_exact=True, distance_trusted=True, stage="exact",
+            milp_details={"exact": True, "num_logicals_checked": 1,
+                          "total_logicals": 4},
+        )
+        v2 = build_v2_record(result)
+        assert v2["d_lower"] == 0
+        assert v2["d_upper"] == 4
         assert v2["d_is_exact"] is False
 
     def test_d_le_2_trusted_is_conservative_not_exact(self):
@@ -770,7 +857,7 @@ class TestBuildV2RecordDerivationRules:
     def test_extra_bound_sources_kwarg_appended(self):
         result = _v1_result(d=6, d_is_exact=True, stage="exact")
         v2 = build_v2_record(result, bound_sources=["webster_proven_exact"])
-        assert v2["bound_sources"] == ["exact_milp", "webster_proven_exact"]
+        assert v2["bound_sources"] == ["exact_enumeration", "webster_proven_exact"]
 
     def test_component_bounds_passthrough(self):
         cb = empty_component_bounds()
@@ -931,7 +1018,7 @@ class TestMigrateLegacyParetoToV2:
 
         assert len(result["exact_front"]) == 1
         assert len(result["exploratory_witnesses"]) == 1
-        assert result["exact_front"][0]["bound_sources"] == ["exact_milp", "legacy_migrated"]
+        assert result["exact_front"][0]["bound_sources"] == ["exact_enumeration", "legacy_migrated"]
 
         # Legacy file must remain untouched (read-only) -- compare against
         # a JSON round-trip of the original since tuples serialize to lists.

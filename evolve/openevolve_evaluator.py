@@ -1031,7 +1031,7 @@ def evaluate_stage2_milp(program_path: str) -> dict:
         elif stage == "milp_incumbent":
             return "d\u2264" + str(r["d"])
         elif stage == "milp_promising_timeout":
-            return "d>" + str(r.get("milp_details", {}).get("early_stop", 4))
+            return "timeout"
         elif stage in ("milp_low_d", "symplectic_low_d"):
             return "exact" if r.get("d", 0) <= 2 else f"d\u2264{r['d']}"
         return ""

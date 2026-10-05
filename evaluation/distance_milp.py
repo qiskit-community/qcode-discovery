@@ -5,7 +5,8 @@ Rice (arXiv:1108.5738, 2011) and reused by Bravyi et al. (arXiv:2308.07915,
 which cites Landahl-Anderson-Rice as the source of the method) with
 optimizations for use during evolutionary search:
 
-  - Early exit when d drops to ``early_stop`` threshold
+  - Early exit when d drops to ``early_stop`` threshold (the result is then
+    an upper bound only: ``exact`` requires every logical objective solved)
   - Cross-type early exit: skip d_X if d_Z already ≤ early_stop
   - Per-code total timeout (not just per-logical)
   - d_Z computed before d_X (cheaper to determine d is low)
@@ -160,7 +161,8 @@ def compute_distance_milp(
         code: qldpc BBCode instance.
         timeout_per_logical: Max seconds per individual ILP solve.
         total_timeout: Max total seconds for the entire distance computation.
-        early_stop: Stop immediately when d ≤ this value. Pass ``None`` to
+        early_stop: Stop immediately when d ≤ this value; the result is
+            then an upper bound with ``exact=False``. Pass ``None`` to
             disable early stopping and iterate over every logical (required
             when the goal is to certify an exact distance).
         verbose: Log progress.
@@ -287,14 +289,10 @@ def compute_distance_milp(
     elapsed = time.monotonic() - t_start
 
     # If no feasible solution was found on either side, distance is unknown.
-    # Use d = early_stop + 1 as a conservative lower bound: if d ≤ early_stop,
-    # the solver would have found it near-instantly, so d > early_stop.
+    # A timeout proves nothing about small logicals, so return the vacuous
+    # upper bound d=n and no lower bound (see compute_distance_milp_symplectic).
     if not any_z_found and not any_x_found:
-        # No logical solved on either side.  See compute_distance_milp_symplectic
-        # for the rationale: early_stop+1 is a real lower bound when the caller
-        # supplied a threshold; otherwise return the vacuous d=n.
-        d_lower = (early_stop + 1) if early_stop is not None else n
-        return d_lower, {
+        return n, {
             "d_x": 0,
             "d_z": 0,
             "k": k,
@@ -307,12 +305,16 @@ def compute_distance_milp(
             "time_s": elapsed,
             "timeout_per_logical": timeout_per_logical,
             "all_timeout": True,
-            "d_is_lower_bound": early_stop is not None,
+            "d_is_lower_bound": False,
         }
 
     # Use the best feasible values found. Unsolved sides stay at n
     # (trivially valid upper bound).
     d = min(d_x, d_z)
+    # An early exit inside the X loop skips the remaining X logicals, whose
+    # minimum could be smaller; only a complete sweep certifies d.
+    if logicals_checked < 2 * k:
+        all_solved = False
 
     return d, {
         "d_x": d_x if any_x_found else 0,
@@ -489,7 +491,8 @@ def compute_distance_milp_symplectic(
         code: A qubit stabilizer code, non-CSS (qldpc's ``QuditCode``).
         timeout_per_logical: Max seconds per individual ILP solve.
         total_timeout: Max total seconds for the entire computation.
-        early_stop: Stop immediately when d <= this value. Pass ``None`` to
+        early_stop: Stop immediately when d <= this value; the result is
+            then an upper bound with ``exact=False``. Pass ``None`` to
             disable early stopping and iterate over every logical (required
             when the goal is to certify an exact distance).
         verbose: Log progress.
@@ -559,21 +562,18 @@ def compute_distance_milp_symplectic(
 
     elapsed = time.monotonic() - t_start
 
+    # Every objective must be solved to optimality for d to be exact; an
+    # early stop leaves unchecked logicals whose minimum could be smaller.
+    if logicals_checked < num_logicals:
+        all_solved = False
+
     if not any_found:
-        # No logical was solved.  If the caller supplied an early-stop
-        # threshold, "no solution found" implies d > early_stop (the solver
-        # would have hit a small d quickly), so report early_stop+1 as a
-        # lower bound.  If early_stop is None we have no informative bound;
-        # report d = n (vacuous upper bound) so the standard
-        # ``milp_worked = d_milp < n`` check at call sites correctly rejects
-        # the result.
-        if early_stop is not None:
-            d_lower = early_stop + 1
-            d_is_lb = True
-        else:
-            d_lower = n
-            d_is_lb = False
-        return d_lower, {
+        # No logical was solved.  A timeout says nothing about whether small
+        # logicals exist (the solver may simply not have reached them), so no
+        # lower bound follows.  Report d = n (vacuous upper bound) so the
+        # standard ``milp_worked = d_milp < n`` check at call sites correctly
+        # rejects the result.
+        return n, {
             "k": k,
             "exact": False,
             "num_logicals_checked": logicals_checked,
@@ -583,7 +583,7 @@ def compute_distance_milp_symplectic(
             "time_s": elapsed,
             "timeout_per_logical": timeout_per_logical,
             "all_timeout": True,
-            "d_is_lower_bound": d_is_lb,
+            "d_is_lower_bound": False,
         }
 
     return d_best, {

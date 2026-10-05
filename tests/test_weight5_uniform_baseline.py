@@ -181,19 +181,23 @@ def test_historical_evaluator_and_runtime_sources_are_pinned():
         item["local_verified"] and item["git_object_verified"]
         for item in evidence["runtime_components"].values()
     )
-    # evaluation/bb_code.py no longer matches its historical pin byte-for-byte
-    # (commit 1b2ebca added exponent-type validation); it is accepted only via
-    # the documented, reviewed inert-revision fallback, not a silent re-pin.
-    bb_code = evidence["runtime_components"]["evaluation/bb_code.py"]
-    assert bb_code["local_verified_via"] == "reviewed_inert_revision"
-    assert (
-        bb_code["local_sha256"]
-        == baseline.RUNTIME_VERIFIED_INERT_REVISIONS["evaluation/bb_code.py"]["sha256"]
-    )
+    # evaluation/bb_code.py (commit 1b2ebca added exponent-type validation) and
+    # evaluation/evaluator.py (the MILP all-timeout branch stopped reporting an
+    # uncertified lower bound) no longer match their historical pins
+    # byte-for-byte; they are accepted only via the documented, reviewed
+    # inert-revision fallback, not a silent re-pin.
+    revised = ("evaluation/bb_code.py", "evaluation/evaluator.py")
+    for path in revised:
+        item = evidence["runtime_components"][path]
+        assert item["local_verified_via"] == "reviewed_inert_revision"
+        assert (
+            item["local_sha256"]
+            == baseline.RUNTIME_VERIFIED_INERT_REVISIONS[path]["sha256"]
+        )
     other_components = {
         path: item
         for path, item in evidence["runtime_components"].items()
-        if path != "evaluation/bb_code.py"
+        if path not in revised
     }
     assert all(
         item["local_verified_via"] == "historical_pin"
