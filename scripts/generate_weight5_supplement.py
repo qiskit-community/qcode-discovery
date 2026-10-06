@@ -60,7 +60,7 @@ from typing import Iterable
 
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_OUTPUT = ROOT / "paper" / "weight5" / "weight5_supplemental_tables.tex"
+DEFAULT_OUTPUT = ROOT / "paper" / "2610.06623" / "weight5_supplemental_tables.tex"
 
 sys.path.insert(0, str(ROOT))
 

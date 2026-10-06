@@ -24,7 +24,7 @@ with their connectivity status stated explicitly.
 Run from anywhere in the repository::
 
     UV_CACHE_DIR=/tmp/qcode-uv-cache MPLCONFIGDIR=/tmp/qcode-mpl-cache \
-      uv run python paper/weight5/figures/plot_weight5_pareto_comparison.py
+      uv run python paper/2610.06623/figures/plot_weight5_pareto_comparison.py
 
 Outputs are deterministic and written beside this script.
 """

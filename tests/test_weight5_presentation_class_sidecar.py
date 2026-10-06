@@ -11,7 +11,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 SIDECAR = ROOT / "results" / "weight5_presentation_classes.jsonl"
 CATALOGUE = ROOT / "results" / "weight5_publication_catalogue.jsonl"
-SUPPLEMENT_TABLES = ROOT / "paper" / "weight5" / "weight5_supplemental_tables.tex"
+SUPPLEMENT_TABLES = ROOT / "paper" / "2610.06623" / "weight5_supplemental_tables.tex"
 
 
 def _test_css_spec(campaign, *, lower: int | None, upper: int):

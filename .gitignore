@@ -242,10 +242,10 @@ paper/*/*
 paper/*/figures/*
 !paper/*/figures/*.py
 !paper/*/figures/*.pdf
-!paper/weight5/figures/weight5_pareto_comparison_data.csv
-!paper/weight5/figures/qldpc_challenge_bb_snapshot.json
-!paper/weight5/figures/qldpc_challenge_weight5_snapshot.json
-!paper/weight5/figures/codetables_short_snapshot.json
+!paper/2610.06623/figures/weight5_pareto_comparison_data.csv
+!paper/2610.06623/figures/qldpc_challenge_bb_snapshot.json
+!paper/2610.06623/figures/qldpc_challenge_weight5_snapshot.json
+!paper/2610.06623/figures/codetables_short_snapshot.json
 
 # Scratch/report files that live alongside the paper but aren't paper sources
 paper/*/all_codes.md

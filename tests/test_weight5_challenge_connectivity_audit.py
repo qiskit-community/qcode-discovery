@@ -3,20 +3,29 @@
 from __future__ import annotations
 
 from collections import Counter
+import importlib.util
 import json
 from pathlib import Path
-
-from paper.weight5.figures.plot_weight5_pareto_comparison import (
-    aggregate_records,
-    audited_challenge_fields,
-    base_record,
-    load_challenge_connectivity_audit,
-    mark_figure_selection,
-)
+import sys
 
 
 ROOT = Path(__file__).resolve().parent.parent
 ARTIFACT = ROOT / "results" / "weight5_challenge_connectivity_audit.jsonl"
+_PARETO_SCRIPT = ROOT / "paper" / "2610.06623" / "figures" / "plot_weight5_pareto_comparison.py"
+
+_spec = importlib.util.spec_from_file_location(
+    "plot_weight5_pareto_comparison", _PARETO_SCRIPT
+)
+assert _spec is not None and _spec.loader is not None
+_pareto = importlib.util.module_from_spec(_spec)
+sys.modules[_spec.name] = _pareto
+_spec.loader.exec_module(_pareto)
+
+aggregate_records = _pareto.aggregate_records
+audited_challenge_fields = _pareto.audited_challenge_fields
+base_record = _pareto.base_record
+load_challenge_connectivity_audit = _pareto.load_challenge_connectivity_audit
+mark_figure_selection = _pareto.mark_figure_selection
 
 
 def _artifact_rows() -> tuple[dict, list[dict]]:
@@ -119,7 +128,7 @@ def test_comparison_uses_audited_challenge_components() -> None:
         (
             ROOT
             / "paper"
-            / "weight5"
+            / "2610.06623"
             / "figures"
             / "qldpc_challenge_bb_snapshot.json"
         ).read_text(encoding="utf-8")

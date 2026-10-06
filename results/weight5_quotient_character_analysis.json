@@ -661,6 +661,6 @@
   "schema_version": 1,
   "source_catalogue": {
     "path": "results/weight5_publication_catalogue.jsonl",
-    "sha256": "be92c4fd761d13ac1a215281cf14356e22344a6ebd54bcff183d4bb0fa218a2e"
+    "sha256": "a5f398de84652b49c11300c69e99af81fedff22361b8af2e52f431dba9772934"
   }
 }

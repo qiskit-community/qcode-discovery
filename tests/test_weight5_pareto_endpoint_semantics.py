@@ -1,8 +1,18 @@
 from __future__ import annotations
 
 import csv
+import importlib.util
+from pathlib import Path
+import sys
 
-from paper.weight5.figures import plot_weight5_pareto_comparison as pareto
+ROOT = Path(__file__).resolve().parent.parent
+SCRIPT = ROOT / "paper" / "2610.06623" / "figures" / "plot_weight5_pareto_comparison.py"
+
+spec = importlib.util.spec_from_file_location("plot_weight5_pareto_comparison", SCRIPT)
+assert spec is not None and spec.loader is not None
+pareto = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = pareto
+spec.loader.exec_module(pareto)
 
 
 def _record(*, supported: bool) -> dict[str, object]:

@@ -47,12 +47,12 @@ EXPECTED_COMMIT = "3b50503b058a0c09500c1017b54c3d547e1101cc"
 SNAPSHOTS = {
     "actual_weight_five": ROOT
     / "paper"
-    / "weight5"
+    / "2610.06623"
     / "figures"
     / "qldpc_challenge_weight5_snapshot.json",
     "bb": ROOT
     / "paper"
-    / "weight5"
+    / "2610.06623"
     / "figures"
     / "qldpc_challenge_bb_snapshot.json",
 }

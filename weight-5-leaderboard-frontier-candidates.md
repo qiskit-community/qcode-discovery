@@ -19,11 +19,11 @@ leaderboard:
 This report answers: **are there other codes in this branch's results that
 could be additional, non-dominated leaderboard entries, and are they free of
 overlap with literature already surveyed in `weight-5-codes-survey.md` /
-`paper/weight5/weight5_paper.tex`?**
+`paper/2610.06623/weight5_paper.tex`?**
 
 Method: (a) direct inspection of `results/weight5_publication_catalogue.jsonl`,
 `results/weight5_css_upper_bound_witnesses.jsonl`, and
-`paper/weight5/weight5_paper.tex`; (b) two background research agents — one
+`paper/2610.06623/weight5_paper.tex`; (b) two background research agents — one
 cataloguing candidates against the paper's own literature-exclusion findings,
 one surveying the live `qldpc-challenge` board's rules and current frontier;
 (c) independent re-verification of both agents' key claims by re-running the
@@ -32,7 +32,7 @@ board's own Pareto-domination rule against a freshly pulled local clone of
 
 ## 2. Literature caveats on already-submitted codes (informational, no action needed)
 
-From `paper/weight5/weight5_paper.tex`, Table `tab:headline-provenance`, and
+From `paper/2610.06623/weight5_paper.tex`, Table `tab:headline-provenance`, and
 `results/weight5_lin_pryadko_audit.json`:
 
 - **[[90,4,9]]** (PR #918) is FOM-dominated by Lin-Pryadko's exact archived
