@@ -85,7 +85,7 @@ independent of the morphing paper's own connectivity-degree terminology.
 |------|--------|-----------|-----------|-----------|-----------|
 | `W6-CSS-Morph18` | 6 | beat 288 (two-gross) | 18 | 12 | Two-gross itself: `[[288,12,18]]`, but `d=18` is BP-OSD-estimated only, not MILP-proven — see Risk |
 | `W6-CSS-Morph24` | 6 | ~360 (existing, uncertified `[[360,12,24]]` "bravyi" reference already hardcoded in this repo, `evolve/openevolve_evaluator.py:1040-1053`) or ~432 (generalized-family conjecture, unverified) — whichever the Phase G verify-first checks confirm | 24 | 12 | Two literature anchors, both unverified against this repo's own distance cascade until Phase G runs: (a) the existing `n=360` reference candidate, a bare literal with no certification metadata; (b) Tour de gross (arXiv:2506.03094) Conclusion's generalized gross-family formula, `r=2,b=1` instance — neither had ever been numerically checked within this codebase prior to direct construction (see Phase G items 1-2 — each has now had only its `k=12` half confirmed by direct construction; the `d=24` half of both is unrun distance certification, per Success Criteria M4) |
-| `W5-CSS-D18` | 5 | ~150-260 (2BGA scaling-law extrapolation) | 18 | 12 | `weight-5-codes-survey.md` §5.2 fit, extrapolated well past its fitted range (`n≤100/200`) — low confidence |
+| `W5-CSS-D18` | 5 | ~150-260 (2BGA scaling-law extrapolation) | 18 | 12 | `investigations/weight-5-codes-survey.md` §5.2 fit, extrapolated well past its fitted range (`n≤100/200`) — low confidence |
 | `W5-CSS-D24` | 5 | ~243-435 (same fit, extrapolated further) | 24 | 12 | Same source, extrapolated even further — lower confidence still |
 
 Same "**floor, not ceiling**" principle as Direction 2a applies to `d`: a code that overshoots
@@ -1132,7 +1132,7 @@ Numbered 1-24, under the "Phase G" label used throughout the Technical Approach 
 14. [ ] **Pre-pilot gate**: before launching **any** `W5-CSS-D18`/`D24` LLM call — including the
     pilot itself, not only a full/paid run, since a pilot still incurs real LLM API cost — run
     a deterministic Stage-0 exact-`k` audit against the fixed candidate superset defined in the
-    Naming and targets section above. `weight-5-codes-survey.md`'s own `d=g+f·n^b` fit is
+    Naming and targets section above. `investigations/weight-5-codes-survey.md`'s own `d=g+f·n^b` fit is
     measured at only two data points (`k=2`, `k=4`) with no `k≥12` data point anywhere in the
     source — it provides no support for `k≥12` feasibility at this weight, and this audit
     surfaces that gap before money is spent rather than after.
@@ -1393,7 +1393,7 @@ checked against Shaw & Terhal (arXiv:2407.16336):
    group-algebra (2BGA) codes*, not narrowly for weight-6 BB codes.** Shaw & Terhal's own
    arXiv:2407.16336 abstract states "a sufficient condition for its applicability to two-block
    group algebra codes" (not "to weight-6 BB codes"); this repo's own
-   `weight-5-codes-survey.md` §4.4 independently states the same thing ("The paper also gives a
+   `investigations/weight-5-codes-survey.md` §4.4 independently states the same thing ("The paper also gives a
    sufficient condition for applying morphing circuits to general 2BGA codes"). Standard BB
    codes — of *any* stabilizer weight, including weight-5 — are themselves 2-generator instances
    of 2BGA codes, so the sufficient condition's stated scope already covers weight-5 BB codes as
@@ -1678,7 +1678,7 @@ not been through a `codex exec` pass — the one described in
   abstract. The `r=2,b=1` candidate's specific `n=432` and
   conjectured `d=24` were computed directly from the stated formula; its `k=12` half and `n=432`
   have since been independently confirmed by direct construction (Phase G item 2).
-- `weight-5-codes-survey.md` §5.2's fit is reused here from Direction 2a, but stretched
+- `investigations/weight-5-codes-survey.md` §5.2's fit is reused here from Direction 2a, but stretched
   considerably further outside its fitted range (`n≤100/200`) than Direction 2a's own `d≈10/20`
   orientation points — treat `W5-CSS-D18`/`D24`'s `n`-anchors as even more speculative than
   Direction 2a's already-hedged numbers, not equally hedged.

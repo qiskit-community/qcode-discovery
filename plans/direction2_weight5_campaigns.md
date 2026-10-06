@@ -79,7 +79,7 @@ Empty `C` or empty `D` is allowed independently. Only `C=D=∅` is the CSS case.
 
 ### Literature anchors
 
-`weight-5-codes-survey.md` supplies the initial literature context. Its reported 2BGA fit
+`investigations/weight-5-codes-survey.md` supplies the initial literature context. Its reported 2BGA fit
 parameters are hypotheses until checked directly against Lin and Pryadko,
 *Quantum two-block group algebra codes*, arXiv:2306.16400, §5.2:
 
@@ -974,7 +974,7 @@ compute budget; it is not a no-go theorem for all weight-5 codes.
 
 ## Sources
 
-- `weight-5-codes-survey.md`
+- `investigations/weight-5-codes-survey.md`
 - Lin and Pryadko, *Quantum two-block group algebra codes*, arXiv:2306.16400
 - `evaluation/evaluator.py`
 - `evaluation/pbb_code.py`

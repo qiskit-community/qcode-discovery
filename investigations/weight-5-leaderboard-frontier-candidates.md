@@ -18,7 +18,7 @@ leaderboard:
 
 This report answers: **are there other codes in this branch's results that
 could be additional, non-dominated leaderboard entries, and are they free of
-overlap with literature already surveyed in `weight-5-codes-survey.md` /
+overlap with literature already surveyed in `investigations/weight-5-codes-survey.md` /
 `paper/2610.06623/weight5_paper.tex`?**
 
 Method: (a) direct inspection of `results/weight5_publication_catalogue.jsonl`,
