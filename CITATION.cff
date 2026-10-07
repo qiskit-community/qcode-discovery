@@ -33,3 +33,17 @@ preferred-citation:
   identifiers:
     - type: other
       value: "arXiv:2606.02418"
+references:
+  - type: article
+    title: "Large Language Model-Guided Discovery of Weight-Five Bivariate Bicycle Codes"
+    authors:
+      - family-names: Cruz-Benito
+        given-names: Juan
+    year: 2026
+    month: 10
+    journal: "arXiv preprint"
+    url: "https://arxiv.org/abs/2610.06623"
+    doi: "10.48550/arXiv.2610.06623"
+    identifiers:
+      - type: other
+        value: "arXiv:2610.06623"

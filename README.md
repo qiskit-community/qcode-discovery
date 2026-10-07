@@ -4,7 +4,9 @@ Discovering bivariate bicycle (BB) and perturbed bivariate bicycle (PBB) quantum
 
 Five evolution campaigns employing six LLMs from three families discover **465 distinct codes** (97 CSS, 368 non-CSS) with CSS encoding dimensions up to k = 54 (prior best: k = 16). MILP distance computation reveals a sharp rate-distance tradeoff and that BP-OSD overestimates distance by up to 12x for high-rate codes. Total cost: ~US$400 over ~140 hours.
 
-**Paper**: "Evolutionary Discovery of Bivariate Bicycle Codes with LLM-Guided Search" — see [`paper/2606.02418/paper.tex`](paper/2606.02418/paper.tex).
+**Papers**:
+- "Evolutionary Discovery of Bivariate Bicycle Codes with LLM-Guided Search" — see [`paper/2606.02418/paper.tex`](paper/2606.02418/paper.tex). [arXiv:2606.02418](https://arxiv.org/abs/2606.02418)
+- "Large Language Model-Guided Discovery of Weight-Five Bivariate Bicycle Codes" — see [`paper/2610.06623/weight5_paper.tex`](paper/2610.06623/weight5_paper.tex). [arXiv:2610.06623](https://arxiv.org/abs/2610.06623)
 
 ## Headline Results
 
@@ -294,12 +296,16 @@ qcode-discovery/
 │   └── evolution/                         #   Campaign 5 runs
 │       └── campaign7/                    #     Published Campaign 5 checkpoints
 ├── paper/                                 # Paper sources (one subfolder per paper)
-│   └── 2606.02418/                        #   "Evolutionary Discovery of BB Codes" paper
-│       ├── paper.tex                      #     Main paper
-│       ├── supplemental.tex               #     Supplemental material
-│       ├── css_catalog_tables.tex         #     Auto-generated CSS catalog
-│       ├── pbb_catalog_tables.tex         #     Auto-generated PBB catalog
-│       └── figures/                       #     Figure generation scripts + PDFs
+│   ├── 2606.02418/                        #   "Evolutionary Discovery of BB Codes" paper
+│   │   ├── paper.tex                      #     Main paper
+│   │   ├── supplemental.tex               #     Supplemental material
+│   │   ├── css_catalog_tables.tex         #     Auto-generated CSS catalog
+│   │   ├── pbb_catalog_tables.tex         #     Auto-generated PBB catalog
+│   │   └── figures/                       #     Figure generation scripts + PDFs
+│   └── 2610.06623/                        #   "Weight-Five BB Codes" paper
+│       ├── weight5_paper.tex              #     Main paper
+│       ├── weight5_supplement.tex         #     Supplemental material
+│       └── weight5_supplemental_tables.tex #    Auto-generated catalog tables
 └── plans/                                 # Research direction plans
 ```
 
@@ -592,11 +598,15 @@ Every `main.py` run is logged to `results/runs/<run_id>/`. W&B integration is bu
 
 ## Citation
 
-If you use this software or its results, please cite the associated paper:
+If you use this software or its results, please cite the associated papers:
 
 > J. Cruz-Benito, A. W. Cross, D. Kremer, and I. Faro,
 > "Evolutionary Discovery of Bivariate Bicycle Codes with LLM-Guided Search,"
 > arXiv:2606.02418 [quant-ph], 2026. https://arxiv.org/abs/2606.02418
+
+> J. Cruz-Benito,
+> "Large Language Model-Guided Discovery of Weight-Five Bivariate Bicycle Codes,"
+> arXiv:2610.06623 [quant-ph], 2026. https://arxiv.org/abs/2610.06623
 
 BibTeX:
 
@@ -610,6 +620,17 @@ BibTeX:
   primaryClass  = {quant-ph},
   doi           = {10.48550/arXiv.2606.02418},
   url           = {https://arxiv.org/abs/2606.02418}
+}
+
+@misc{cruzbenito2026weight5bb,
+  title         = {Large Language Model-Guided Discovery of Weight-Five Bivariate Bicycle Codes},
+  author        = {Cruz-Benito, Juan},
+  year          = {2026},
+  eprint        = {2610.06623},
+  archivePrefix = {arXiv},
+  primaryClass  = {quant-ph},
+  doi           = {10.48550/arXiv.2610.06623},
+  url           = {https://arxiv.org/abs/2610.06623}
 }
 ```
 
